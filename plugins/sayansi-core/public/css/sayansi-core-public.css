@@ -1,0 +1,67 @@
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+
+ .profile-home-header img {
+     height: 300px;
+	 width: 100%;
+     object-fit: cover;
+     display: block;
+     border-radius: 10px;
+     margin-bottom: -50px;
+ }
+
+ .profile-home-column {
+     display: -webkit-box;
+     display: -moz-flex;
+     display: -ms-flexbox;
+     display: flex;
+     -ms-flex-wrap: wrap;
+     flex-wrap: wrap;
+     gap: 20px;
+     width: 100%;
+     max-width: 90%;
+     margin: auto;
+ }
+
+ .profile-home-columns {
+     width: calc(25% - 15px);
+     padding: 30px;
+     -webkit-box-shadow: 0 0 7px 1px rgba(75, 131, 252, 0.15);
+     -ms-box-shadow: 0 0 7px 1px rgba(75, 131, 252, 0.15);
+     -o-box-shadow: 0 0 7px 1px rgba(75, 131, 252, 0.15);
+     box-shadow: 0 0 7px 1px rgba(75, 131, 252, 0.15);
+     border-radius: 10px;
+     -webkit-transition: all ease 0.5s;
+     transition: all ease 0.5s;
+     background: #fff;
+ }
+
+ .profile-home-columns .profile-home-columns-img img {
+     max-height: 80px;
+     max-width: 80px;
+     margin-bottom: 20px;
+     border-radius: 10px;
+     display: block;
+ }
+
+ .profile-home-columns .profile-home-columns-title {
+     margin-bottom: 10px;
+ }
+
+ @media only screen and (max-width: 920px) {
+
+     .profile-home-columns {
+         width: calc(50% - 15px);
+     }
+
+ }
+
+ @media only screen and (max-width: 567px) {
+
+     .profile-home-columns {
+         width: 100%;
+     }
+
+ }

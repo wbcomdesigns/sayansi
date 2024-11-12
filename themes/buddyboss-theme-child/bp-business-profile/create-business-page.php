@@ -48,18 +48,16 @@ if (($key = array_search('business-category', $business_taxonomies)) !== false) 
 	<label for="business-excerpt"><?php printf( esc_html__( '%s Excerpt', 'bp-business-profile' ), esc_attr( $singular_label ) ); ?></label>
 	<p class="bp-business-excerpt"><?php esc_html_e( 'Give people a brief excerpt of your work.', 'bp-business-profile' ); ?></p>
 		<?php
-		$args = array(
-			'tinymce' => array(
-				'toolbar1' => 'bold,italic,underline,separator,alignleft,aligncenter,alignright,separator,link,unlink,undo,redo',
-				'toolbar2' => '',
-				'toolbar3' => '',
-			),
-		);
+		// $args = array(
+		// 	'tinymce' => array(
+		// 		'toolbar1' => 'bold,italic,underline,separator,alignleft,aligncenter,alignright,separator,link,unlink,undo,redo',
+		// 	),
+		// );
 
 
-		wp_editor( $business_desc, 'beam_line_excerpt', $args );
+		// wp_editor( $business_desc, 'beam_line_excerpt', $args );
 		?>
-
+		<textarea id="business-excerpt" name="beam_line_excerpt" maxlength="500"></textarea>
 
 
 	<?php if ( ! empty( $business_category ) ) : ?>
@@ -100,7 +98,7 @@ if (($key = array_search('business-category', $business_taxonomies)) !== false) 
 		<?php if ( ! empty( $business_custom_category ) ) : ?>
 			
 				<label for="business-<?php echo esc_attr($business_taxonomy)?>"><?php echo esc_html($business_taxonomy_info->label) ?></label>
-				<select name="business-custom-category[<?php echo esc_attr($business_taxonomy);?>]" id="business-<?php echo esc_attr($business_taxonomy)?>" aria-required="true">
+				<select name="business-custom-category[<?php echo esc_attr($business_taxonomy);?>]" id="business-<?php echo esc_attr($business_taxonomy)?>" aria-required="true" multiple="multiple">
 					
 					<option value="">
 						<?php 
