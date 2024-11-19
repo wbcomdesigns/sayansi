@@ -8,6 +8,17 @@ Make sure to respect the media queries! Otherwise you may
 accidentally add desktop styles to the mobile layout.
 https://www.w3schools.com/css/css_rwd_mediaqueries.asp
 --------------------------------------------------------------*/
+
+.tml{
+	border: 1px solid #e6e3e3;
+    background: #fff;
+    padding: 40px 30px;
+    max-width: 550px;
+    margin: 0 auto;
+    border-radius: 15px;
+}
+
+
 #bp-businesses-content {
     padding: 0 10px;
 }

@@ -120,7 +120,7 @@ class Sayansi_Core_Public {
 
 		bp_core_new_nav_item(
 			array(
-				'name'                => _x( 'Home', 'Member Home page', 'sayansi-core' ),
+				'name'                => _x( 'My Home Page', 'Member Home page', 'sayansi-core' ),
 				'slug'                => 'home',
 				'position'            => 1,
 				'screen_function'     => array( $this, 'wbcom_member_profile_home_tab_screen' ),
@@ -128,10 +128,138 @@ class Sayansi_Core_Public {
 			),
 			'members'
 		);
+
+		/**
+		 * Member Profile Library Tab Customizations
+		 */
+		$media_link = trailingslashit( $user_domain . 'library' );
+
+		bp_core_remove_nav_item( bp_get_media_slug() );
+		bp_core_remove_subnav_item( bp_get_media_slug(), 'my-media' );
+		bp_core_remove_nav_item( bp_get_video_slug() );
+		bp_core_remove_subnav_item( bp_get_media_slug(), 'my-video' );
+
+		bp_core_new_nav_item(
+			array(
+				'name'                => _x( 'My Library', 'Member Library page', 'sayansi-core' ),
+				'slug'                => 'library',
+				'position'            => 1,
+				'screen_function'     => array( $this, 'wbcom_member_profile_library_tab_screen' ),
+				'default_subnav_slug' => 'photos',
+			),
+			'members'
+		);
+
+		bp_core_new_subnav_item(
+			array(
+				'name'            => _x( 'Photos', 'Member Photos page', 'sayansi-core' ),
+				'slug'            => 'photos',
+				'parent_url'      => $media_link,
+				'parent_slug'     => 'library',
+				'screen_function' => array( $this, 'wbcom_member_profile_library_tab_screen' ),
+				'position'        => 10,
+			)
+		);
+
+		bp_core_new_subnav_item(
+			array(
+				'name'            => _x( 'Videos', 'Member Videos page', 'sayansi-core' ),
+				'slug'            => 'videos',
+				'parent_url'      => $media_link,
+				'parent_slug'     => 'library',
+				'screen_function' => array( $this, 'wbcom_member_profile_videos_tab_screen' ),
+				'position'        => 10,
+			)
+		);
+
+		bp_core_new_subnav_item(
+			array(
+				'name'            => _x( 'Documents', 'Member Documents page', 'sayansi-core' ),
+				'slug'            => 'documents',
+				'parent_url'      => $media_link,
+				'parent_slug'     => 'library',
+				'screen_function' => array( $this, 'wbcom_member_profile_documents_tab_screen' ),
+				'position'        => 10,
+			)
+		);
+		/**
+		 * Member Profile Library Tab Customizations Stop
+		 */
+
+		/**
+		 * Member Profile Profile Tab Customizations
+		 */
+		$bprm_settings     = get_site_option( 'bprm_settings' );
+		$profile_menu_slug = isset( $bprm_settings['tab_url'] ) && ! empty( $bprm_settings['tab_url'] ) ? $bprm_settings['tab_url'] : 'resume';
+		$tab_resume_name   = isset( $bprm_settings['tab_resume_name'] ) && ! empty( $bprm_settings['tab_resume_name'] ) ? $bprm_settings['tab_resume_name'] : 'Resume';
+		$resume_manager    = new Bp_Resume_Manager_Public( 'bp-resume-manager', BPRM_PLUGIN_VERSION );
+		bp_core_remove_nav_item( $bprm_settings['tab_url'] );
+
+		bp_core_new_subnav_item(
+			array(
+				'name'            => _x( 'Profile Settings', 'Member Profile Settings page', 'sayansi-core' ),
+				'slug'            => 'public',
+				'parent_url'      => trailingslashit( $user_domain . bp_get_profile_slug() ),
+				'parent_slug'     => bp_get_profile_slug(),
+				'screen_function' => 'bp_members_screen_display_profile',
+				'position'        => 10,
+			)
+		);
+
+		bp_core_new_subnav_item(
+			array(
+				'name'            => $tab_resume_name,
+				'slug'            => $profile_menu_slug,
+				'parent_url'      => trailingslashit( $user_domain . bp_get_profile_slug() ),
+				'parent_slug'     => bp_get_profile_slug(),
+				'screen_function' => array( $resume_manager, 'bprm_show_saved_resume_screen' ),
+				'position'        => 10,
+			)
+		);
+
+		if ( bp_is_my_profile() || current_user_can( 'administrator' ) ) {
+			if ( bprm_check_user_resume_data( $user_id, 'bprm_resume_' ) ) {
+				$tab_name = __( 'Edit ', 'sayansi-core' ) . $tab_resume_name;
+			} else {
+				$tab_name = __( 'Add ', 'sayansi-core' ) . $tab_resume_name;
+			}
+				// Add subnav add resume.
+				bp_core_new_subnav_item(
+					array(
+						'name'            => $tab_name,
+						'slug'            => 'add',
+						'parent_url'      => trailingslashit( $user_domain . bp_get_profile_slug() ),
+						'parent_slug'     => bp_get_profile_slug(),
+						'screen_function' => array( $resume_manager, 'bprm_show_add_resume_screen' ),
+						'position'        => 200,
+						// 'link'            => site_url() . "/$member_slug/$name/$parent_slug/add/",
+					)
+				);
+		}
+
+		/**
+		 * Member Profile Profile Tab Customizations Stop
+		 */
+
 	}
 
 	public function wbcom_member_profile_home_tab_screen() {
 		add_action( 'bp_template_content', array( $this, 'wbcom_member_profile_home_tab_screen_content' ) );
+		bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
+	}
+
+	public function wbcom_member_profile_library_tab_screen() {
+		add_action( 'bp_template_content', array( $this, 'wbcom_member_profile_library_tab_screen_content' ) );
+		bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
+	}
+
+	public function wbcom_member_profile_videos_tab_screen() {
+		add_action( 'bp_template_content', array( $this, 'wbcom_member_profile_videos_tab_screen_content' ) );
+		bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
+	}
+
+	public function wbcom_member_profile_documents_tab_screen() {
+		add_action( 'bp_template_content', array( $this, 'wbcom_member_profile_documents_tab_screen_content' ) );
 		bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
 	}
 
@@ -185,6 +313,190 @@ class Sayansi_Core_Public {
 	}
 
 
+	public function wbcom_member_profile_library_tab_screen_content() {
+		$is_send_ajax_request = bb_is_send_ajax_request();
+		?>
+		<div class="bb-media-container member-media">
+			<?php
+			// bp_get_template_part( 'members/single/parts/item-subnav' );
+			bp_get_template_part( 'media/theatre' );
+			if ( bp_is_profile_video_support_enabled() ) {
+				bp_get_template_part( 'video/theatre' );
+				bp_get_template_part( 'video/add-video-thumbnail' );
+			}
+			bp_get_template_part( 'document/theatre' );
+
+			switch ( bp_current_action() ) :
+
+				// Home/Media.
+				case 'photos':
+					bp_get_template_part( 'media/add-media' );
+					bp_nouveau_member_hook( 'before', 'media_content' );
+					bp_get_template_part( 'media/actions' );
+					?>
+					<div id="media-stream" class="media" data-bp-list="media" data-ajax="<?php echo esc_attr( $is_send_ajax_request ? 'true' : 'false' ); ?>">
+						<?php
+						if ( $is_send_ajax_request ) {
+							echo '<div id="bp-ajax-loader">';
+							bp_nouveau_user_feedback( 'member-media-loading' );
+							echo '</div>';
+						} else {
+							bp_get_template_part( 'media/media-loop' );
+						}
+						?>
+					</div><!-- .media -->
+						<?php
+						bp_nouveau_member_hook( 'after', 'media_content' );
+					break;
+
+				// Home/Media/Albums.
+				case 'albums':
+					if ( ! bp_is_single_album() ) {
+						bp_get_template_part( 'media/albums' );
+					} else {
+						bp_get_template_part( 'media/single-album' );
+					}
+					break;
+
+				// Any other.
+				default:
+					bp_get_template_part( 'members/single/plugins' );
+					break;
+			endswitch;
+			?>
+		</div>
+		<?php
+	}
+
+	public function wbcom_member_profile_videos_tab_screen_content() {
+		$is_send_ajax_request = bb_is_send_ajax_request();
+		?>
+		<div class="bb-video-container bb-media-container member-video">
+			<?php
+			bp_get_template_part( 'video/theatre' );
+			bp_get_template_part( 'media/theatre' );
+			bp_get_template_part( 'document/theatre' );
+
+			switch ( bp_current_action() ) :
+
+				// Home/Video.
+				case 'videos':
+					bp_get_template_part( 'video/add-video' );
+					bp_nouveau_member_hook( 'before', 'video_content' );
+					bp_get_template_part( 'video/actions' );
+					?>
+					<div id="video-stream" class="video" data-bp-list="video" data-ajax="<?php echo esc_attr( $is_send_ajax_request ? 'true' : 'false' ); ?>">
+						<?php
+						if ( $is_send_ajax_request ) {
+							echo '<div id="bp-ajax-loader">';
+							bp_nouveau_user_feedback( 'member-video-loading' );
+							echo '</div>';
+						} else {
+							bp_get_template_part( 'video/video-loop' );
+						}
+						?>
+					</div><!-- .video -->
+					<?php
+					bp_nouveau_member_hook( 'after', 'video_content' );
+
+					break;
+
+				// Home/Video/Albums.
+				case 'albums':
+					if ( ! bp_is_single_video_album() ) {
+						bp_get_template_part( 'video/albums' );
+					} else {
+						bp_get_template_part( 'video/single-album' );
+					}
+					break;
+
+				// Any other.
+				default:
+					bp_get_template_part( 'members/single/plugins' );
+					break;
+			endswitch;
+			?>
+		</div>
+		<?php
+
+	}
+
+	public function wbcom_member_profile_documents_tab_screen_content() {
+		$is_send_ajax_request = bb_is_send_ajax_request();
+		?>
+
+		<div class="bb-media-container member-media">
+			<?php
+			bp_get_template_part( 'document/theatre' );
+			bp_get_template_part( 'video/theatre' );
+			bp_get_template_part( 'media/theatre' );
+			bp_get_template_part( 'video/add-video-thumbnail' );
+
+			switch ( bp_current_action() ) :
+
+				// Home/Media.
+				case 'documents':
+					?>
+					<div class="bp-document-listing">
+						<div class="bp-media-header-wrap">
+							<h2 class="bb-title"><?php esc_html_e( 'Documents', 'buddyboss' ); ?></h2>
+							<?php
+							bp_get_template_part( 'document/add-folder' );
+							bp_get_template_part( 'document/add-document' );
+							?>
+							<div id="search-documents-form" class="media-search-form" data-bp-search="document">
+								<form action="" method="get" class="bp-dir-search-form search-form-has-reset" id="group-document-search-form" autocomplete="off">
+									<button type="submit" id="group-document-search-submit" class="nouveau-search-submit search-form_submit" name="group_document_search_submit">
+										<span class="dashicons dashicons-search" aria-hidden="true"></span>
+										<span id="button-text" class="bp-screen-reader-text"><?php esc_html_e( 'Search', 'buddyboss' ); ?></span>
+									</button>
+									<label for="group-document-search" class="bp-screen-reader-text"><?php esc_html_e( 'Search Documents…', 'buddyboss' ); ?></label>
+									<input id="group-document-search" name="document_search" type="search" placeholder="<?php esc_attr_e( 'Search Documents…', 'buddyboss' ); ?>">
+									<button type="reset" class="search-form_reset">
+										<span class="bb-icon-rf bb-icon-times" aria-hidden="true"></span>
+										<span class="bp-screen-reader-text"><?php esc_html_e( 'Reset', 'buddyboss' ); ?></span>
+									</button>
+								</form>
+							</div>
+
+						</div>
+					</div><!-- .bp-document-listing -->
+					<?php bp_nouveau_member_hook( 'before', 'document_content' ); ?>
+
+					<div id="media-stream" class="media" data-bp-list="document" data-ajax="<?php echo esc_attr( $is_send_ajax_request ? 'true' : 'false' ); ?>">
+						<?php
+						if ( $is_send_ajax_request ) {
+							echo '<div id="bp-ajax-loader">';
+							bp_nouveau_user_feedback( 'member-document-loading' );
+							echo '</div>';
+						} else {
+							bp_get_template_part( 'document/document-loop' );
+						}
+						?>
+					</div><!-- .media -->
+
+					<?php
+					bp_nouveau_member_hook( 'after', 'document_content' );
+
+					break;
+
+				// Home/Media/Albums.
+				case 'folders':
+					bp_get_template_part( 'document/single-folder' );
+					break;
+
+				// Any other.
+				default:
+					bp_get_template_part( 'members/single/plugins' );
+					break;
+			endswitch;
+			?>
+		</div>
+		<?php
+
+	}
+
+
 	public function wbcom_save_business_bibliography() {
 		if ( isset( $_POST['business-bibliography-nonce'] ) && wp_verify_nonce( $_POST['business-bibliography-nonce'], 'business-bibliography-action' )) {
 			$bibliography = isset( $_POST['business-bibliography'] ) ? wp_kses_post( $_POST['business-bibliography'] ) : '';
@@ -208,5 +520,119 @@ class Sayansi_Core_Public {
 		update_field( 'beam_line_excerpt', wpautop( $beam_line_excerpt ), $business_id );
 
 	}
+
+
+	public function wbcom_bprm_save_resume_resdirect_url( $url ) {
+		if ( bp_displayed_user_domain() ) {
+			$user_domain = bp_displayed_user_domain();
+		} elseif ( bp_loggedin_user_domain() ) {
+			$user_domain = bp_loggedin_user_domain();
+		}
+		$bprm_settings     = get_option( 'bprm_settings' );
+		$profile_menu_slug = isset( $bprm_settings['tab_url'] ) && ! empty( $bprm_settings['tab_url'] ) ? $bprm_settings['tab_url'] : 'resume';
+		$url               = trailingslashit( $user_domain . bp_get_profile_slug() ) . $profile_menu_slug;
+		return $url;
+	}
+
+
+	/**
+	 * Get ACF Business Information group fields
+	 *
+	 * @return array|false
+	 */
+	public function wbcom_get_business_info_group_fields() {
+	    if (function_exists('acf_get_fields')) {
+	        $fields = acf_get_fields('group_6729bef606dca');
+	        return is_array($fields) ? $fields : false;
+	    }
+	    return false; // Return false if ACF function does not exist
+	}
+
+	/**
+	 * Display ACF Business Information fields in the contact tab
+	 *
+	 * @return void
+	 */
+	public function wbcom_display_business_info_fields_in_contact() {
+	    if (function_exists('acf_form_head')) {
+	        acf_form_head();    
+	    }
+
+	    $fields = $this->wbcom_get_business_info_group_fields();
+
+	    if (!empty($fields)) {
+	        acf_render_fields($fields, get_the_ID());
+	    } else {
+	        // Handle the case where no fields are found or an error occurred
+	        echo '<p>No fields available to display.</p>';
+	    }
+	}
+
+
+	/**
+	 * Save ACF Business Information fields
+	 *
+	 * @param int $post_id
+	 * @return void
+	 */
+	public function wbcom_save_business_info_fields($post_id) {
+	    if (isset($_POST['acf']) && !empty($_POST['acf'])) {
+	        foreach ($_POST['acf'] as $field_key => $field_value) {
+	            $field = function_exists('get_field_object') ? get_field_object($field_key) : null;
+
+	            if ($field) {
+	                switch ($field['type']) {
+	                    case 'text':
+	                        update_field($field_key, sanitize_text_field($field_value), $post_id);
+	                        break;
+	                     case 'wysiwyg':
+	                        update_field($field_key, $field_value, $post_id);
+	                        break;
+	                    default:
+	                        update_field($field_key, $field_value, $post_id);
+	                        break;
+	                }
+	            }
+	        }
+	    }
+	}
+
+
+	/**
+	 * Show ACF Business Information fields in the about section
+	 *
+	 * @return void
+	 */
+	public function wbcom_show_business_info_fields_in_about_section() {
+	    $fields = $this->wbcom_get_business_info_group_fields();
+
+	    if (!empty($fields)) {
+	        foreach ($fields as $field) {
+	            $value = get_field($field['name'], get_the_ID());
+	            if (!empty($value)) {
+	                echo '<h2>' . esc_html($field['label']) . '</h2>';
+
+	                switch ($field['type']) {
+	                    case 'text':
+	                        echo '<p>' . esc_html($value) . '</p>';
+	                        break;
+	                    case 'wysiwyg':
+	                        echo $value;
+	                        break;
+	                }
+	            }
+	        }
+	    }
+	}
+
+
+	public function wbcom_bprm_resume_redirect_url( $url ) {
+		$bprm_settings = get_option( 'bprm_settings' );
+		$profile_menu_slug = isset( $bprm_settings['tab_url'] ) && ! empty( $bprm_settings['tab_url'] ) ? $bprm_settings['tab_url'] : 'resume';
+		$url = trailingslashit( bp_displayed_user_domain() . bp_get_profile_slug() ) . $profile_menu_slug;
+
+		return $url;
+	}
+	
 
 }

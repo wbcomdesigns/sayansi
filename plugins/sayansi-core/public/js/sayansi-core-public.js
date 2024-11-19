@@ -31,7 +31,7 @@
 	$(document).ready(function() {
 		$('#business-beam-line-tag').chosen();
 
-		$(document).on( 'keyup', '#business-excerpt', function(){
+		$(document).on( 'keyup', '#business-excerpt, #acf-field_6729c0127e757', function() {
 			var maxlength = $(this).attr("maxlength");
 			var currentLength = $(this).val().length;
 

@@ -50,6 +50,35 @@
      margin-bottom: 10px;
  }
 
+#edit-personal-li, #change-avatar-personal-li, #change-cover-image-personal-li{
+    display: none;
+ }
+
+#page #buddypress #item-body .bp-profile-wrapper #subnav li#cv-personal-li, 
+#page #buddypress #item-body .bp-profile-wrapper #subnav li#add-personal-li {
+    display: none;
+}
+
+ body.profile-edit #edit-personal-li, body.change-avatar #edit-personal-li, body.change-cover-image #edit-personal-li {
+    display: block;
+ }
+
+ body.profile-edit #change-avatar-personal-li,
+ body.change-avatar #change-avatar-personal-li,
+ body.change-cover-image #change-avatar-personal-li {
+     display: block;
+ }
+
+ body.profile-edit #change-cover-image-personal-li,
+ body.change-avatar #change-cover-image-personal-li,
+ body.change-cover-image #change-cover-image-personal-li {
+      display: block;
+  }
+
+div#bp-business-list-section-owner, .bp-business-team h4:first-of-type {
+    display: none;
+}
+
  @media only screen and (max-width: 920px) {
 
      .profile-home-columns {
@@ -65,3 +94,12 @@
      }
 
  }
+
+ .bp-business-profile-excerpt{
+    text-align: justify;
+ }
+
+.profile-fields.bp-tables-user img{
+	height:100px;
+	object-fit:cover;
+}

@@ -177,6 +177,10 @@ class Sayansi_Core {
 		$this->loader->add_action( 'bp_setup_nav', $plugin_public, 'wbcom_cutomize_member_profile_tabs', 99 );
 		$this->loader->add_action( 'wp_loaded', $plugin_public, 'wbcom_save_business_bibliography' );
 		$this->loader->add_action( 'bp_business_profile_after_save_business', $plugin_public, 'wbcom_save_business_excerpt', 10, 2 );
+		$this->loader->add_filter( 'bprm_save_resume_resdirect_url', $plugin_public, 'wbcom_bprm_save_resume_resdirect_url' );
+		$this->loader->add_action( 'business_profile_after_business_description', $plugin_public, 'wbcom_display_business_info_fields_in_contact');
+		$this->loader->add_action( 'save_post', $plugin_public, 'wbcom_save_business_info_fields', 99, 1);
+		$this->loader->add_filter( 'bprm_save_resume_resdirect_url', $plugin_public, 'wbcom_bprm_resume_redirect_url' );
 
 	}
 
