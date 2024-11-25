@@ -106,6 +106,12 @@ class Sayansi_Core_Public {
 		return 'home';
 	}
 
+	public function wbcom_bb_user_can_create_document() {
+		if( ! bp_is_single_folder() ) {
+			return false;
+		}
+	}
+
 
 	public function wbcom_cutomize_member_profile_tabs() {
 		if ( bp_displayed_user_domain() ) {
@@ -139,49 +145,49 @@ class Sayansi_Core_Public {
 		bp_core_remove_nav_item( bp_get_video_slug() );
 		bp_core_remove_subnav_item( bp_get_media_slug(), 'my-video' );
 
-		bp_core_new_nav_item(
-			array(
-				'name'                => _x( 'My Library', 'Member Library page', 'sayansi-core' ),
-				'slug'                => 'library',
-				'position'            => 1,
-				'screen_function'     => array( $this, 'wbcom_member_profile_library_tab_screen' ),
-				'default_subnav_slug' => 'photos',
-			),
-			'members'
-		);
+		// bp_core_new_nav_item(
+		// 	array(
+		// 		'name'                => _x( 'My Library', 'Member Library page', 'sayansi-core' ),
+		// 		'slug'                => 'library',
+		// 		'position'            => 1,
+		// 		'screen_function'     => array( $this, 'wbcom_member_profile_library_tab_screen' ),
+		// 		'default_subnav_slug' => 'photos',
+		// 	),
+		// 	'members'
+		// );
 
-		bp_core_new_subnav_item(
-			array(
-				'name'            => _x( 'Photos', 'Member Photos page', 'sayansi-core' ),
-				'slug'            => 'photos',
-				'parent_url'      => $media_link,
-				'parent_slug'     => 'library',
-				'screen_function' => array( $this, 'wbcom_member_profile_library_tab_screen' ),
-				'position'        => 10,
-			)
-		);
+		// bp_core_new_subnav_item(
+		// 	array(
+		// 		'name'            => _x( 'Photos', 'Member Photos page', 'sayansi-core' ),
+		// 		'slug'            => 'photos',
+		// 		'parent_url'      => $media_link,
+		// 		'parent_slug'     => 'library',
+		// 		'screen_function' => array( $this, 'wbcom_member_profile_library_tab_screen' ),
+		// 		'position'        => 10,
+		// 	)
+		// );
 
-		bp_core_new_subnav_item(
-			array(
-				'name'            => _x( 'Videos', 'Member Videos page', 'sayansi-core' ),
-				'slug'            => 'videos',
-				'parent_url'      => $media_link,
-				'parent_slug'     => 'library',
-				'screen_function' => array( $this, 'wbcom_member_profile_videos_tab_screen' ),
-				'position'        => 10,
-			)
-		);
+		// bp_core_new_subnav_item(
+		// 	array(
+		// 		'name'            => _x( 'Videos', 'Member Videos page', 'sayansi-core' ),
+		// 		'slug'            => 'videos',
+		// 		'parent_url'      => $media_link,
+		// 		'parent_slug'     => 'library',
+		// 		'screen_function' => array( $this, 'wbcom_member_profile_videos_tab_screen' ),
+		// 		'position'        => 10,
+		// 	)
+		// );
 
-		bp_core_new_subnav_item(
-			array(
-				'name'            => _x( 'Documents', 'Member Documents page', 'sayansi-core' ),
-				'slug'            => 'documents',
-				'parent_url'      => $media_link,
-				'parent_slug'     => 'library',
-				'screen_function' => array( $this, 'wbcom_member_profile_documents_tab_screen' ),
-				'position'        => 10,
-			)
-		);
+		// bp_core_new_subnav_item(
+		// 	array(
+		// 		'name'            => _x( 'Documents', 'Member Documents page', 'sayansi-core' ),
+		// 		'slug'            => 'documents',
+		// 		'parent_url'      => $media_link,
+		// 		'parent_slug'     => 'library',
+		// 		'screen_function' => array( $this, 'wbcom_member_profile_documents_tab_screen' ),
+		// 		'position'        => 10,
+		// 	)
+		// );
 		/**
 		 * Member Profile Library Tab Customizations Stop
 		 */
@@ -632,6 +638,14 @@ class Sayansi_Core_Public {
 		$url = trailingslashit( bp_displayed_user_domain() . bp_get_profile_slug() ) . $profile_menu_slug;
 
 		return $url;
+	}
+
+
+	public function wbcom_bp_business_profile_single_menu_items( $items, $endpoints ) {
+		$items['beam-line-activity'] = esc_html( 'Activity' );
+		$items['beam-line-blogs'] = esc_html( 'Blogs' );
+
+		return $items;
 	}
 	
 

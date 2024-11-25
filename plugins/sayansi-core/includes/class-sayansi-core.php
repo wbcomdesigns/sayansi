@@ -181,6 +181,8 @@ class Sayansi_Core {
 		$this->loader->add_action( 'business_profile_after_business_description', $plugin_public, 'wbcom_display_business_info_fields_in_contact');
 		$this->loader->add_action( 'save_post', $plugin_public, 'wbcom_save_business_info_fields', 99, 1);
 		$this->loader->add_filter( 'bprm_save_resume_resdirect_url', $plugin_public, 'wbcom_bprm_resume_redirect_url' );
+		$this->loader->add_filter( 'bp_business_profile_single_menu_items', $plugin_public, 'wbcom_bp_business_profile_single_menu_items', 10, 2 );
+		// $this->loader->add_filter( 'bb_user_can_create_document', $plugin_public, 'wbcom_bb_user_can_create_document' );
 
 	}
 

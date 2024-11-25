@@ -77,15 +77,6 @@ apply_filters('bp_business_profile_contact_info', function() {
 } );
 
 
-add_filter( 'bp_business_profile_single_menu_items', 'wbcom_custom_business_tabs', 10, 2);
-function wbcom_custom_business_tabs($items, $endpoints) { 
-  $items['beam-line-activity'] = esc_html( 'Activity' );
-  // $items['beam-line-blogs'] = esc_html( 'Blogs' );
-
-  return $items;
-}
-
-
 add_filter( 'bp_member_change_blog_label', function() {
     return 'My Blog';
 } );
