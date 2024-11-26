@@ -79,4 +79,14 @@ function run_sayansi_core() {
 	$plugin->run();
 
 }
+
+function sensei_core_document_tab_labels() {
+  global $bp;
+  if( ! empty( $bp ) && ( bp_is_user() )  ){
+	$bp->bp_nav['documents']['name'] = esc_html__( 'My Library', 'sayansi-core' );
+	$bp->bp_nav['beamline']['name'] = esc_html__( 'My Beam Lines', 'sayansi-core' );
+  }
+}
+add_action( 'bp_setup_nav', 'sensei_core_document_tab_labels', 999 );
+
 run_sayansi_core();

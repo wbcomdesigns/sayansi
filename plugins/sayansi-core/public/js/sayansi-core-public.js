@@ -39,6 +39,66 @@
 			    alert("You have reached the maximum number of characters.");
 			 }
 		} )
+
+		//Add code for assign random color for hashtag
+
+		// Function to generate a random color
+		function getRandomColor() {
+			const letters = '0123456789ABCDEF';
+			let color = '#';
+			for (let i = 0; i < 6; i++) {
+				color += letters[Math.floor(Math.random() * 16)];
+			}
+			return color;
+		}
+
+		// Select all anchor tags with the class 'hashtag'
+		const hashtagAnchors = document.querySelectorAll('a.hashtag');
+
+		// Apply random color to each anchor
+		hashtagAnchors.forEach(hashtagAnchors => {
+			hashtagAnchors.style.color = getRandomColor();
+		});
+
+		//code end for assign random color for hashtag
+
+		//Change group document tab name to My libraray
+		jQuery(document).ready(function ($) {
+			
+			//Group Description tab
+			if ($('#description-groups-li .bb-single-nav-item-point').length > 0) {
+				$('#description-groups-li .bb-single-nav-item-point').text('Group Description');
+			}
+			//Group Activity tab
+			if ($('#activity-groups-li .bb-single-nav-item-point').length > 0) {
+				$('#activity-groups-li .bb-single-nav-item-point').text('Group Activity');
+			}
+			//Group documents tab
+			if ($('#documents-groups-li .bb-single-nav-item-point').length > 0) {
+				$('#documents-groups-li .bb-single-nav-item-point').text('Group Library');
+			}
+			//Group member tab
+			if ($('#members-groups-li .bb-single-nav-item-point').length > 0) {
+				$('#members-groups-li .bb-single-nav-item-point').text('Group Members');
+			}
+			//Group Discussion tab
+			if ($('#nav-forum-groups-li .bb-single-nav-item-point').length > 0) {
+				$('#nav-forum-groups-li .bb-single-nav-item-point').text('Group Discussion');
+			}
+			// Hide Group Photos tab
+			if ($('#photos-groups-li').length > 0) {
+				$('#photos-groups-li').hide();
+			}
+			// Hide Group Albums tab
+			if ($('#albums-groups-li').length > 0) {
+				$('#albums-groups-li').hide();
+			}
+			// Hide Group Videos tab
+			if ($('#videos-groups-li').length > 0) {
+				$('#videos-groups-li').hide();
+			}
+		});
+		//End change group document tab name to My libraray
 		
 	});
 })( jQuery );
