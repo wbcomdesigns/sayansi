@@ -87,112 +87,104 @@ foreach ( $group_users as $group_user ) {
 	$user_ids[] = $group_user->user_id;
 }
 $post_authors = implode( ',', $user_ids );
-
-$query_args = array(
-	'author'      => $post_authors,
-	'post_type'   => 'post',
-	'post_status' => $post_status,
-	'paged'       => intval( $pagination_page ),
-	'meta_query'  => array(
-		array(
-			'key'     => 'bp_blog_pro_group_links',
-			'value'   => $current_group_id,
-			'compare' => '==',
+if( isset( $_GET['tab'] ) && 'publish' == $_GET['tab'] ){
+	$query_args = array(
+		'author'      => $post_authors,
+		'post_type'   => 'post',
+		'post_status' => $post_status,
+		'paged'       => intval( $pagination_page ),
+		'meta_query'  => array(
+			array(
+				'key'     => 'bp_blog_pro_group_links',
+				'value'   => $current_group_id,
+				'compare' => '==',
+			),
 		),
-	),
-);
+	);
+} elseif( isset( $_GET['tab'] ) && 'pending' == $_GET['tab'] ){
+	$query_args = array(
+		'author'      => $user_id,
+		'post_type'   => 'post',
+		'post_status' => 'pending',
+		'paged'       => intval( $paged ),
+	);
+} elseif( isset( $_GET['tab'] ) && 'draft' == $_GET['tab'] ){
+	$query_args = array(
+		'author'      => $user_id,
+		'post_type'   => 'post',
+		'post_status' => 'draft',
+		'paged'       => intval( $paged ),
+	);
+}
 // do the query.
 // $post_loop = new WP_Query( $query_args );
 query_posts( $query_args );
+$post_query = new WP_Query( $query_args );
+$total_posts = $post_query->found_posts;
+//Add blog related tab in beam
+global $wp;
+$beam_link = site_url() . '/' . $wp->request;
+$endpoint = isset( $_GET['tab'] ) ? $_GET['tab'] : '';
+$link                     = '';
+$bp_member_blog_gen_stngs = get_option( 'bp_member_blog_gen_stngs' );
+if ( isset( $bp_member_blog_gen_stngs['bp_post_page'] ) && $bp_member_blog_gen_stngs['bp_post_page'] != 0 ) {
+	$link = get_permalink( $bp_member_blog_gen_stngs['bp_post_page'] );
+}
 ?>
-<div class="bp-member-blog-container bpmb-blog-posts">
-	<?php if ( have_posts() ) : ?>
-		<?php
-		while ( have_posts() ) :
-			the_post();
-			global $post;
-			$selected_group = get_post_meta( $post->ID, 'bp_blog_pro_group_links', true );
-			if ( $selected_group == $current_group_id ) {
-				?>
-			<div id="post-<?php the_ID(); ?>" class="<?php echo esc_attr( 'bpmb-blog-post' ); ?>">				
-					<div class="post-featured-image">
-						<a href="<?php the_permalink(); ?>" rel="bookmark" title="<?php esc_html_e( 'Permanent Link to', 'buddypress-member-blog-pro' ); ?> <?php the_title_attribute(); ?>">
-							<?php if ( function_exists( 'has_post_thumbnail' ) && has_post_thumbnail( get_the_ID() ) ) : ?>
-								<?php the_post_thumbnail(); ?>
-							<?php else : ?>
-								<img src="<?php echo esc_url( BUDDYPRESS_MEMBER_BLOG_PLUGIN_URL ) . 'public/images/no-post-image.jpg'; ?>" class="attachment-thumbnail size-thumbnail wp-post-image" alt="<?php the_title(); ?>" width="150" height="150">
-							<?php endif; ?>
-						</a>
-					</div>
-				<div class="post-content">
+<nav class="bp-navs business-subnavs no-ajax business-subnav business-subnav-plain" id="subnav" role="navigation" aria-label="<?php esc_html_e( 'Business submenu', 'bp-business-profile' ); ?>">
+	<ul class="subnav">		
+			<li class="bp-business-tab bp-business-navigation-link bp-business-navigation-link--publish <?php echo 'publish' === $endpoint ? 'current selected' : ''; ?>">
+				<a href="<?php echo esc_url( $beam_link . '?tab=publish' ); ?>" id="beam-publish"><?php esc_html_e( 'Published', 'bp-business-profile' ); ?>
+					<?php if ( $total_posts > 0 ) : ?>
+						<span class="post-count">(<?php echo esc_html( $total_posts ); ?>)</span>
+					<?php endif; ?>
+				</a>
+			</li>		
+		
+			<li class="bp-business-tab bp-business-navigation-link bp-business-navigation-link--pending <?php echo 'pending' === $endpoint ? 'current selected' : ''; ?>">
+				<a href="<?php echo esc_url( $beam_link . '?tab=pending' ); ?>" id="beam-pending"><?php esc_html_e( 'Pending', 'bp-business-profile' ); ?>
+					<?php if ( $total_posts > 0 ) : ?>
+						<span class="post-count">(<?php echo esc_html( $total_posts ); ?>)</span>
+					<?php endif; ?>
+				</a>
+			</li>		
+		
+			<li class="bp-business-tab bp-business-navigation-link bp-business-navigation-link--draft <?php echo 'draft' === $endpoint ? 'current selected' : ''; ?>">
+				<a href="<?php echo esc_url( $beam_link . '?tab=draft' ); ?>" id="beam-draft"><?php esc_html_e( 'Draft', 'bp-business-profile' ); ?>
+					<?php if ( $total_posts > 0 ) : ?>
+						<span class="post-count">(<?php echo esc_html( $total_posts ); ?>)</span>
+					<?php endif; ?>
+				</a>
+			</li>		
+		
+		
+			<li class="bp-business-tab bp-business-navigation-link bp-business-navigation-link--documents <?php echo 'new-post' === $endpoint ? 'current selected' : ''; ?>">
+				<a href="<?php echo esc_url( $link ); ?>" id="beam-new-post"><?php esc_html_e( 'New Post', 'bp-business-profile' ); ?></a>
+			</li>	
 
-					<h3 class="entry-title">
-						<a href="<?php the_permalink(); ?>" rel="bookmark" title="<?php esc_html_e( 'Permanent Link to', 'buddypress-member-blog-pro' ); ?> <?php the_title_attribute(); ?>"><?php the_title(); ?></a>
-						<?php
-						if ( $user_id == $post->post_author ) :
-							?>
-							<span class="bp-edit-post"><?php echo wp_kses_post( bp_member_blog_get_edit_link() ); ?></span>
-						<?php endif; ?>
-					</h3>
-					<div class="post-date">
-						<?php
-						/* translators: %s: Category List*/
-						printf( esc_html__( '%1$s', 'buddypress-member-blog-pro' ), get_the_date(), wp_kses_post( get_the_category_list( ', ' ) ) );
-						?>
-					</div>
-					<div class="entry-content">
-						<?php the_excerpt( __( 'Read the rest of this entry &rarr;', 'buddypress-member-blog-pro' ) ); ?>
-						<?php
-						wp_link_pages(
-							array(
-								'before'         => '<div class="page-link"><p>' . __( 'Pages: ', 'buddypress-member-blog-pro' ),
-								'after'          => '</p></div>',
-								'next_or_number' => 'number',
-							)
-						);
-						?>
-					</div>
-					<?php
-					if ( $user_id == $post->post_author ) :
-						$bpmb_pro_groups_instance = Buddypress_Member_Blog_Pro_Groups::instance();
-						$bpmb_pro_groups_instance->bp_member_blog_pro_action_links( $post );
-					endif;
-					?>
-				</div>
-			</div>
-		<?php } endwhile; ?>
-			<div class="navigation pagination">
-				<?php bp_member_blog_paginate(); ?>
-			</div>
-		<?php
-		else :
-			if ( is_user_logged_in() ) {
-				$bp_template_option = bp_get_option( '_bp_theme_package_id' );
-				$current_group_name = $bp->groups->current_group->name;
-				if ( 'nouveau' === $bp_template_option ) {
-					echo '<div id="message" class="info bp-feedback bp-messages bp-template-notice">';
-					echo '<span class="bp-icon" aria-hidden="true"></span>';
-				} else {
-					echo '<div id="message" class="info">';
-				}
-				/* translators: %1$s is replaced with login user full name, %2$1s is replaced with Current Group Name */
-				echo '<p>' . sprintf( esc_html__( '%1$s has not posted anything in the group %2$1s.', 'buddypress-member-blog-pro' ), esc_html( $user_full_name ), esc_html( $current_group_name ) ) . '</p>';
-				echo '</div>';
-			} else {
-				$current_group_name = $bp->groups->current_group->name;
-				$bp_template_option = bp_get_option( '_bp_theme_package_id' );
-				if ( 'nouveau' === $bp_template_option ) {
-					echo '<div id="message" class="info bp-feedback bp-messages bp-template-notice">';
-					echo '<span class="bp-icon" aria-hidden="true"></span>';
-				} else {
-					echo '<div id="message" class="info">';
-				}
-				/* translators: %s is replaced with Current Group Name */
-				echo '<p>' . sprintf( esc_html__( "%s doesn't have any posts.", 'buddypress-member-blog-pro' ), esc_html( $current_group_name ) ) . '</p>';
-				echo '</div>';
-			}
-			?>
-	<?php endif; ?>
+		<?php do_action( 'bp_business_profile_blog_subnav' ); ?>
+	</ul>
+</nav>
+	
+	<!-- End Add blog related tab in beam -->
+
+<div class="bp-member-blog-container bpmb-blog-posts">
+	<?php
+		switch ( $endpoint ) {
+			case 'publish':					
+				include 'beam-publish.php';
+				break;
+			case 'pending':
+				include 'beam-pending.php';
+				break;
+			case 'draft':
+				include 'beam-draft.php';
+				break;
+			default:
+				include 'beam-publish.php';
+				break;
+		}
+	?>
 	<?php
 	wp_reset_postdata();
 	wp_reset_query();
