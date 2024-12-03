@@ -144,6 +144,9 @@ class Sayansi_Core_Public {
 		bp_core_remove_subnav_item( bp_get_media_slug(), 'my-media' );
 		bp_core_remove_nav_item( bp_get_video_slug() );
 		bp_core_remove_subnav_item( bp_get_media_slug(), 'my-video' );
+		bp_core_remove_nav_item( bp_get_invites_slug() );
+		bp_core_remove_subnav_item( bp_get_invites_slug(), 'invites' );
+		bp_core_remove_subnav_item( bp_get_invites_slug(), 'sent-invites' );
 
 		// bp_core_new_nav_item(
 		// 	array(
@@ -244,8 +247,28 @@ class Sayansi_Core_Public {
 		}
 
 		/**
-		 * Member Profile Profile Tab Customizations Stop
+		 * Add email invites subnav under connection tab.
 		 */
+		bp_core_new_subnav_item(
+			array(
+				'name'            => __( 'Send Invites', 'buddyboss' ),
+				'slug'            => 'send-invites',
+				'parent_url'      => trailingslashit( $user_domain . bp_get_friends_slug() ),
+				'parent_slug'     => bp_get_friends_slug(),
+				'screen_function' => array( $this, 'bprm_send_invites_screen' ),
+				'position'        => 10,                        
+			)
+		);
+		bp_core_new_subnav_item(
+			array(
+				'name'            => __( 'Sent Invites', 'buddyboss' ),
+				'slug'            => 'sent-invites',
+				'parent_url'      => trailingslashit( $user_domain . bp_get_friends_slug() ),
+				'parent_slug'     => bp_get_friends_slug(),
+				'screen_function' => array( $this, 'bprm_sent_invites_screen' ),
+				'position'        => 20
+			)
+		);
 
 	}
 
@@ -267,6 +290,23 @@ class Sayansi_Core_Public {
 	public function wbcom_member_profile_documents_tab_screen() {
 		add_action( 'bp_template_content', array( $this, 'wbcom_member_profile_documents_tab_screen_content' ) );
 		bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
+	}
+
+	public function bprm_send_invites_screen() {
+		add_action( 'bp_template_content', array( $this,'wbcom_bprm_send_invites_screen' ) );
+		bp_core_load_template( apply_filters( 'bp_invites_screen_send_invite', 'members/single/plugins' ) );
+	}
+	public function bprm_sent_invites_screen() {
+		add_action( 'bp_template_content', array( $this, 'wbcom_bprm_sent_invites_screen' ) );
+		bp_core_load_template( apply_filters( 'bp_invites_screen_send_invite', 'members/single/plugins' ) );
+	}
+
+	public function wbcom_bprm_send_invites_screen(){
+		bp_get_template_part( 'members/single/invites' );		
+	}
+
+	public function wbcom_bprm_sent_invites_screen(){	
+		bp_get_template_part( 'members/single/invites' );
 	}
 
 	public function wbcom_member_profile_home_tab_screen_content() {
@@ -642,10 +682,174 @@ class Sayansi_Core_Public {
 
 
 	public function wbcom_bp_business_profile_single_menu_items( $items, $endpoints ) {
-		$items['beam-line-activity'] = esc_html( 'Activity' );
-		$items['beam-line-blogs'] = esc_html( 'Blogs' );
+		$items = array(
+			'home'               => esc_html__( 'Home', 'bp-business-profile' ),
+			'about'              => esc_html__( 'About', 'bp-business-profile' ),
+			'follower'           => esc_html__( 'Followers', 'bp-business-profile' ),
+			'beam-line-activity' => esc_html__( 'Activity', 'bp-business-profile' ),
+			'beam-line-blogs'    => esc_html__( 'Partner Blog', 'bp-business-profile' ),
+			'medias'             => esc_html__( 'Media', 'bp-business-profile' ),
+			'business-reviews'   => esc_html__( 'Reviews', 'bp-business-profile' ),			
+			'inbox'             => esc_html__( 'Inbox', 'bp-business-profile' ),
+			'business-settings' => esc_html__( 'Settings', 'bp-business-profile' ),
+		);
 
 		return $items;
+	}
+
+	public function wbcom_bp_add_group_subnav_tab() {
+		if ( ! bp_is_group() ) {
+				return;
+			}
+		bp_core_new_subnav_item( array(
+		'name'                => _x( 'Group Description', 'Group Description', 'sayansi-core' ),
+		'slug'            => 'new',
+		'parent_slug'     => bp_get_current_group_slug(),
+		'parent_url'      => bp_get_group_permalink( groups_get_current_group() ),
+		'screen_function' => array( $this, 'wbcom_my_home_show_screen' ),
+		'position'        => 1,
+		), 'groups' );
+	}
+
+	public function wbcom_my_home_show_screen(){
+		add_action( 'bp_template_content', array( $this,'wbcom_my_home_show_screen_display' ) );
+		bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
+	}
+
+	public function wbcom_my_home_show_screen_display(){ 
+		$group_id = bp_get_current_group_id(); 		
+		?>
+		<div class="profile-home-header">
+			<?php $get_feature_img = groups_get_groupmeta( $group_id, 'group_feature_image' );
+			if( $get_feature_img ){
+			?>
+			<img src="<?php echo esc_url( $get_feature_img ); ?>" alt="logo" width="500" height="600">
+			<?php } else{
+				echo '<p>No Feature Image Found</p>';
+			}?>
+		</div>
+		<div class="profile-home-column">
+			<div class="profile-home-columns">
+				<a href="<?php echo esc_url( groups_get_groupmeta( $group_id, 'group_column_one_link' ) ); ?>">
+					<div class="profile-home-columns-img">
+						<?php
+						$group_column_one_logo = groups_get_groupmeta( $group_id, 'group_column_one_logo' );
+						if( $group_column_one_logo ){
+						?>
+						<img src="<?php echo esc_url( $group_column_one_logo ); ?>" alt="logo" width="500" height="600"> 
+						<?php } else{ 
+							echo '<p>No Column one Logo Found</p>';
+						}?>
+					</div>
+					<?php
+					$group_column_one_title = groups_get_groupmeta( $group_id, 'group_column_one_title' );
+					if( $group_column_one_title ){					
+					?>
+					<h3 class="profile-home-columns-title"><?php echo groups_get_groupmeta( $group_id, 'group_column_one_title' ); ?></h3>
+					<?php } else{
+						echo '<p>No Column one Tiltle Found</p>';
+					}
+					$group_column_one_desc = groups_get_groupmeta( $group_id, 'group_column_one_desc' );
+					if($group_column_one_desc){
+					?>
+					<div class="profile-home-columns-content"><?php echo $group_column_one_desc; ?></div>
+					<?php } else{
+						echo '<p>No Column one Content Found</p>';
+					}?>
+				</a>
+			</div>
+
+			<div class="profile-home-columns">
+				<a href="<?php echo esc_url( groups_get_groupmeta( $group_id, 'group_column_two_link' ) ); ?>">
+					<div class="profile-home-columns-img">
+						<?php
+						$group_column_two_logo = groups_get_groupmeta( $group_id, 'group_column_two_logo' );
+						if( $group_column_two_logo ){
+						?>
+						<img src="<?php echo esc_url( $group_column_two_logo ); ?>" alt="logo" width="500" height="600"> 
+						<?php } else{ 
+							echo '<p>No Column two Logo Found</p>';
+						}?>
+					</div>
+					<?php
+					$group_column_two_title = groups_get_groupmeta( $group_id, 'group_column_two_title' );
+					if( $group_column_two_title ){					
+					?>
+					<h3 class="profile-home-columns-title"><?php echo groups_get_groupmeta( $group_id, 'group_column_two_title' ); ?></h3>
+					<?php } else{
+						echo '<p>No Column two Tiltle Found</p>';
+					}
+					$group_column_two_desc = groups_get_groupmeta( $group_id, 'group_column_two_desc' );
+					if($group_column_two_desc){
+					?>
+					<div class="profile-home-columns-content"><?php echo $group_column_two_desc; ?></div>
+					<?php } else{
+						echo '<p>No Column two Content Found</p>';
+					}?>
+				</a>
+			</div>
+
+			<div class="profile-home-columns">
+				<a href="<?php echo esc_url( groups_get_groupmeta( $group_id, 'group_column_three_link' ) ); ?>">
+					<div class="profile-home-columns-img">
+						<?php
+						$group_column_three_logo = groups_get_groupmeta( $group_id, 'group_column_three_logo' );
+						if( $group_column_three_logo ){
+						?>
+						<img src="<?php echo esc_url( $group_column_three_logo ); ?>" alt="logo" width="500" height="600"> 
+						<?php } else{ 
+							echo '<p>No Column three Logo Found</p>';
+						}?>
+					</div>
+					<?php
+					$group_column_three_title = groups_get_groupmeta( $group_id, 'group_column_three_title' );
+					if( $group_column_three_title ){					
+					?>
+					<h3 class="profile-home-columns-title"><?php echo groups_get_groupmeta( $group_id, 'group_column_three_title' ); ?></h3>
+					<?php } else{
+						echo '<p>No Column three Tiltle Found</p>';
+					}
+					$group_column_three_desc = groups_get_groupmeta( $group_id, 'group_column_three_desc' );
+					if($group_column_three_desc){
+					?>
+					<div class="profile-home-columns-content"><?php echo $group_column_three_desc; ?></div>
+					<?php } else{
+						echo '<p>No Column three Content Found</p>';
+					}?>
+				</a>
+			</div>
+
+			<div class="profile-home-columns">
+				<a href="<?php echo esc_url( groups_get_groupmeta( $group_id, 'group_column_four_link' ) ); ?>">
+					<div class="profile-home-columns-img">
+						<?php
+						$group_column_four_logo = groups_get_groupmeta( $group_id, 'group_column_four_logo' );
+						if( $group_column_four_logo ){
+						?>
+						<img src="<?php echo esc_url( $group_column_four_logo ); ?>" alt="logo" width="500" height="600"> 
+						<?php } else{ 
+							echo '<p>No Column four Logo Found</p>';
+						}?>
+					</div>
+					<?php
+					$group_column_four_title = groups_get_groupmeta( $group_id, 'group_column_four_title' );
+					if( $group_column_four_title ){					
+					?>
+					<h3 class="profile-home-columns-title"><?php echo groups_get_groupmeta( $group_id, 'group_column_four_title' ); ?></h3>
+					<?php } else{
+						echo '<p>No Column four Tiltle Found</p>';
+					}
+					$group_column_four_desc = groups_get_groupmeta( $group_id, 'group_column_four_desc' );
+					if($group_column_four_desc){
+					?>
+					<div class="profile-home-columns-content"><?php echo $group_column_four_desc; ?></div>
+					<?php } else{
+						echo '<p>No Column four Content Found</p>';
+					}?>
+				</a>
+			</div>
+		</div>
+		<?php
 	}
 	
 

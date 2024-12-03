@@ -183,6 +183,7 @@ class Sayansi_Core {
 		$this->loader->add_filter( 'bprm_save_resume_resdirect_url', $plugin_public, 'wbcom_bprm_resume_redirect_url' );
 		$this->loader->add_filter( 'bp_business_profile_single_menu_items', $plugin_public, 'wbcom_bp_business_profile_single_menu_items', 10, 2 );
 		// $this->loader->add_filter( 'bb_user_can_create_document', $plugin_public, 'wbcom_bb_user_can_create_document' );
+		$this->loader->add_action( 'bp_actions', $plugin_public, 'wbcom_bp_add_group_subnav_tab' );
 
 	}
 

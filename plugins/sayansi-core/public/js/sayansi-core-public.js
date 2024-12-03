@@ -67,7 +67,7 @@
 			
 			//Group Description tab
 			if ($('#description-groups-li .bb-single-nav-item-point').length > 0) {
-				$('#description-groups-li .bb-single-nav-item-point').text('Group Description');
+				$('#description-groups-li .bb-single-nav-item-point').hide();
 			}
 			//Group Activity tab
 			if ($('#activity-groups-li .bb-single-nav-item-point').length > 0) {

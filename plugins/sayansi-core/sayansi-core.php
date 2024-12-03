@@ -17,7 +17,7 @@
  * Plugin URI:        https://https://wbcomdesigns.com/
  * Description:       The core plugin for all customizations
  * Version:           1.0.0
- * Author:            WBCOM Designs
+ * Author:            Wbcom Designs
  * Author URI:        https://https://wbcomdesigns.com//
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
@@ -88,5 +88,95 @@ function sensei_core_document_tab_labels() {
   }
 }
 add_action( 'bp_setup_nav', 'sensei_core_document_tab_labels', 999 );
+
+add_action( 'groups_group_details_edited', 'sayansi_group_detail' );
+function sayansi_group_detail( $group_id ){	
+	if( isset( $_FILES['group_feature_image'] )  ){
+		 $file = $_FILES['group_feature_image'];
+		  require_once ABSPATH . 'wp-admin/includes/file.php';
+		    $upload = wp_handle_upload($file, ['test_form' => false]);
+			 if (isset($upload['error'])) {
+            wp_die('Upload error: ' . $upload['error']);
+        }
+		$file_url = $upload['url'];
+		groups_update_groupmeta( $group_id, 'group_feature_image', $file_url );
+	}
+	if( isset( $_POST['group_column_one_title'] )  ){
+		groups_update_groupmeta( $group_id, 'group_column_one_title', $_POST['group_column_one_title'] );
+	}
+	if( isset( $_POST['group_column_one_desc'] )  ){
+		groups_update_groupmeta( $group_id, 'group_column_one_desc', $_POST['group_column_one_desc'] );
+	}
+	if( isset( $_POST['group_column_one_link'] )  ){
+		groups_update_groupmeta( $group_id, 'group_column_one_link', $_POST['group_column_one_link'] );
+	}
+	if( isset( $_FILES['group_column_one_logo'] )  ){
+		 $file = $_FILES['group_column_one_logo'];
+		  require_once ABSPATH . 'wp-admin/includes/file.php';
+		    $upload = wp_handle_upload($file, ['test_form' => false]);
+			 if (isset($upload['error'])) {
+            wp_die('Upload error: ' . $upload['error']);
+        }
+		$file_url = $upload['url'];
+		groups_update_groupmeta( $group_id, 'group_column_one_logo', $file_url);
+	}
+	if( isset( $_POST['group_column_two_title'] )  ){
+		groups_update_groupmeta( $group_id, 'group_column_two_title', $_POST['group_column_two_title'] );
+	}
+	if( isset( $_POST['group_column_two_desc'] )  ){
+		groups_update_groupmeta( $group_id, 'group_column_two_desc', $_POST['group_column_two_desc'] );
+	}
+	if( isset( $_POST['group_column_two_link'] )  ){
+		groups_update_groupmeta( $group_id, 'group_column_two_link', $_POST['group_column_two_link'] );
+	}
+	if( isset( $_FILES['group_column_two_logo'] )  ){
+		$file = $_FILES['group_column_two_logo'];
+		  require_once ABSPATH . 'wp-admin/includes/file.php';
+		    $upload = wp_handle_upload($file, ['test_form' => false]);
+			 if (isset($upload['error'])) {
+            wp_die('Upload error: ' . $upload['error']);
+        }
+		$file_url = $upload['url'];
+		groups_update_groupmeta( $group_id, 'group_column_two_logo', $file_url );
+	}
+	if( isset( $_POST['group_column_three_title'] )  ){
+		groups_update_groupmeta( $group_id, 'group_column_three_title', $_POST['group_column_three_title'] );
+	}
+	if( isset( $_POST['group_column_three_desc'] )  ){
+		groups_update_groupmeta( $group_id, 'group_column_three_desc', $_POST['group_column_three_desc'] );
+	}
+	if( isset( $_POST['group_column_three_link'] )  ){
+		groups_update_groupmeta( $group_id, 'group_column_three_link', $_POST['group_column_three_link'] );
+	}
+	if( isset( $_FILES['group_column_three_logo'] )  ){
+		$file = $_FILES['group_column_three_logo'];
+		  require_once ABSPATH . 'wp-admin/includes/file.php';
+		    $upload = wp_handle_upload($file, ['test_form' => false]);
+			 if (isset($upload['error'])) {
+            wp_die('Upload error: ' . $upload['error']);
+        }
+		$file_url = $upload['url'];
+		groups_update_groupmeta( $group_id, 'group_column_three_logo', $file_url );
+	}
+	if( isset( $_POST['group_column_four_title'] )  ){
+		groups_update_groupmeta( $group_id, 'group_column_four_title', $_POST['group_column_four_title'] );
+	}
+	if( isset( $_POST['group_column_four_desc'] )  ){
+		groups_update_groupmeta( $group_id, 'group_column_four_desc', $_POST['group_column_four_desc'] );
+	}
+	if( isset( $_POST['group_column_four_link'] )  ){
+		groups_update_groupmeta( $group_id, 'group_column_four_link', $_POST['group_column_four_link'] );
+	}
+	if( isset( $_FILES['group_column_four_logo'] )  ){
+		$file = $_FILES['group_column_four_logo'];
+		  require_once ABSPATH . 'wp-admin/includes/file.php';
+		    $upload = wp_handle_upload($file, ['test_form' => false]);
+			 if (isset($upload['error'])) {
+            wp_die('Upload error: ' . $upload['error']);
+        }
+		$file_url = $upload['url'];
+		groups_update_groupmeta( $group_id, 'group_column_four_logo', $file_url );
+	}
+}
 
 run_sayansi_core();

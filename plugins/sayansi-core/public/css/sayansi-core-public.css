@@ -120,3 +120,6 @@ body .bpht-hashtags-wrapper.bpht-hashtags-wrapper-cloud > div{
 	background: rgb(243 243 243 / 50%);
 }
 
+.bp-invites-container nav {
+    display: none;
+}
