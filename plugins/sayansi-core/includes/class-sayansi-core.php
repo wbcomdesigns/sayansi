@@ -176,14 +176,18 @@ class Sayansi_Core {
 		$this->loader->add_filter( 'bp_member_default_component', $plugin_public, 'wbcom_bp_member_default_component', );
 		$this->loader->add_action( 'bp_setup_nav', $plugin_public, 'wbcom_cutomize_member_profile_tabs', 99 );
 		$this->loader->add_action( 'wp_loaded', $plugin_public, 'wbcom_save_business_bibliography' );
-		$this->loader->add_action( 'bp_business_profile_after_save_business', $plugin_public, 'wbcom_save_business_excerpt', 10, 2 );
+		$this->loader->add_action( 'bp_business_profile_after_save_business', $plugin_public, 'wbcom_save_business_excerpt', 10 );
 		$this->loader->add_filter( 'bprm_save_resume_resdirect_url', $plugin_public, 'wbcom_bprm_save_resume_resdirect_url' );
 		$this->loader->add_action( 'business_profile_after_business_description', $plugin_public, 'wbcom_display_business_info_fields_in_contact');
 		$this->loader->add_action( 'save_post', $plugin_public, 'wbcom_save_business_info_fields', 99, 1);
 		$this->loader->add_filter( 'bprm_save_resume_resdirect_url', $plugin_public, 'wbcom_bprm_resume_redirect_url' );
 		$this->loader->add_filter( 'bp_business_profile_single_menu_items', $plugin_public, 'wbcom_bp_business_profile_single_menu_items', 10, 2 );
 		// $this->loader->add_filter( 'bb_user_can_create_document', $plugin_public, 'wbcom_bb_user_can_create_document' );
+		$this->loader->add_action( 'groups_group_details_edited', $plugin_public, 'wbcom_group_detail' );
 		$this->loader->add_action( 'bp_actions', $plugin_public, 'wbcom_bp_add_group_subnav_tab' );
+		$this->loader->add_action('business_profile_after_general_settings', $plugin_public, 'wbcom_display_business_info_fields_in_general');
+		$this->loader->add_action('save_post', $plugin_public, 'wbcom_save_business_general_info_fields');
+		$this->loader->add_filter( 'bp_after_has_document_parse_args', $plugin_public, 'wbcom_has_document_parse_args', 10, 1 );
 
 	}
 

@@ -33,7 +33,7 @@ if ( isset( $_REQUEST['args'] ) ) {
 ?>
 <li class="col col-md-<?php echo esc_attr( $column ); ?> col-sm-6 col-xs-12">
 	<div class="bp-business-list-wrap">
-		<a href="<?php echo esc_url( the_guid() ); ?>" class="bp-business-list-inner-wrap">
+		<a href="<?php echo esc_url( get_permalink() ); ?>" class="bp-business-list-inner-wrap">
 			<div class="bp-business-cover-img">
 
 				<?php if ( $_business_cover_image != '' ) : ?>
@@ -69,7 +69,7 @@ if ( isset( $_REQUEST['args'] ) ) {
 		<?php do_action( 'bp_business_before_content_wrap' ); ?>
 
 		<div class="bp-business-content-wrap">
-			<h3><a href="<?php the_guid(); ?>"><?php the_title(); ?></a></h3>
+			<h3><a href="<?php echo esc_url( get_permalink() ); ?>"><?php the_title(); ?></a></h3>
 			<?php if ( $average_rating > 0 ) : ?>
 				<div class="bp-business-rating">
 					<span class="bp-business-rating-wrap">

@@ -39,92 +39,6 @@ if ( bp_has_folders( array( 'include' => $folder_id ) ) ) :
 						<div class="bb-single-album-header text-center">
 							<h4 class="bb-title" id="bp-single-album-title"><?php bp_folder_title(); ?></h4>
 						</div> <!-- .bb-single-album-header -->
-						<div class="bb-media-actions">
-							<div id="search-documents-form" class="media-search-form" data-bp-search="document">
-								<form action="" method="get" class="bp-dir-search-form search-form-has-reset" id="group-document-search-form" autocomplete="off">
-									<button type="submit" id="group-document-search-submit" class="nouveau-search-submit search-form_submit" name="group_document_search_submit">
-										<span class="dashicons dashicons-search" aria-hidden="true"></span>
-										<span id="button-text" class="bp-screen-reader-text"><?php esc_html_e( 'Search', 'buddyboss' ); ?></span>
-									</button>
-									<label for="group-document-search" class="bp-screen-reader-text"><?php esc_html_e( 'Search Documents…', 'buddyboss' ); ?></label>
-									<input id="group-document-search" name="document_search" type="search" placeholder="<?php esc_html_e( 'Search Documents…', 'buddyboss' ); ?>">
-									<button type="reset" class="search-form_reset">
-										<span class="bb-icon-rf bb-icon-times" aria-hidden="true"></span>
-										<span class="bp-screen-reader-text"><?php esc_html_e( 'Reset', 'buddyboss' ); ?></span>
-									</button>
-								</form>
-							</div>
-							<?php
-							if ( is_user_logged_in() && ( bp_is_user_document() || bp_is_my_profile() || $bp_is_group || bp_is_document_directory() ) ) :
-
-								$active_extensions = bp_document_get_allowed_extension();
-								if ( ! empty( $active_extensions ) && is_user_logged_in() ) {
-									if ( bp_is_active( 'groups' ) && $bp_is_group ) {
-										$manage = groups_can_user_manage_document( bp_loggedin_user_id(), bp_get_current_group_id() );
-										if ( $manage ) {
-											?>
-											<a class="bp-add-document button small outline" id="bp-add-document" href="#" >
-												<i class="bb-icon-l bb-icon-upload"></i><?php esc_html_e( 'Upload Files', 'buddyboss' ); ?>
-											</a>
-											<!-- <a href="#" id="bb-create-folder-child" class="bb-create-folder-stacked button small outline">
-												<i class="bb-icon-l bb-icon-plus"></i><?php esc_html_e( 'Create Folder', 'buddyboss' ); ?>
-											</a> -->
-											<?php
-										}
-									} elseif ( ! $bp_is_group && $can_edit_btn && bb_user_can_create_document() ) {
-										?>
-										<a class="bp-add-document button small outline" id="bp-add-document" href="#" >
-											<i class="bb-icon-l bb-icon-upload"></i><?php esc_html_e( 'Upload Files', 'buddyboss' ); ?>
-										</a>
-										<!-- <a href="#" id="bb-create-folder-child" class="bb-create-folder-stacked button small outline">
-											<i class="bb-icon-l bb-icon-folder-alt"></i><?php esc_html_e( 'Create Folder', 'buddyboss' ); ?>
-										</a> -->
-										<?php
-									}
-								}
-								if ( $can_edit_btn || $can_delete_btn ) {
-									?>
-									<div class="media-folder_items">
-										<div class="media-folder_actions">
-											<a href="#" class="media-folder_action__anchor">
-												<i class="bb-icon-f bb-icon-ellipsis-v"></i>
-											</a>
-											<div class="media-folder_action__list bb_more_dropdown">
-												<?php bp_get_template_part( 'common/more-options-view' ); ?>
-												<ul>
-													<?php
-													if ( $can_edit_btn ) {
-														?>
-														<li>
-															<a id="bp-edit-folder-open" href="#">
-																<i class="bb-icon-l bb-icon-edit"></i><?php esc_html_e( 'Edit Folder', 'buddyboss' ); ?>
-															</a>
-														</li>
-														<?php
-													}
-													if ( $can_delete_btn ) {
-														?>
-														<li>
-															<a href="#" id="bb-delete-folder">
-																<i class="bb-icon-l bb-icon-trash"></i><?php esc_html_e( 'Delete Folder', 'buddyboss' ); ?>
-															</a>
-														</li>
-														<?php
-													}
-													?>
-												</ul>
-											</div>
-											<div class="bb_more_dropdown_overlay"></div>
-										</div>
-									</div> <!-- .media-folder_items -->
-									<?php
-								}
-								bp_get_template_part( 'document/document-uploader' );
-								bp_get_template_part( 'document/create-child-folder' );
-								bp_get_template_part( 'document/edit-child-folder' );
-							endif;
-							?>
-						</div> <!-- .bb-media-actions -->
 					</div>
 					<?php
 					if ( '' !== $bradcrumbs ) {
@@ -154,28 +68,18 @@ if ( bp_has_folders( array( 'include' => $folder_id ) ) ) :
 						?>
 						<nav class="bp-navs business-subnavs no-ajax business-subnav business-subnav-plain" id="subnav" role="navigation" aria-label="<?php esc_html_e( 'Business submenu', 'bp-business-profile' ); ?>">
 							<ul class="subnav">
-								<?php if ( function_exists( 'bp_is_group_media_support_enabled' ) && bp_is_group_media_support_enabled() ) : ?>
 									<li class="bp-business-tab bp-business-navigation-link bp-business-navigation-link--audio <?php echo 'audio' === $endpoint ? 'current selected' : ''; ?>">
 										<a href="<?php echo esc_url( $folder_link . '?tab=audio' ); ?>" id="edit-details"><?php esc_html_e( 'Audio', 'bp-business-profile' ); ?></a>
 									</li>
-								<?php endif; ?>
-								<?php if ( function_exists( 'bp_is_group_video_support_enabled' ) && bp_is_group_video_support_enabled() ) : ?>
 									<li class="bp-business-tab bp-business-navigation-link bp-business-navigation-link--videos <?php echo 'videos' === $endpoint ? 'current selected' : ''; ?>">
 										<a href="<?php echo esc_url( $folder_link . '?tab=videos' ); ?>" id="edit-details"><?php esc_html_e( 'Videos', 'bp-business-profile' ); ?></a>
 									</li>
-								<?php endif; ?>
-								<?php if ( function_exists( 'bp_is_group_media_support_enabled' ) && bp_is_group_media_support_enabled() ) : ?>
 									<li class="bp-business-tab bp-business-navigation-link bp-business-navigation-link--photos <?php echo 'photos' === $endpoint ? 'current selected' : ''; ?>">
 										<a href="<?php echo esc_url( $folder_link . '?tab=photos' ); ?>" id="edit-details"><?php esc_html_e( 'Photos', 'bp-business-profile' ); ?></a>
 									</li>
-								<?php endif; ?>
-								
-								<?php if ( function_exists( 'bp_is_group_document_support_enabled' ) && bp_is_group_document_support_enabled() ) : ?>
-									<li class="bp-business-tab bp-business-navigation-link bp-business-navigation-link--documents <?php echo 'documents' === $endpoint ? 'current selected' : ''; ?>">
-										<a href="<?php echo esc_url( $folder_link . '?tab=documents' ); ?>" id="edit-details"><?php esc_html_e( 'Documents', 'bp-business-profile' ); ?></a>
+									<li class="bp-business-tab bp-business-navigation-link bp-business-navigation-link--documents <?php echo 'document' === $endpoint ? 'current selected' : ''; ?>">
+										<a href="<?php echo esc_url( $folder_link . '?tab=document' ); ?>" id="edit-details"><?php esc_html_e( 'Documents', 'bp-business-profile' ); ?></a>
 									</li>
-								<?php endif; ?>
-
 								<?php do_action( 'bp_business_profile_media_subnav' ); ?>
 
 							</ul>
@@ -185,19 +89,19 @@ if ( bp_has_folders( array( 'include' => $folder_id ) ) ) :
 				<?php
 			switch ( $endpoint ) {
 				case 'audio':					
-					include 'audio.php';
+					include get_stylesheet_directory() . '/documents/audio.php';
 					break;
 				case 'videos':
-					include 'videos.php';
+					include get_stylesheet_directory() . '/documents/videos.php';
 					break;
 				case 'photos':
-					include 'photos.php';
+					include get_stylesheet_directory() . '/documents/photos.php';
 					break;				
-				case 'documents':
-					include 'documents.php';
+				case 'document':
+					include get_stylesheet_directory() . '/documents/documents.php';
 					break;
 				default:
-					include 'audio.php';
+					include get_stylesheet_directory() . '/documents/audio.php';
 					break;
 			}
 			?>

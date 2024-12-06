@@ -4,7 +4,10 @@ global $bP_business_settings;
 $business_link = get_post_type_archive_link( 'business' );
 
 if ( isset( $bP_business_settings['general_settings']['business_page'] ) && $bP_business_settings['general_settings']['business_page'] != '' ) {
-	$business_link = get_permalink( $bP_business_settings['general_settings']['business_page'] );
+	$business_link = get_permalink( $bP_business_settings['general_settings']['business_page'] ) . 'create-business-page/';
+}
+if ( isset( $bP_business_settings['general_settings']['create_business_page'] ) && $bP_business_settings['general_settings']['create_business_page'] != '' ) {
+	$business_link = get_permalink( $bP_business_settings['general_settings']['create_business_page'] );
 }
 $orderby          = ( isset( $bP_business_settings['general_settings']['orderby'] ) ) ? $bP_business_settings['general_settings']['orderby'] : 'date';
 $order            = ( $orderby === 'title' ) ? 'ASC' : 'DESC';
@@ -42,7 +45,7 @@ $is_map_api       = ! empty( $bP_business_settings['map_settings']['map_api_key'
 				</li>
 					<?php if ( bp_business_profile_can_create_business( wp_get_current_user()->ID ) ) : ?>
 					<li id="bp-business-profile-create-business-link" class="no-ajax business-create create-button">
-						<a href="<?php echo esc_url( $business_link ); ?>create-business-page/">
+						<a href="<?php echo esc_url( $business_link ); ?>">
 							<?php 
 							/* translators: %s is the name of business name */
 							printf( esc_html__( 'Create a %s', 'bp-business-profile' ), esc_html( $singular_label ) ); 

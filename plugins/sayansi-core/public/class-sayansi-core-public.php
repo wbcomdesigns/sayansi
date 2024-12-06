@@ -556,12 +556,12 @@ class Sayansi_Core_Public {
 	}
 
 
-	public function wbcom_save_business_excerpt( $business_id, $data ) {
+	public function wbcom_save_business_excerpt( $business_id ) {
 		if ( empty( $business_id ) ) {
 			return;
 		}
 
-		$beam_line_excerpt = isset( $data['beam_line_excerpt'] ) ? wp_kses_post( $data['beam_line_excerpt'] ) : '';
+		$beam_line_excerpt = isset( $_REQUEST['beam_line_excerpt'] ) ? wp_kses_post( $_REQUEST['beam_line_excerpt'] ) : '';
 
 		update_field( 'beam_line_excerpt', wpautop( $beam_line_excerpt ), $business_id );
 
@@ -695,6 +695,101 @@ class Sayansi_Core_Public {
 		);
 
 		return $items;
+	}
+	
+	/**
+	 * This is for display feature img, logo, title and description custom fields.
+	 *
+	 * @param  int $group_id
+	 * @return void
+	 */
+	public function wbcom_group_detail( $group_id ){	
+		if( isset( $_FILES['group_feature_image'] )  ){
+			$file = $_FILES['group_feature_image'];
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+				$upload = wp_handle_upload($file, ['test_form' => false]);
+				if (isset($upload['error'])) {
+				wp_die('Upload error: ' . $upload['error']);
+			}
+			$file_url = $upload['url'];
+			groups_update_groupmeta( $group_id, 'group_feature_image', $file_url );
+		}
+		if( isset( $_POST['group_column_one_title'] )  ){
+			groups_update_groupmeta( $group_id, 'group_column_one_title', $_POST['group_column_one_title'] );
+		}
+		if( isset( $_POST['group_column_one_desc'] )  ){
+			groups_update_groupmeta( $group_id, 'group_column_one_desc', $_POST['group_column_one_desc'] );
+		}
+		if( isset( $_POST['group_column_one_link'] )  ){
+			groups_update_groupmeta( $group_id, 'group_column_one_link', $_POST['group_column_one_link'] );
+		}
+		if( isset( $_FILES['group_column_one_logo'] )  ){
+			$file = $_FILES['group_column_one_logo'];
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+				$upload = wp_handle_upload($file, ['test_form' => false]);
+				if (isset($upload['error'])) {
+				wp_die('Upload error: ' . $upload['error']);
+			}
+			$file_url = $upload['url'];
+			groups_update_groupmeta( $group_id, 'group_column_one_logo', $file_url);
+		}
+		if( isset( $_POST['group_column_two_title'] )  ){
+			groups_update_groupmeta( $group_id, 'group_column_two_title', $_POST['group_column_two_title'] );
+		}
+		if( isset( $_POST['group_column_two_desc'] )  ){
+			groups_update_groupmeta( $group_id, 'group_column_two_desc', $_POST['group_column_two_desc'] );
+		}
+		if( isset( $_POST['group_column_two_link'] )  ){
+			groups_update_groupmeta( $group_id, 'group_column_two_link', $_POST['group_column_two_link'] );
+		}
+		if( isset( $_FILES['group_column_two_logo'] )  ){
+			$file = $_FILES['group_column_two_logo'];
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+				$upload = wp_handle_upload($file, ['test_form' => false]);
+				if (isset($upload['error'])) {
+				wp_die('Upload error: ' . $upload['error']);
+			}
+			$file_url = $upload['url'];
+			groups_update_groupmeta( $group_id, 'group_column_two_logo', $file_url );
+		}
+		if( isset( $_POST['group_column_three_title'] )  ){
+			groups_update_groupmeta( $group_id, 'group_column_three_title', $_POST['group_column_three_title'] );
+		}
+		if( isset( $_POST['group_column_three_desc'] )  ){
+			groups_update_groupmeta( $group_id, 'group_column_three_desc', $_POST['group_column_three_desc'] );
+		}
+		if( isset( $_POST['group_column_three_link'] )  ){
+			groups_update_groupmeta( $group_id, 'group_column_three_link', $_POST['group_column_three_link'] );
+		}
+		if( isset( $_FILES['group_column_three_logo'] )  ){
+			$file = $_FILES['group_column_three_logo'];
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+				$upload = wp_handle_upload($file, ['test_form' => false]);
+				if (isset($upload['error'])) {
+				wp_die('Upload error: ' . $upload['error']);
+			}
+			$file_url = $upload['url'];
+			groups_update_groupmeta( $group_id, 'group_column_three_logo', $file_url );
+		}
+		if( isset( $_POST['group_column_four_title'] )  ){
+			groups_update_groupmeta( $group_id, 'group_column_four_title', $_POST['group_column_four_title'] );
+		}
+		if( isset( $_POST['group_column_four_desc'] )  ){
+			groups_update_groupmeta( $group_id, 'group_column_four_desc', $_POST['group_column_four_desc'] );
+		}
+		if( isset( $_POST['group_column_four_link'] )  ){
+			groups_update_groupmeta( $group_id, 'group_column_four_link', $_POST['group_column_four_link'] );
+		}
+		if( isset( $_FILES['group_column_four_logo'] )  ){
+			$file = $_FILES['group_column_four_logo'];
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+				$upload = wp_handle_upload($file, ['test_form' => false]);
+				if (isset($upload['error'])) {
+				wp_die('Upload error: ' . $upload['error']);
+			}
+			$file_url = $upload['url'];
+			groups_update_groupmeta( $group_id, 'group_column_four_logo', $file_url );
+		}
 	}
 
 	public function wbcom_bp_add_group_subnav_tab() {
@@ -850,6 +945,128 @@ class Sayansi_Core_Public {
 			</div>
 		</div>
 		<?php
+	}
+
+	// Display the fields dynamically
+	public function wbcom_display_business_info_fields_in_general() {		
+		$post_id = get_the_ID();
+		$fields = wbcom_get_business_info_fields();
+
+		echo '<form method="post" enctype="multipart/form-data">';
+		wp_nonce_field('wbcom_save_business_info', 'wbcom_business_info_nonce');
+
+		foreach ($fields as $field_key => $field) {
+			$value = get_post_meta($post_id, $field_key, true);
+
+			echo '<p>';
+			echo '<label for="' . esc_attr($field_key) . '">' . esc_html($field['label']) . ':</label><br>';
+
+			// Generate the field based on its type
+			switch ($field['type']) {
+				case 'textarea':
+					echo '<textarea name="' . esc_attr($field_key) . '" id="' . esc_attr($field_key) . '">' . esc_textarea($value) . '</textarea>';
+					break;
+				case 'text':                                   
+						echo '<input type="text" name="' . esc_attr($field_key) .'" value="' . esc_attr($value) . '"> ' .'<br>';               
+					break;
+				case 'file':
+				//   foreach ($field['options'] as $option_value => $option_label) {                    
+						echo '<input type="file" name="' . esc_attr($field_key) .'" value="' . esc_attr($value) . '"> ' . '<br>';
+						echo '<img src="' . esc_url( $value ) .'" alt="logo" width="500" height="600">';
+					// }
+					break;
+				default: // Default to text input
+					echo '<input type="' . esc_attr($field['type']) . '" name="' . esc_attr($field_key) . '" id="' . esc_attr($field_key) . '" value="' . esc_attr($value) . '">';
+					break;
+			}
+
+			echo '</p>';
+		}
+
+		echo '</form>';
+	}
+
+	public function wbcom_save_business_general_info_fields( $post_id ){
+		if (!isset($_POST['wbcom_business_info_nonce']) || !wp_verify_nonce($_POST['wbcom_business_info_nonce'], 'wbcom_save_business_info')) {
+			return;
+		}
+		$fields = wbcom_get_business_info_fields();   
+		foreach ($fields as $field_key => $field) {        
+			if (isset($_POST[$field_key])) {
+				$value = $_POST[$field_key];
+				update_post_meta($post_id, $field_key, $value);
+			}
+			if( isset( $_FILES[$field_key] )  ){
+				$file = $_FILES[$field_key];
+				require_once ABSPATH . 'wp-admin/includes/file.php';
+					$upload = wp_handle_upload($file, ['test_form' => false]);
+					if (isset($upload['error'])) {
+					wp_die('Upload error: ' . $upload['error']);
+				}
+				$file_url = $upload['url'];
+				update_post_meta($post_id, $field_key, $file_url);
+			}
+		}
+	}
+
+
+	/**
+	 * add filter to display the only docs on user and group : library->document
+	 *
+	 * @param  array $r to filter the documents.
+	 * @return array $r.
+	 */
+	public function wbcom_has_document_parse_args( $r ) {
+
+		if ( ! isset( $r['folder_id'] ) && empty( $r['folder_id'] ) ) {
+			return $r;
+		}
+
+		if ( bp_is_user() && 'folders' == bp_current_action() ) {
+
+			if ( strpos( $_SERVER['HTTP_REFERER'], 'tab=audio' ) ) {
+				$r['meta_query_document'] = array(
+					array(
+						'key'     => 'extension',
+						'value'   => '.mp3',
+						'compare' => '=',
+					),
+
+				);
+			} elseif ( strpos( $_SERVER['HTTP_REFERER'], 'tab=videos' ) ) {
+				$r['meta_query_document'] = array(
+					array(
+						'key'     => 'extension',
+						'value'   => '.mp4',
+						'compare' => '=',
+					),
+
+				);
+			} elseif ( strpos( $_SERVER['HTTP_REFERER'], 'tab=photos' ) ) {
+				$r['meta_query_document'] = array(
+					array(
+						'key'     => 'extension',
+						'value'   => '.jpg',
+						'compare' => '=',
+					),
+
+				);
+			} elseif ( strpos( $_SERVER['HTTP_REFERER'], 'tab=document' ) ) {
+				$r['meta_query_document'] = array(
+					array(
+						'key'     => 'extension',
+						'value'   => '.pdf',
+						'compare' => '=',
+					)
+				);
+			}
+		}	
+
+		echo "<pre>";
+		print_r($r);
+		echo "</pre>";
+
+		return $r;
 	}
 	
 

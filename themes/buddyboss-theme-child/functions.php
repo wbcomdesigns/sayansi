@@ -80,4 +80,10 @@ apply_filters('bp_business_profile_contact_info', function() {
 add_filter( 'bp_member_change_blog_label', function() {
     return 'My Blog';
 } );
-?>
+
+add_filter('register_business_post_type_slug_rewrite', function($slug, $type = '' ) {
+	if( $type == 'rewrite_slug' ) {
+		return '/';
+	} 
+	return '';
+}, 10 ,2);

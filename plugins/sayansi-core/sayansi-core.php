@@ -63,6 +63,10 @@ register_deactivation_hook( __FILE__, 'deactivate_sayansi_core' );
  * admin-specific hooks, and public-facing site hooks.
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-sayansi-core.php';
+/**
+ * The file responsible for defining function.
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/sayansi-core-functions.php';
 
 /**
  * Begins execution of the plugin.
@@ -89,94 +93,95 @@ function sensei_core_document_tab_labels() {
 }
 add_action( 'bp_setup_nav', 'sensei_core_document_tab_labels', 999 );
 
-add_action( 'groups_group_details_edited', 'sayansi_group_detail' );
-function sayansi_group_detail( $group_id ){	
-	if( isset( $_FILES['group_feature_image'] )  ){
-		 $file = $_FILES['group_feature_image'];
-		  require_once ABSPATH . 'wp-admin/includes/file.php';
-		    $upload = wp_handle_upload($file, ['test_form' => false]);
-			 if (isset($upload['error'])) {
-            wp_die('Upload error: ' . $upload['error']);
-        }
-		$file_url = $upload['url'];
-		groups_update_groupmeta( $group_id, 'group_feature_image', $file_url );
+//add function to get upload doc ids for group and user profile
+function wbcom_get_documents( $component_name, $doc_component, $id, $folder_id ){
+	global $wpdb;
+	if( 'members' == $component_name ){
+		if( 'document' == $doc_component ){
+			$results = $wpdb->get_results(
+				$wpdb->prepare(
+					"
+					SELECT d.id, d.user_id, d.attachment_id, d.blog_id, d.title, d.description, d.date_modified, d.status,d.activity_id, d.group_id,d.folder_id, dm.meta_value AS file_extension
+					FROM {$wpdb->prefix}bp_document d
+					JOIN {$wpdb->prefix}bp_document_meta dm ON d.id = dm.document_id
+					WHERE d.user_id = %d 
+					AND d.folder_id = %d
+					AND dm.meta_key = 'extension'        
+					AND (dm.meta_value LIKE '.doc' OR dm.meta_value LIKE '.docx' OR dm.meta_value LIKE '.pdf' OR dm.meta_value LIKE '.csv' OR dm.meta_value LIKE '.xls')
+					",
+					$id,
+					$folder_id
+				)
+			);
+			$ids = array();
+			foreach( $results as $result ){
+				$ids[] = $result->id;
+			}
+		} elseif( 'audio' == $doc_component ){	
+			$results = $wpdb->get_results(
+						$wpdb->prepare(
+							"
+							SELECT d.id, d.title, d.description, d.date_modified, d.status, dm.meta_value AS file_extension
+							FROM {$wpdb->prefix}bp_document d
+							JOIN {$wpdb->prefix}bp_document_meta dm ON d.id = dm.document_id
+							WHERE d.user_id = %d 
+							AND d.folder_id = %d
+							AND dm.meta_key = 'extension'
+							AND (dm.meta_value LIKE '.mp3')
+							",
+							$id,
+							$folder_id
+						)
+					);		
+					$ids = array();
+					foreach( $results as $result ){
+						$ids[] = $result->id;
+					}
+		}
+	} elseif( 'groups' == $component_name ){	
+		if( 'document' == $doc_component ){	
+			$results = $wpdb->get_results(
+				$wpdb->prepare(
+					"
+					SELECT d.id, d.user_id, d.attachment_id, d.blog_id, d.title, d.description, d.date_modified, d.status,d.activity_id, d.group_id,d.folder_id, dm.meta_value AS file_extension
+					FROM {$wpdb->prefix}bp_document d
+					JOIN {$wpdb->prefix}bp_document_meta dm ON d.id = dm.document_id
+					WHERE d.group_id = %d 
+					AND d.folder_id = %d
+					AND dm.meta_key = 'extension'        
+					AND (dm.meta_value LIKE '.doc')
+					",
+					$id,
+					$folder_id
+				)
+			);		
+			$ids = array();
+			foreach( $results as $result ){
+				$ids[] = $result->id;
+			}
+		} elseif( 'audio' == $doc_component ){			
+				$results = $wpdb->get_results(
+					$wpdb->prepare(
+						"
+						SELECT d.id, d.title, d.description, d.date_modified, d.status, dm.meta_value AS file_extension
+						FROM {$wpdb->prefix}bp_document d
+						JOIN {$wpdb->prefix}bp_document_meta dm ON d.id = dm.document_id
+						WHERE d.group_id = %d 
+						AND d.folder_id = %d
+						AND dm.meta_key = 'extension'
+						AND (dm.meta_value LIKE '.mp3')
+						",
+						$id,
+						$folder_id
+					)
+				);		
+				$ids = array();
+				foreach( $results as $result ){
+					$ids[] = $result->id;
+				}
+		}
 	}
-	if( isset( $_POST['group_column_one_title'] )  ){
-		groups_update_groupmeta( $group_id, 'group_column_one_title', $_POST['group_column_one_title'] );
-	}
-	if( isset( $_POST['group_column_one_desc'] )  ){
-		groups_update_groupmeta( $group_id, 'group_column_one_desc', $_POST['group_column_one_desc'] );
-	}
-	if( isset( $_POST['group_column_one_link'] )  ){
-		groups_update_groupmeta( $group_id, 'group_column_one_link', $_POST['group_column_one_link'] );
-	}
-	if( isset( $_FILES['group_column_one_logo'] )  ){
-		 $file = $_FILES['group_column_one_logo'];
-		  require_once ABSPATH . 'wp-admin/includes/file.php';
-		    $upload = wp_handle_upload($file, ['test_form' => false]);
-			 if (isset($upload['error'])) {
-            wp_die('Upload error: ' . $upload['error']);
-        }
-		$file_url = $upload['url'];
-		groups_update_groupmeta( $group_id, 'group_column_one_logo', $file_url);
-	}
-	if( isset( $_POST['group_column_two_title'] )  ){
-		groups_update_groupmeta( $group_id, 'group_column_two_title', $_POST['group_column_two_title'] );
-	}
-	if( isset( $_POST['group_column_two_desc'] )  ){
-		groups_update_groupmeta( $group_id, 'group_column_two_desc', $_POST['group_column_two_desc'] );
-	}
-	if( isset( $_POST['group_column_two_link'] )  ){
-		groups_update_groupmeta( $group_id, 'group_column_two_link', $_POST['group_column_two_link'] );
-	}
-	if( isset( $_FILES['group_column_two_logo'] )  ){
-		$file = $_FILES['group_column_two_logo'];
-		  require_once ABSPATH . 'wp-admin/includes/file.php';
-		    $upload = wp_handle_upload($file, ['test_form' => false]);
-			 if (isset($upload['error'])) {
-            wp_die('Upload error: ' . $upload['error']);
-        }
-		$file_url = $upload['url'];
-		groups_update_groupmeta( $group_id, 'group_column_two_logo', $file_url );
-	}
-	if( isset( $_POST['group_column_three_title'] )  ){
-		groups_update_groupmeta( $group_id, 'group_column_three_title', $_POST['group_column_three_title'] );
-	}
-	if( isset( $_POST['group_column_three_desc'] )  ){
-		groups_update_groupmeta( $group_id, 'group_column_three_desc', $_POST['group_column_three_desc'] );
-	}
-	if( isset( $_POST['group_column_three_link'] )  ){
-		groups_update_groupmeta( $group_id, 'group_column_three_link', $_POST['group_column_three_link'] );
-	}
-	if( isset( $_FILES['group_column_three_logo'] )  ){
-		$file = $_FILES['group_column_three_logo'];
-		  require_once ABSPATH . 'wp-admin/includes/file.php';
-		    $upload = wp_handle_upload($file, ['test_form' => false]);
-			 if (isset($upload['error'])) {
-            wp_die('Upload error: ' . $upload['error']);
-        }
-		$file_url = $upload['url'];
-		groups_update_groupmeta( $group_id, 'group_column_three_logo', $file_url );
-	}
-	if( isset( $_POST['group_column_four_title'] )  ){
-		groups_update_groupmeta( $group_id, 'group_column_four_title', $_POST['group_column_four_title'] );
-	}
-	if( isset( $_POST['group_column_four_desc'] )  ){
-		groups_update_groupmeta( $group_id, 'group_column_four_desc', $_POST['group_column_four_desc'] );
-	}
-	if( isset( $_POST['group_column_four_link'] )  ){
-		groups_update_groupmeta( $group_id, 'group_column_four_link', $_POST['group_column_four_link'] );
-	}
-	if( isset( $_FILES['group_column_four_logo'] )  ){
-		$file = $_FILES['group_column_four_logo'];
-		  require_once ABSPATH . 'wp-admin/includes/file.php';
-		    $upload = wp_handle_upload($file, ['test_form' => false]);
-			 if (isset($upload['error'])) {
-            wp_die('Upload error: ' . $upload['error']);
-        }
-		$file_url = $upload['url'];
-		groups_update_groupmeta( $group_id, 'group_column_four_logo', $file_url );
-	}
+	return $ids;
 }
 
 run_sayansi_core();
