@@ -174,7 +174,7 @@ class Sayansi_Core {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts', 999 );
 
 		$this->loader->add_filter( 'bp_member_default_component', $plugin_public, 'wbcom_bp_member_default_component', );
-		$this->loader->add_action( 'bp_setup_nav', $plugin_public, 'wbcom_cutomize_member_profile_tabs', 99 );
+		$this->loader->add_action( 'wp', $plugin_public, 'wbcom_cutomize_member_profile_tabs', 99 );
 		$this->loader->add_action( 'wp_loaded', $plugin_public, 'wbcom_save_business_bibliography' );
 		$this->loader->add_action( 'bp_business_profile_after_save_business', $plugin_public, 'wbcom_save_business_excerpt', 10 );
 		$this->loader->add_filter( 'bprm_save_resume_resdirect_url', $plugin_public, 'wbcom_bprm_save_resume_resdirect_url' );
@@ -188,7 +188,11 @@ class Sayansi_Core {
 		$this->loader->add_action('business_profile_after_general_settings', $plugin_public, 'wbcom_display_business_info_fields_in_general');
 		$this->loader->add_action('save_post', $plugin_public, 'wbcom_save_business_general_info_fields');
 		$this->loader->add_filter( 'bp_after_has_document_parse_args', $plugin_public, 'wbcom_has_document_parse_args', 10, 1 );
-
+		$this->loader->add_action('wp_ajax_load_forum_discussion', $plugin_public, 'wbcom_load_forum_discussion');
+		$this->loader->add_action('get_template_part_form', $plugin_public, 'wbcom_add_back_btn_on_create_forum_page');
+		$this->loader->add_action('bp_actions', $plugin_public, 'wbcom_bp_remove_mention_fvrt_groups_sub_tabs_profile');
+		$this->loader->add_action( 'bp_setup_nav', $plugin_public, 'wbcom_reorder_activity_subnav_tab', 100 );
+		$this->loader->add_filter( 'bcircles_parent_component_slug', $plugin_public, 'wbcom_change_connections_tab_slug' );		
 	}
 
 	/**

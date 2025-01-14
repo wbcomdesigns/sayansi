@@ -123,3 +123,11 @@ body .bpht-hashtags-wrapper.bpht-hashtags-wrapper-cloud > div{
 .bp-invites-container nav {
     display: none;
 }
+
+/* hide mention, friends, favourites, hashtag tab from new feed page */
+body.directory #activity-mentions, 
+body.directory #activity-friends,
+body.directory #activity-favorites,
+body.directory #activity-hashtag{
+    display: none;
+}

@@ -99,6 +99,47 @@
 			}
 		});
 		//End change group document tab name to My libraray
+
+		// add code load template on all forum menu corresponding to forum and discussion tab
+		jQuery(document).ready(function ($) {
+			jQuery('.forum-subnav li a').on('click', function (e) {
+				e.preventDefault(); // Prevent the default anchor click behavior
+				// Remove 'selected' class from all tabs
+				$('.forum-subnav li a').removeClass('selected');
+
+				// Add 'selected' class to the clicked tab
+				$(this).addClass('selected');
+				var check_tab = $(this).data('id');
+				if (check_tab == 'sayansi-create-forum') {
+					var createForumUrl = $(this).attr('href'); // Get the URL from the href attribute
+					window.location.href = createForumUrl; // Redirect to the "Create a Forum" page
+					return; // Exit the function
+				}
+				$.ajax({
+					url: sayansi_ajax_object.ajax_url,
+					type: "post",
+					data: {
+						'action': 'load_forum_discussion',
+						'check_tab': check_tab,
+						'forum_desc': sayansi_ajax_object.forum_desc,
+						'nonce': sayansi_ajax_object.ajax_nonce
+					},
+					success: function (data) {
+						// Check if the response is successful
+						if (data.success) {
+							// Replace the content in the response container
+							$('#response-container').html(data.data); // Replace the content
+						} else {
+							console.error('Error:', data.data); // Log any error message returned from the server
+						}
+					},
+					error: function (errorThrown) {
+						console.log('AJAX error:', errorThrown);
+					}
+				});
+			});
+		});
+		// End add code load template on all forum menu corresponding to forum and discussion tab
 		
 	});
 })( jQuery );

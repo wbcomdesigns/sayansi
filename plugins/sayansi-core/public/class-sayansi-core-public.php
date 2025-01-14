@@ -98,7 +98,20 @@ class Sayansi_Core_Public {
 		 */
 		wp_enqueue_script( $this->plugin_name . '-chosen-script', plugin_dir_url( __FILE__ ) . 'js/vendor/chosen/chosen.jquery.min.js', array( 'jquery' ), time(), true );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sayansi-core-public.js', array( 'jquery' ), time(), true );
-
+		if( function_exists( 'bbp_get_forum_post_type' ) && 'forum' == bbp_get_forum_post_type() ){	
+			$forums_page = get_post( get_the_ID() );
+			$forum_desc = $forums_page->post_content;
+		}
+		
+		wp_localize_script(
+			$this->plugin_name,
+			'sayansi_ajax_object',
+			array(
+				'ajax_url'   => admin_url( 'admin-ajax.php' ),
+				'ajax_nonce' => wp_create_nonce( 'sayansi_ajax_security' ),
+				'forum_desc' => $forum_desc,				
+			)
+		);
 	}
 
 
@@ -147,6 +160,38 @@ class Sayansi_Core_Public {
 		bp_core_remove_nav_item( bp_get_invites_slug() );
 		bp_core_remove_subnav_item( bp_get_invites_slug(), 'invites' );
 		bp_core_remove_subnav_item( bp_get_invites_slug(), 'sent-invites' );
+
+		//Add category wise tab in user profile under partner tab
+		bp_core_remove_subnav_item( bp_business_profile_get_business_slug(), 'partner' );
+		if ( function_exists( 'buddypress' ) && isset( buddypress()->buddyboss ) ) {
+			$parent_url = trailingslashit( bp_loggedin_user_domain() . 'partner');
+		} else {
+			$parent_url = trailingslashit( bp_loggedin_user_domain() );
+		}
+		$taxonomy_terms = get_terms( array(
+			'taxonomy'   => 'business-category',
+			'hide_empty' => false,
+			'parent'     => 0,
+		) );
+		foreach ($taxonomy_terms as $index => $term) {									
+			// Determine the slug based on the index
+			if ($index == 0) {				
+				$slug = bp_business_profile_get_business_slug(); // First term slug
+			} else {
+				$slug = $term->slug; // Other terms slug
+			}
+			bp_core_new_subnav_item(
+				array(
+					'name'            => $term->name,
+					'slug'            => $slug,
+					'parent_url'      => $parent_url,
+					'parent_slug'     => bp_business_profile_get_business_slug(),
+					'screen_function' => array($this, 'bprm_display_category_partners'),
+					'position'        => 15
+				)
+			);			
+		}
+		//End add category wise tab in user profile under partner tab
 
 		// bp_core_new_nav_item(
 		// 	array(
@@ -270,6 +315,15 @@ class Sayansi_Core_Public {
 			)
 		);
 
+	}
+
+	public function bprm_display_category_partners(){
+		add_action( 'bp_template_content', array( $this, 'wbcom_bprm_display_category_partners' ) );
+		bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
+	}
+
+	public function wbcom_bprm_display_category_partners(){
+		include 'sayansi-display-business-user-profile.php';		
 	}
 
 	public function wbcom_member_profile_home_tab_screen() {
@@ -683,7 +737,7 @@ class Sayansi_Core_Public {
 
 	public function wbcom_bp_business_profile_single_menu_items( $items, $endpoints ) {
 		$items = array(
-			'home'               => esc_html__( 'Home', 'bp-business-profile' ),
+			'home'               => esc_html__( 'My Home Page', 'bp-business-profile' ),
 			'about'              => esc_html__( 'About', 'bp-business-profile' ),
 			'follower'           => esc_html__( 'Followers', 'bp-business-profile' ),
 			'beam-line-activity' => esc_html__( 'Activity', 'bp-business-profile' ),
@@ -693,7 +747,25 @@ class Sayansi_Core_Public {
 			'inbox'             => esc_html__( 'Inbox', 'bp-business-profile' ),
 			'business-settings' => esc_html__( 'Settings', 'bp-business-profile' ),
 		);
+		
+		
+		if ( function_exists( 'is_user_logged_in' ) && ! is_user_logged_in() ) {
+			unset( $items['business-settings'] );
+			unset( $items['inbox'] );
+			//unset( $items['medias'] );
+		}
 
+		if ( is_single() && get_post_type() === 'business' ) {
+			$business_id  = get_the_ID();
+			$group_id     = get_post_meta( $business_id, 'bp-business-group', true );
+			$group        = groups_get_group( $group_id );
+			$creator_id   = $group->creator_id;
+			$user_id      = get_current_user_id();
+			$group_member = new BP_Groups_Member( $user_id, $group_id );
+			if ( (int) get_current_user_id() != (int) get_post_field( 'post_author', get_the_ID() ) && (int) $group_member->is_admin !== 1 ) {
+				unset( $items['business-settings'] );
+			}
+		}
 		return $items;
 	}
 	
@@ -1061,13 +1133,89 @@ class Sayansi_Core_Public {
 				);
 			}
 		}	
-
-		echo "<pre>";
-		print_r($r);
-		echo "</pre>";
-
 		return $r;
 	}
 	
+	/**
+	 * Load forum and discussion tab content at all forums menu
+	 *
+	 * @return void
+	 */
+	public function wbcom_load_forum_discussion() {
+		$nonce = $_POST['nonce'];
 
+		if ( ! wp_verify_nonce( $nonce, 'sayansi_ajax_security' ) ) {
+			wp_send_json_error('Invalid nonce');
+			return;
+		}
+
+		$endpoint = isset( $_POST['check_tab'] ) ? $_POST['check_tab'] : '';
+		ob_start(); // Start output buffering
+
+		if( 'sayansi-forum' == $endpoint ) {
+			$forum_desc = $_POST['forum_desc'];			
+			include get_stylesheet_directory() . '/tab-forums.php';
+		} else {
+			include get_stylesheet_directory() . '/tab-discussion.php';
+		}
+
+		$content = ob_get_clean(); // Get the buffered content
+		wp_send_json_success($content); // Send the content back as a JSON response
+		die();
+	}
+	
+	/**
+	 * Add back btn on the create forum page
+	 *
+	 * @return void
+	 */
+	public function wbcom_add_back_btn_on_create_forum_page() {		
+		echo "<a class='sayansi-back-forum-page' href='" . esc_attr('https://sayansi.africanlightsource.org/forums/') . "'>";
+		esc_html_e( 'Back To Forums', 'sayansi-core' );
+		echo "</a>";
+	}
+	
+	/**
+	 * Remove favourite subtab from the user profile timelines tab
+	 *
+	 * @return void
+	 */
+	public function wbcom_bp_remove_mention_fvrt_groups_sub_tabs_profile() {
+		if ( ! bp_is_user() ) {
+			return;
+		}
+		bp_core_remove_subnav_item( 'activity', 'favorites' );
+	}
+
+	/**
+	 * Reorder activity, connections subnav items
+	 *
+	 * @return void
+	 */
+	public function wbcom_reorder_activity_subnav_tab() {
+		global $bp;		
+		$bp->bp_options_nav['activity']['mentions']['position'] = 35; 
+		$bp->bp_options_nav['activity']['hashtags']['position'] = 40;
+		$bp->bp_options_nav['activity']['groups']['position'] = 100;
+		// reorder connection subnav items
+		if ( defined('BP_FRIENDS_SLUG') ) {		   
+			$bp->bp_options_nav['connections']['circle']['position'] = 11;				   
+		} else {
+			$bp->bp_options_nav['friends']['circle']['position'] = 11;				   
+		}
+	}
+
+	/**
+	 * Update connection tab slug on user profile
+	 *
+	 * @return void
+	 */
+	public function wbcom_change_connections_tab_slug( $slug ){
+		if ( defined( 'BP_FRIENDS_SLUG' ) ) {
+			$slug = BP_FRIENDS_SLUG;
+		} else {
+			return $slug;	
+		}
+		return $slug;
+	}
 }
