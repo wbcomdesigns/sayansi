@@ -142,9 +142,9 @@ if ($business_query->have_posts()) :
 
             <?php do_action( 'bp_business_before_profile_excerpt' ); ?>
 
-            <?php if (get_the_excerpt() != '') : ?>
+            <?php if (  ! empty( get_field( "beam_line_excerpt" ) ) ) : ?>
               <div class="bp-business-profile-excerpt">
-                <?php echo esc_html(wp_trim_words(get_the_excerpt(), 20)); ?>
+                <?php echo get_field( "beam_line_excerpt" ); ?>
               </div>
             <?php endif; ?>
 

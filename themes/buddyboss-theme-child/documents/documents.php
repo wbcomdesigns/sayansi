@@ -10,7 +10,7 @@
 	?>
 	<div class="bp-document-listing">
 		<div class="bp-media-header-wrap">
-			<h2 class="bb-title"><?php esc_html_e( 'Audio', 'buddyboss' ); ?></h2>
+			<h2 class="bb-title"><?php esc_html_e( 'Document(s)', 'buddyboss' ); ?></h2>
 			<?php
 			bp_get_template_part( 'document/add-document' );
 			?>

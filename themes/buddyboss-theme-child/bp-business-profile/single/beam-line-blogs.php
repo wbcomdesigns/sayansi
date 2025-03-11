@@ -10,7 +10,6 @@ defined( 'ABSPATH' ) || exit;
 global $bp,$current_user,$wpdb;
 $bp_member_blog_gen_stngs = get_option( 'bp_member_blog_gen_stngs' );
 $user_id                  = bp_loggedin_user_id();
-$user_full_name           = $bp->loggedin_user->fullname;
 $is_my_profile            = bp_is_my_profile();
 $current_group_id         = get_post_meta( get_the_ID(), 'bp-business-group', true );
 
@@ -20,9 +19,7 @@ if ( bp_is_active( 'groups' ) && is_user_logged_in() ) {
 	$bpmp_allow_group_linking = isset( $bpmb_pro_group_stngs['allow_group_linking'] ) ? $bpmb_pro_group_stngs['allow_group_linking'] : '';
 	$group_ids                = groups_get_user_groups( $user_id );
 	$is_groups_member         = groups_is_user_member( $user_id, $current_group_id );
-	if ( ! $bpmp_allow_group_linking || ! $is_groups_member ) {
-		return false;
-	}
+	
 	$bpmp_allow_group_role      = isset( $bpmb_pro_group_stngs['who_can_link'] ) ? $bpmb_pro_group_stngs['who_can_link'] : '';
 	$bpmb_pro_group_roles       = array( 'member', 'admin', 'mod' );
 	$bpmb_pro_allow_group_roles = array();
@@ -47,9 +44,19 @@ if ( bp_is_active( 'groups' ) && is_user_logged_in() ) {
 			$ids[] = $bp_groups_member->user_id;
 		}
 	}
-	if ( ! $bpmb_pro_allow_group_links || 'yes' !== $bpmp_allow_group_linking ) {
-		return false;
-	}
+
+	$author_id   = (int) get_post_field( 'post_author', get_the_ID() );
+	$user_full_name = get_the_author_meta( 'display_name', $author_id );
+	$current_user_id = get_current_user_id();
+	$is_post_owner = ( $author_id === $current_user_id );
+	if( !$is_post_owner ){ ?>
+		<style>
+			.business-subnavs ul{
+				display:none;
+			}
+		</style>
+		<?php
+	}	
 }
 /*
 * Check current user role to allowed create post or not.
@@ -94,10 +101,16 @@ if( isset( $_GET['tab'] ) && 'publish' == $_GET['tab'] ){
 		'post_status' => $post_status,
 		'paged'       => intval( $pagination_page ),
 		'meta_query'  => array(
+			'relation' => 'OR',
 			array(
 				'key'     => 'bp_blog_pro_group_links',
 				'value'   => $current_group_id,
 				'compare' => '==',
+			),
+			array(
+				'key'     => 'bp_blog_pro_business_group_links',
+				'value'   => $current_group_id, // Replace $some_value with the value you want to compare
+				'compare' => '==', // Change the comparison operator if needed
 			),
 		),
 	);
@@ -114,6 +127,26 @@ if( isset( $_GET['tab'] ) && 'publish' == $_GET['tab'] ){
 		'post_type'   => 'post',
 		'post_status' => 'draft',
 		'paged'       => intval( $paged ),
+	);
+} else {
+	$query_args = array(
+		'author'      => $post_authors,
+		'post_type'   => 'post',
+		'post_status' => $post_status,
+		'paged'       => intval( $pagination_page ),
+		'meta_query'  => array(
+			'relation' => 'OR',
+			array(
+				'key'     => 'bp_blog_pro_group_links',
+				'value'   => $current_group_id,
+				'compare' => '==',
+			),
+			array(
+				'key'     => 'bp_blog_pro_business_group_links',
+				'value'   => $current_group_id, // Replace $some_value with the value you want to compare
+				'compare' => '==', // Change the comparison operator if needed
+			),
+		),
 	);
 }
 // do the query.

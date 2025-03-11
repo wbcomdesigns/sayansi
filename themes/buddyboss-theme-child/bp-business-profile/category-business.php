@@ -1,6 +1,10 @@
 <?php
 get_header();
 ?>
+
+<div id="primary" class="content-area bb-grid-cell">
+	<main id="main" class="site-main">
+
 <div id="bp-businesses-content" class="entry-content bp-businesses-content">
 <div id="business-dir-list" class="business dir-list" data-bp-list="business">
 <?php
@@ -51,4 +55,9 @@ if ( have_posts() ) :
 <?php endif; ?>
 </div>
 </div>
+	</main><!-- #main -->
+</div><!-- #primary -->
+
+<?php get_sidebar( 'page' );?>
+
 <?php get_footer(); ?>

@@ -3,6 +3,7 @@
  * included in this file.
  */
 
+
  .profile-home-header img {
      height: 300px;
 	 width: 100%;
@@ -131,3 +132,384 @@ body.directory #activity-favorites,
 body.directory #activity-hashtag{
     display: none;
 }
+
+.card-content-section{
+	display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+
+.user-courses .item-body-inner .columns.mpcs-cards .column.col-4,
+.profile-all-courses-tab.container .columns.mpcs-cards .column.col-3,
+.instructor-courses .item-body-inner .columns.mpcs-cards .column.col-4,
+.post-type-archive-mpcs-course .columns.mpcs-cards .column.col-3{
+    width: 33.33%;
+}
+
+.user-courses .item-body-inner .columns.mpcs-cards.course-list .column.col-4,
+.profile-all-courses-tab.container .columns.mpcs-cards.course-list .column.col-3,
+.instructor-courses .item-body-inner .columns.mpcs-cards.course-list .column.col-4,
+.post-type-archive-mpcs-course .columns.mpcs-cards.course-list .column.col-3{
+	width: 100%;
+}
+
+.user-courses .item-body-inner .columns.mpcs-cards.course-list .column.col-4 .card,
+.profile-all-courses-tab.container .columns.mpcs-cards.course-list .column.col-3 .card,
+.instructor-courses .item-body-inner .columns.mpcs-cards.course-list .column.col-4 .card,
+.post-type-archive-mpcs-course .columns.mpcs-cards.course-list .column.col-3 .card{
+	flex-direction: row;
+	padding: 0;
+}
+
+.columns.mpcs-cards.course-list .column.col-4 .card .card-image,
+.columns.mpcs-cards.course-list .column.col-3 .card .card-image{
+	margin:0px;
+	padding:0px;
+	flex:0 0 200px;
+}
+
+.columns.mpcs-cards.course-list .column.col-4 .card .card-image img,
+.columns.mpcs-cards.course-list .column.col-3 .card .card-image img{
+	border-radius: var(--mpcs-block-radius-inner) 0 0 var(--mpcs-block-radius-inner);
+}
+
+
+.columns.mpcs-cards.course-list .card-content-section{
+	padding:20px;
+}
+
+.columns.mpcs-cards.course-list .card-content-section{
+	padding:20px;
+}
+
+.columns.mpcs-cards.course-list .card-content-section .card-header{
+	padding:0px;
+}
+
+.columns.mpcs-cards.course-list .card-content-section .card-header h2.h5{
+	font-size: 20px;
+}
+
+.post-type-archive-mpcs-course .mpcs-course-filter .column{
+	flex: auto;
+}
+
+.post-type-archive-mpcs-course .mpcs-course-filter .dropdown .menu{
+	top:auto;
+}
+
+#bb_meprlms_courses_search_form .search-field-top{
+	height:36px;
+	margin-right:12px;
+}
+
+.post-type-archive-mpcs-course .mpcs-course-filter .dropdown a.dropdown-toggle,
+.post-type-archive-mpcs-course .mpcs-course-filter .dropdown{
+	width:100%;
+}
+
+
+@media screen and (max-width: 840px) {
+
+    .profile-all-courses-tab.container .columns.mpcs-cards .column.col-3,
+	.user-courses .item-body-inner .columns.mpcs-cards .column.col-4,
+	.instructor-courses .item-body-inner .columns.mpcs-cards .column.col-4,
+	.post-type-archive-mpcs-course .columns.mpcs-cards .column.col-3{
+        width: 50%;
+    }
+
+}
+
+
+@media screen and (max-width: 800px) {
+	
+	.post-type-archive-mpcs-course .widget-area{
+		-webkit-box-flex: 0;
+		-ms-flex: 0 0 100%;
+		flex: 0 0 100%;
+		max-width: 100%;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	
+	.post-type-archive-mpcs-course .mpcs-course-filter .input-group{
+		margin:0px;
+	}
+	
+}
+
+@media screen and (max-width: 520px) {
+	
+	.post-type-archive-mpcs-course .mpcs-course-filter .input-group{
+		margin:0px;
+	}
+	
+	.post-type-archive-mpcs-course .mpcs-course-filter .push-right.flex{
+		flex-wrap:nowrap;
+	}
+	
+	.buddypress-wrap .subnav-filters .component-filters{
+		margin:0px;
+	}
+
+	
+}
+
+
+@media screen and (max-width: 480px) {
+
+    .profile-all-courses-tab.container .columns.mpcs-cards .column.col-3,
+	.user-courses .item-body-inner .columns.mpcs-cards .column.col-4,
+	.instructor-courses .item-body-inner .columns.mpcs-cards .column.col-4,
+	.post-type-archive-mpcs-course .columns.mpcs-cards .column.col-3{
+        width: 100%;
+    }
+	
+	.columns.mpcs-cards.course-list .column.col-4 .card .card-image, 
+	.columns.mpcs-cards.course-list .column.col-3 .card .card-image{
+		flex:0 0 150px;
+	}
+	
+	.columns.mpcs-cards.course-list .column.col-4 .card .card-image img, 
+	.columns.mpcs-cards.course-list .column.col-3 .card .card-image img{
+		height:100%;
+	}
+	
+	.columns.mpcs-cards.course-list .card-content-section .card-header h2.h5{
+		font-size: 18px;
+	}
+	
+	.post-type-archive-mpcs-course .mpcs-course-filter .push-right.flex{
+		row-gap:10px;
+		width: 100%;
+		flex-wrap:wrap;
+	}
+	
+	.post-type-archive-mpcs-course .mpcs-course-filter .column{
+		padding:0px;
+	}
+	
+	.user-courses .item-body-inner .bp-secondary-header .push-right.flex{
+		flex-wrap:wrap;
+	}
+	
+	.user-courses .item-body-inner .bp-secondary-header .push-right.flex .subnav-filters{
+		width:100%;
+		margin-bottom:0px;
+	}
+	
+	.user-courses .item-body-inner .bp-secondary-header .push-right.flex .subnav-filters form{
+		margin:0px;
+		justify-content:flex-start;
+	}
+	
+	.user-courses .item-body-inner .bp-secondary-header .push-right.flex .subnav-filters form label,
+	.user-courses .item-body-inner .bp-secondary-header .push-right.flex .subnav-filters form input{
+		width:100%;
+	}
+	
+	#bb_meprlms_courses_search_form,
+	#bb_meprlms_courses_search_form .search-field-top{
+		margin:0px;
+	}
+	
+	.buddypress-wrap .subnav-filters .select-wrap{
+		margin-right:0px !important;
+	}
+	
+	
+	.post-type-archive-mpcs-course .mpcs-course-filter .column form{
+		margin:0px;
+	}
+	
+}
+
+.user-courses .bp_members #buddypress.buddypress-wrap .bb-profile-grid #secondary.widget-area{
+	 display:block;
+}
+
+
+
+/* remove create partner button from all partner tab under partner tab in user profile */
+.bp-business-profile-create-business {
+    display: none;
+}
+
+.buddypress-wrap #bbpress-forums-search{
+	border: 0;
+    background-color: transparent;
+    padding-left: 35px;
+	padding-right: 30px;
+    font-size: 14px;
+    height: 34px;
+}
+
+.buddypress-wrap .subnav-filters.bp-forums-filter-wrap{
+	margin-right: 12px;
+}
+
+#bbpress-forums .bb-forums-list.list li{
+    flex: 0 0 100%;
+    max-width: 100%;
+}
+
+#bbpress-forums .bb-forums-list.list li .bb-cover-list-item{
+    flex: 0 0 100%;
+    display: flex;
+    padding: 0;
+    overflow: hidden;
+}
+
+#bbpress-forums .bb-forums-list.list li .bb-cover-list-item .bb-cover-wrap{
+	flex: 0 0 200px;
+    min-height: 150px;
+    height: 100%;
+    padding: 0;
+    border-radius: var(--bb-block-radius) 0 0 var(--bb-block-radius);
+}
+
+#bbpress-forums .bb-forums-list.list li .bs-card-forum-details {
+	width:100%;
+}
+
+.buddypress-wrap.bbpress-forum-wrap .bp-secondary-header{
+	margin-top:20px;
+}
+
+
+@media screen and (max-width: 520px) {
+		
+	.bbpress-forum-discussion .forum-subnav{
+		gap: 5px !important;
+	}
+	
+	.bbpress-forum-discussion .forum-subnav li a{
+		padding: 5px 10px !important;
+	}
+	
+	.buddypress-wrap.bbpress-forum-wrap .flex{
+		flex-wrap:wrap;
+	}
+	
+	.buddypress-wrap.bbpress-forum-wrap .bp-forums-filter-wrap{
+		 width: 100%;
+   		 margin: 0 0 10px;
+	}
+	
+	.buddypress-wrap.bbpress-forum-wrap .subnav-filters{
+		width: 100%;
+	}
+	
+	.buddypress-wrap.bbpress-forum-wrap .subnav-filters .select-wrap{
+		margin:0px;
+	}
+	
+	.buddypress-wrap.bbpress-forum-wrap  .subnav-filters .component-filters,
+	.buddypress-wrap.bbpress-forum-wrap .subnav-filters .component-filters .select-wrap{
+		margin-top:0px;
+	}
+	
+}
+
+/* remove the partner count from user pfoile*/
+
+#user-bp-business-profile .count{
+    display: none;
+}
+
+.ui-widget.ui-widget-content{
+	border-radius: 10px;
+    border: none;
+    padding: 20px;
+    box-shadow: none;
+}
+
+.ui-draggable .ui-dialog-titlebar{
+	padding: 0 !important;
+    border: none;
+    text-align: center;
+}
+
+.ui-dialog .ui-dialog-title{
+    float: none !important;
+    margin: 0px !important;
+    font-size: 21px;
+    color: #2c8f3d;
+}
+
+.ui-dialog .ui-dialog-content{
+    width: 100% !important;
+    text-align: center;
+    padding: 10px 20px 20px !important;
+}
+
+.ui-dialog .ui-dialog-content h6{
+    font-size: 19px;
+    margin: 0;
+}
+
+.ui-dialog .ui-dialog-buttonpane{
+	border: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset{
+	display:flex;
+	float:none;
+	width:100%;
+	justify-content: center;
+}
+
+.ui-dialog .ui-dialog-buttonpane button{
+    background-color: var(--bb-primary-button-background-regular);
+    color: var(--bb-primary-button-text-regular);
+    border: 1px solid var(--bb-primary-button-border-regular);
+    border-radius: var(--bb-button-radius);
+    box-shadow: none;
+    text-transform: uppercase;
+    min-width: auto;
+    padding: 0 20px !important;
+    height: 42px;
+    /* line-height: 36px !important; */
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    float: none !important;
+    margin: 0px 5px !important;
+    font-family: inherit;
+    width: 100% !important;
+}
+
+.ui-dialog .ui-dialog-titlebar-close span.ui-icon-closethick:before{
+	content: '\e828';
+    font-family: bb-icons;
+    font-style: normal;
+    speak: never;
+    display: inline-block;
+    text-decoration: inherit;
+    width: 1em;
+    margin-right: .2em;
+    text-align: center;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1em;
+    margin-left: .2em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.ui-button.ui-dialog-titlebar-close{
+	top:-20px !important;
+	right:-15px !important;
+}
+
+.bp-connections-send-message{
+	margin-bottom:20px;
+}
+
+
+
+

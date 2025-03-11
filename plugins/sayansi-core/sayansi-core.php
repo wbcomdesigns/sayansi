@@ -36,7 +36,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Rename this for your plugin and update it as you release new versions.
  */
 define( 'SAYANSI_CORE_VERSION', '1.0.0' );
-
+define ( 'BP_FRIENDS_SLUG', 'connections' );
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-sayansi-core-activator.php
@@ -182,6 +182,45 @@ function wbcom_get_documents( $component_name, $doc_component, $id, $folder_id )
 		}
 	}
 	return $ids;
+}
+
+/**
+ * wbcom_update_business_excerpt_value
+ *
+ * @return void
+ */
+function wbcom_update_business_excerpt_value(){	
+	global $wpdb;
+	$excerpt_val = $_POST['acf']['field_6729c0127e757'];
+	// Update the post excerpt for the custom post type.						
+	update_field( 'beam_line_excerpt', wpautop( $excerpt_val ), $_POST['bp_business_profile_id'] );
+	$wpdb->update(
+		'wp_posts',
+		array(
+			'post_excerpt' => $excerpt_val,				
+		),
+		array(
+			'ID' => $_POST['bp_business_profile_id'],
+		)
+	);
+}
+add_action('save_post', 'wbcom_update_business_excerpt_value');
+
+add_action('wp', 'wbcom_document');
+function wbcom_document(){
+	if ( ! current_user_can( 'manage_options' ) ) {
+	?>
+	<style>
+		.document-options #bp-add-document,
+		.document-options #bb-create-folder{
+			display : none!important;	
+		}
+		.document-type-navs .component-navigation.document-nav{
+			display : none!important;	
+		}
+	</style>
+	<?php
+	}
 }
 
 run_sayansi_core();

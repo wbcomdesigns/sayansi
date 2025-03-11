@@ -6,8 +6,6 @@ $author_id   = (int) get_post_field( 'post_author', $business_id );
 if ( $tabs_items === '' ) {
 	$tabs_items = array();
 }
-
-
 ?>
 
 <div id="item-header" role="complementary" data-bp-item-id="<?php the_ID(); ?>" data-bp-item-component="business" class="business-header single-headers">
@@ -27,6 +25,7 @@ if ( $tabs_items === '' ) {
 				
 				
 				<?php
+				
 				foreach ( get_business_profile_get_business_menu_items() as $endpoint => $label ) :
 
 					$current_user_id = get_current_user_id();
@@ -34,10 +33,11 @@ if ( $tabs_items === '' ) {
 					// Check if current user is the post owner or an administrator
 					$is_post_owner = ( $author_id === $current_user_id );
 					$is_admin      = user_can( $current_user_id, 'administrator' );
-					
-					if ( ! $is_post_owner && ! $is_admin ) {
-						if ( ! empty( $tabs_items ) && ! in_array( $endpoint, $tabs_items ) ) {
-							continue;
+					if( $endpoint !==  'beam-line-blogs' ){
+						if ( ! $is_post_owner && ! $is_admin ) {
+							if ( ! empty( $tabs_items ) && ! in_array( $endpoint, $tabs_items ) ) {
+								continue;
+							}
 						}
 					}
 					$endpoint_class = $endpoint;

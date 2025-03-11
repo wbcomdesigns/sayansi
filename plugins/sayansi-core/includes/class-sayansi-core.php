@@ -191,8 +191,35 @@ class Sayansi_Core {
 		$this->loader->add_action('wp_ajax_load_forum_discussion', $plugin_public, 'wbcom_load_forum_discussion');
 		$this->loader->add_action('get_template_part_form', $plugin_public, 'wbcom_add_back_btn_on_create_forum_page');
 		$this->loader->add_action('bp_actions', $plugin_public, 'wbcom_bp_remove_mention_fvrt_groups_sub_tabs_profile');
-		$this->loader->add_action( 'bp_setup_nav', $plugin_public, 'wbcom_reorder_activity_subnav_tab', 100 );
+		$this->loader->add_action( 'bp_setup_nav', $plugin_public, 'wbcom_reorder_activity_subnav_tab', 999 );
 		$this->loader->add_filter( 'bcircles_parent_component_slug', $plugin_public, 'wbcom_change_connections_tab_slug' );		
+		//$this->loader->add_action( 'bp_business_profile_after_save_general_settings_business', $plugin_public, 'wbcom_update_business_excerpt_value' );
+		$this->loader->add_action( 'init', $plugin_public, 'wbcom_remove_home_url_filter' );				
+		$this->loader->add_filter( 'home_url', $plugin_public, 'wbcom_change_home_url', 9999, 2 );
+		$this->loader->add_action( 'buddypress_member_blog_post_submit', $plugin_public, 'wbcom_bp_blog_pro_save_group_setting', 99 ,1 );
+
+		//for forums search, filter, layout 
+		$this->loader->add_action( 'wp_ajax_forums_search', $plugin_public, 'wbcom_forums_search');
+		$this->loader->add_action( 'wp_ajax_nopriv_forums_search', $plugin_public, 'wbcom_forums_search');
+
+		// reorder bp blog pro group blog tab
+		$this->loader->add_action('bp_blog_pro_group_blog_tab', $plugin_public, 'wbcom_bp_blog_pro_reorder_group_blog_tab_position', 999);
+
+		// reorder bp stats tab
+		$this->loader->add_action('bp_stats_group_statistics_tab_filter', $plugin_public, 'wbcom_bp_stats_group_statistics_tabs_position', 999);
+
+		// add group dropdown on the business creation
+		$this->loader->add_action( 'bp_business_create_after_field', $plugin_public, 'wbcom_group_selection_business_creation' );	
+		$this->loader->add_filter( 'bb_meprlms_courses_group_tab_name', $plugin_public, 'wbcom_rename_course_tab_on_group');
+
+		// add course filter
+		$this->loader->add_action( 'wp_ajax_filter_courses', $plugin_public, 'wbcom_filter_courses' );
+
+		// mass messaging hook to send message from user profile connection tab
+		$this->loader->add_action( 'wp_footer', $plugin_public, 'wbcom_add_confirmation_popup_to_send_message' );
+		$this->loader->add_action('bp_before_member_friends_content', $plugin_public, 'wbcom_add_send_message_button_user_connection_tab');
+		$this->loader->add_action('wp', $plugin_public, 'wbcom_handle_message_redirect');
+					
 	}
 
 	/**

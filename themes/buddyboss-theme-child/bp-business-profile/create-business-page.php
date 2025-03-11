@@ -116,7 +116,7 @@ if (($key = array_search('business-category', $business_taxonomies)) !== false) 
 		<?php endforeach; ?>		
 		
 	<?php endif;?>
-
+	<?php do_action( 'bp_business_create_after_field' );?>
 <?php wp_nonce_field( 'bp_business_create_new_business' ); ?>
 <input type="hidden" name="business-id" id="business-id" value="0">
 

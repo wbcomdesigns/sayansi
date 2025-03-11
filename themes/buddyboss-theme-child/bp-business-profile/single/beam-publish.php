@@ -4,7 +4,8 @@
 			the_post();
 			global $post;
 			$selected_group = get_post_meta( $post->ID, 'bp_blog_pro_group_links', true );
-			if ( $selected_group == $current_group_id ) {
+			$selected_business_group = get_post_meta( $post->ID, 'bp_blog_pro_business_group_links', true );			
+			if ( $selected_group == $current_group_id || $selected_business_group == $current_group_id  ) {
 				?>
 			<div id="post-<?php the_ID(); ?>" class="<?php echo esc_attr( 'bpmb-blog-post' ); ?>">				
 					<div class="post-featured-image">
@@ -60,7 +61,7 @@
 		else :
 			if ( is_user_logged_in() ) {
 				$bp_template_option = bp_get_option( '_bp_theme_package_id' );
-				$current_group_name = $bp->groups->current_group->name;
+				$current_group_name = get_post_field('post_name', get_the_ID());
 				if ( 'nouveau' === $bp_template_option ) {
 					echo '<div id="message" class="info bp-feedback bp-messages bp-template-notice">';
 					echo '<span class="bp-icon" aria-hidden="true"></span>';
@@ -71,7 +72,7 @@
 				echo '<p>' . sprintf( esc_html__( '%1$s has not posted anything in the group %2$1s.', 'buddypress-member-blog-pro' ), esc_html( $user_full_name ), esc_html( $current_group_name ) ) . '</p>';
 				echo '</div>';
 			} else {
-				$current_group_name = $bp->groups->current_group->name;
+				$current_group_name = get_post_field('post_name', get_the_ID());
 				$bp_template_option = bp_get_option( '_bp_theme_package_id' );
 				if ( 'nouveau' === $bp_template_option ) {
 					echo '<div id="message" class="info bp-feedback bp-messages bp-template-notice">';

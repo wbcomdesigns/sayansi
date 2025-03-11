@@ -83,7 +83,7 @@
 			}
 			//Group Discussion tab
 			if ($('#nav-forum-groups-li .bb-single-nav-item-point').length > 0) {
-				$('#nav-forum-groups-li .bb-single-nav-item-point').text('Group Discussion');
+				$('#nav-forum-groups-li .bb-single-nav-item-point').text('Group Discussions');
 			}
 			// Hide Group Photos tab
 			if ($('#photos-groups-li').length > 0) {
@@ -110,6 +110,25 @@
 				// Add 'selected' class to the clicked tab
 				$(this).addClass('selected');
 				var check_tab = $(this).data('id');
+				console.log(check_tab);
+				if( 'sayansi-discussion' == check_tab ){
+					const body = document.body;					
+					body.classList.remove("sayansi-forum");
+					body.classList.add("sayansi-discussion");
+					$('.sayansi-discussion .bp-dir-search-form').hide();
+					$('.sayansi-discussion #forums-filters').hide();
+					$('.sayansi-discussion .grid-filters').hide();
+
+				}
+				if( 'sayansi-forum' == check_tab ){
+					const body = document.body;
+					body.classList.remove("sayansi-discussion");
+					body.classList.add("sayansi-forum");
+					$('.sayansi-forum .bp-dir-search-form').show();
+					$('.sayansi-forum #forums-filters').show();
+					$('.sayansi-forum .grid-filters').show();
+				}
+
 				if (check_tab == 'sayansi-create-forum') {
 					var createForumUrl = $(this).attr('href'); // Get the URL from the href attribute
 					window.location.href = createForumUrl; // Redirect to the "Create a Forum" page
@@ -140,6 +159,147 @@
 			});
 		});
 		// End add code load template on all forum menu corresponding to forum and discussion tab
+		
+		//swap the course and forums tab
+		jQuery(document).ready(function ($) {
+			// Get the list items representing the tabs
+			var forumsTab = document.getElementById('forums-personal-li');
+			var coursesTab = document.getElementById('courses-personal-li');
+			if (forumsTab && coursesTab) {
+				// Get the parent <ul> element
+				var parentList = forumsTab.parentElement;
+
+				// Swap the positions of the tabs
+				parentList.insertBefore(forumsTab, coursesTab );				
+			}
+		});
+		//end swap the course and forums tab
+
+
+		jQuery(document).ready(function($) {
+			if( sayansi_ajax_object.check_group_component ){
+				return;
+			}		
+			// Forums search functionality
+			function fetchForums(query = '', order = 'alphabetical', forum_order = '', selectedLayout = 'grid', paged = 1 ) {
+				$.ajax({
+					url: sayansi_ajax_object.ajax_url,
+					type: 'POST',
+					data: {
+						action: 'forums_search',
+						query: query,
+						order: order,
+						forum_order: forum_order,
+						layout: selectedLayout,
+						paged: paged
+					},
+					success: function(response) {
+						$('#response-container').html(response);
+					}
+				});
+			}
+		
+			// Forum Search functionality
+			$('#bbpress-forums-search').on('keyup', function() {
+				var searchQuery = $(this).val();
+				var selectedLayout = $('.layout-view.active').data('view'); // Get the active layout view				
+				fetchForums(searchQuery, 'alphabetical', '', selectedLayout );
+			});
+
+			// Prevent form submission on Enter key press
+			$('#bbpress-forums-search').on('keydown', function(e) {
+				if (e.key === 'Enter') {
+					e.preventDefault();
+					var searchQuery = $(this).val();
+					fetchForums(searchQuery);
+				}
+			});
+		
+			// Reset functionality on by default
+			$('.search-form_reset').on('click', function(e) {
+				e.preventDefault();
+				$('#bbpress-forums-search').val('');
+				var selectedLayout = $('.layout-view.active').data('view'); // Get the active layout view  
+				fetchForums( '', 'alphabetical', '', selectedLayout );
+			});
+
+			// Filter the forum alphabatically or recently 
+			$('#forums-order-by').on('change', function() {
+				var forum_order = $(this).val();
+				var selectedLayout = $('.layout-view.active').data('view'); // Get the active layout view
+				fetchForums( '', 'alphabetical', forum_order, selectedLayout );				
+			});		
+
+			//Add active, grid, list class also maintain the classes on page nevigation
+			var savedLayout = localStorage.getItem('forumLayout') || 'grid'; // Default to grid if not set
+			// Set the default active view based on saved layout
+		    $('.layout-view').removeClass('active'); // Remove active class from all
+		    $('.layout-view[data-view="' + savedLayout + '"]').addClass('active'); // Add active class to saved layout
+		    $('#bbpress-forums ul').addClass(savedLayout); // Set the default class for the forum list
+
+		    //for user course tab display selected layout( course-grid/curse-list ) after page reload
+		    // Check if the body has the class 'post-type-archive-mpcs-course'
+			if ( $('body').hasClass('post-type-archive-mpcs-course') || $('body').hasClass('user-courses') ) {
+			    var savedcourseLayout = localStorage.getItem('forumLayout') || 'course-grid';
+			    $('.layout-view').removeClass('active'); // Remove active class from all
+			    $('.layout-view[data-view="' + savedcourseLayout + '"]').addClass('active'); // Add active class to saved layout
+			    $('.mpcs-cards').addClass(savedcourseLayout); // Set the default class for the forum list
+			}
+
+			$('.layout-view').on('click', function(e) {
+				e.preventDefault(); // Prevent default anchor behavior
+				var view = $(this).data('view'); // Get the view type (grid or list)
+				$('.layout-view').removeClass('active');
+				$(this).addClass('active');
+
+				localStorage.setItem('forumLayout', view);
+				// Remove existing classes and add the new one
+				var $forumList = $('#bbpress-forums ul');
+				$forumList.removeClass('grid list'); // Remove both classes
+				$forumList.addClass(view); // Add the selected view class
+
+				// for course and course directory 
+				var $courseList = $('.mpcs-cards');
+				$courseList.removeClass('course-grid course-list');
+				$courseList.addClass(view);
+
+				// for course directory
+				// var $coursedirectory = $('.columns .mpcs-cards');
+				// $coursedirectory.removeClass('course-grid course-list');
+				// $coursedirectory.addClass(view);
+
+			});
+			//end add active, grid, list class also maintain the classes on page nevigation
+
+			//Manage pagination click
+			$(document).on('click', '.bbp-pagination a', function(e) {
+		        e.preventDefault();
+		        var page = $(this).text(); // Get the page number from the link		        
+		        var searchQuery = $('#bbpress-forums-search').val();
+		        var selectedLayout = $('.layout-view.active').data('view'); // Get the active layout view
+		        fetchForums(searchQuery, 'alphabetical', '', selectedLayout, page); // Pass the page number
+		    });
+
+		    // this code for course filter
+			$('#courses-order-by').change(function() {
+				var tabname = $('#courses-filters').data('tab');				
+				var selectedValue = $(this).val();				
+				$.ajax({
+					url: sayansi_ajax_object.ajax_url,
+					type: 'POST',
+					data: {
+						action: 'filter_courses',
+						order_by: selectedValue,
+						tabname: tabname
+					},
+					success: function(response) {
+						// Replace the courses listing with the new content
+						$('.columns.mpcs-cards').html(response);
+					}
+				});
+			});
+
+		});
 		
 	});
 })( jQuery );
