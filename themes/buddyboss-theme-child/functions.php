@@ -113,3 +113,12 @@ add_action( 'buddyboss_theme_begin_content', 'wbcom_display_blog_network_content
 
 // Update connection tab slug on user profile
 define ( 'BP_FRIENDS_SLUG', 'connections' );
+
+add_filter( 'classic_editor_enabled_editors_for_post_type', function ( $editors, $post_type ) {
+  if ( $post_type == 'mpcs-course' || $post_type == 'mpcs-lesson' || $post_type = 'mpcs-quiz' ) {
+    $editors['classic_editor'] = false;
+  }
+  return $editors;
+}, 10, 2 );
+
+

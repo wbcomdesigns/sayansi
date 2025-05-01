@@ -78,6 +78,7 @@ class Sayansi_Core_Public {
 
 		wp_enqueue_style( $this->plugin_name . '-chosen-style', plugin_dir_url( __FILE__ ) . 'css/vendor/chosen/chosen.min.css', array(), time(), 'all' );
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/sayansi-core-public.css', array(), time(), 'all' );
+		wp_enqueue_style( 'selectize', plugin_dir_url( __FILE__ ) . 'css/selectize.css', array(), $this->version, 'all' );
 
 	}
 
@@ -101,6 +102,7 @@ class Sayansi_Core_Public {
 		 */
 		wp_enqueue_script( $this->plugin_name . '-chosen-script', plugin_dir_url( __FILE__ ) . 'js/vendor/chosen/chosen.jquery.min.js', array( 'jquery' ), time(), true );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sayansi-core-public.js', array( 'jquery' ), time(), true );
+		wp_enqueue_script( 'selectize', plugin_dir_url( __FILE__ ) . 'js/selectize.min.js', array( 'jquery' ), $this->version, false );
 		if( function_exists( 'bbp_get_forum_post_type' ) && 'forum' == bbp_get_forum_post_type() ){	
 			$forums_page = get_post( get_the_ID() );
 			$forum_desc = $forums_page->post_content;
@@ -117,7 +119,8 @@ class Sayansi_Core_Public {
 				'ajax_url'   => admin_url( 'admin-ajax.php' ),
 				'ajax_nonce' => wp_create_nonce( 'sayansi_ajax_security' ),
 				'forum_desc' => $forum_desc,
-				'check_group_component' => bp_is_groups_component(),				
+				'check_group_component' => bp_is_groups_component(),
+				'business_id' => get_the_ID(),					
 			)
 		);
 	}
@@ -168,6 +171,7 @@ class Sayansi_Core_Public {
 		bp_core_remove_nav_item( bp_get_invites_slug() );
 		bp_core_remove_subnav_item( bp_get_invites_slug(), 'invites' );
 		bp_core_remove_subnav_item( bp_get_invites_slug(), 'sent-invites' );
+		bp_core_remove_subnav_item( bp_get_friends_slug(), 'requests' );
 
 		// remove the membership tab from user profile
 		$main_slug = MeprHooks::apply_filters('mepr-bp-info-main-nav-slug', 'mp-membership');
@@ -185,7 +189,8 @@ class Sayansi_Core_Public {
 			'hide_empty' => false,
 			'parent'     => 0,
 		) );
-		foreach ($taxonomy_terms as $index => $term) {									
+		foreach ($taxonomy_terms as $index => $term) {
+										
 			// Determine the slug based on the index
 			// if ($index == 0) {				
 			// 	$slug = bp_business_profile_get_business_slug(); // First term slug
@@ -288,23 +293,7 @@ class Sayansi_Core_Public {
 					'item_css_id' => 'mepr-bp-payments'
 				)
 			);
-
-			//Courses Sub Menu
-			if(is_plugin_active('memberpress-courses/main.php')) {
-				bp_core_new_subnav_item(
-					array(
-					'name'            => _x( 'My Courses', 'ui', 'memberpress-buddypress' ),
-					'slug'            => MeprHooks::apply_filters('mepr-bp-courses-slug', 'mp-courses'),
-					'parent_url'      => trailingslashit( $user_domain . bp_get_profile_slug() ),
-					'parent_slug'     => bp_get_profile_slug(),
-					'screen_function' => array( $mpbuddypress, 'membership_courses' ),
-					'position'        => 20,
-					'user_has_access' => bp_is_my_profile(),
-					'site_admin_only' => false,
-					'item_css_id'     => 'mepr-bp-courses'
-					)
-				);
-			}
+			
 
 			bp_core_new_subnav_item(
 				array(
@@ -339,7 +328,7 @@ class Sayansi_Core_Public {
 		// Add custom subtab 'my-partner' under the connection tab in user profile
 		bp_core_new_subnav_item(
 			array(
-				'name'            => __( 'My Partners', 'buddyboss' ),
+				'name'            => __( 'My Partners', 'sayansi-core' ),
 				'slug'            => 'my-partners',
 				'parent_url'      => trailingslashit( $user_domain . bp_get_friends_slug() ),
 				'parent_slug'     => bp_get_friends_slug(),
@@ -352,7 +341,7 @@ class Sayansi_Core_Public {
 		//Add custom subtab 'my-partner' under the connection tab in user profile
 		bp_core_new_subnav_item(
 			array(
-				'name'            => __( 'All Individuals', 'buddyboss' ),
+				'name'            => __( 'All Individuals', 'sayansi-core' ),
 				'slug'            => 'members',
 				'parent_url'      => trailingslashit( $user_domain . bp_get_friends_slug() ),
 				'parent_slug'     => bp_get_friends_slug(),
@@ -362,7 +351,7 @@ class Sayansi_Core_Public {
 		);
 		bp_core_new_subnav_item(
 			array(
-				'name'            => __( 'All Partners', 'buddyboss' ),
+				'name'            => __( 'All Partners', 'sayansi-core' ),
 				'slug'            => 'all-partners',
 				'parent_url'      => trailingslashit( $user_domain . bp_get_friends_slug() ),
 				'parent_slug'     => bp_get_friends_slug(),
@@ -370,26 +359,26 @@ class Sayansi_Core_Public {
 				'position'        => 2
 			)
 		);
-		bp_core_new_subnav_item(
-			array(
-				'name'            => __( 'Send Invites', 'buddyboss' ),
-				'slug'            => 'send-invites',
-				'parent_url'      => trailingslashit( $user_domain . bp_get_friends_slug() ),
-				'parent_slug'     => bp_get_friends_slug(),
-				'screen_function' => array( $this, 'bprm_send_invites_screen' ),
-				'position'        => 35,                        
-			)
-		);
-		bp_core_new_subnav_item(
-			array(
-				'name'            => __( 'Sent Invites', 'buddyboss' ),
-				'slug'            => 'sent-invites',
-				'parent_url'      => trailingslashit( $user_domain . bp_get_friends_slug() ),
-				'parent_slug'     => bp_get_friends_slug(),
-				'screen_function' => array( $this, 'bprm_sent_invites_screen' ),
-				'position'        => 40
-			)
-		);
+		// bp_core_new_subnav_item(
+		// 	array(
+		// 		'name'            => __( 'Send Invites', 'buddyboss' ),
+		// 		'slug'            => 'send-invites',
+		// 		'parent_url'      => trailingslashit( $user_domain . bp_get_friends_slug() ),
+		// 		'parent_slug'     => bp_get_friends_slug(),
+		// 		'screen_function' => array( $this, 'bprm_send_invites_screen' ),
+		// 		'position'        => 35,                        
+		// 	)
+		// );
+		// bp_core_new_subnav_item(
+		// 	array(
+		// 		'name'            => __( 'Sent Invites', 'buddyboss' ),
+		// 		'slug'            => 'sent-invites',
+		// 		'parent_url'      => trailingslashit( $user_domain . bp_get_friends_slug() ),
+		// 		'parent_slug'     => bp_get_friends_slug(),
+		// 		'screen_function' => array( $this, 'bprm_sent_invites_screen' ),
+		// 		'position'        => 40
+		// 	)
+		// );
 		//End add custom subtab 'my-partner' under the connection tab in user profile
 
 		// Add sub nav on member profile activity
@@ -431,7 +420,7 @@ class Sayansi_Core_Public {
 		);
 		//End add all-forum sub tab under the forum tab in user profile
 
-		//Add all forum sub tab under the forum tab in user profile 
+		//Add sub tab under the course tab in user profile 
 		bp_core_new_subnav_item(
 			array(
 				'name'            => __( 'All Courses', 'sayansi-core' ),
@@ -442,8 +431,120 @@ class Sayansi_Core_Public {
 				'position'        => 1,
 			)
 		);
-		//End add all-forum sub tab under the forum tab in user profile
 
+		if(is_plugin_active('memberpress-courses/main.php')) {
+				bp_core_new_subnav_item(
+					array(
+					'name'            => _x( 'My Course Progress', 'ui', 'memberpress-buddypress' ),
+					'slug'            => MeprHooks::apply_filters('mepr-bp-courses-slug', 'mp-courses'),
+					'parent_url'      => trailingslashit( $user_domain . 'courses/' ),
+					'parent_slug'     => 'courses',
+					'screen_function' => array( $mpbuddypress, 'membership_courses' ),
+					'position'        => 20,
+					'user_has_access' => bp_is_my_profile(),
+					'site_admin_only' => false,
+					'item_css_id'     => 'mepr-bp-courses'
+					)
+				);
+			}
+		//End add sub tab under the course tab in user profile 
+
+		// add message center tab under user profile
+		bp_core_new_nav_item(
+			array(
+				'name'                => _x( 'Message Center', 'Message Center', 'sayansi-core' ),
+				'slug'                => 'message-center',
+				'position'            => 80,
+				'screen_function'     => array( $this, 'wbcom_member_messege_center_tab_screen' ),
+				'default_subnav_slug' => 'home',
+			),
+			'members'
+		);
+		// add send invites as sub tab under message center
+		bp_core_new_subnav_item(
+			array(
+				'name'            => __( 'Send Invites', 'buddyboss' ),
+				'slug'            => 'send-invites',
+				'parent_url'      => trailingslashit( $user_domain . 'message-center' ),
+				'parent_slug'     => 'message-center',
+				'screen_function' => array( $this, 'bprm_send_invites_screen' ),
+				'position'        => 35,                        
+			)
+		);
+		// add sent invites as sub tab under message center
+		bp_core_new_subnav_item(
+			array(
+				'name'            => __( 'Sent Invites', 'buddyboss' ),
+				'slug'            => 'sent-invites',
+				'parent_url'      => trailingslashit( $user_domain . 'message-center' ),
+				'parent_slug'     => 'message-center',
+				'screen_function' => array( $this, 'bprm_sent_invites_screen' ),
+				'position'        => 40
+			)
+		);
+		// add requests as sub tab under message center
+		bp_core_new_subnav_item(
+			array(
+				'name'            => __( 'Requests', 'buddyboss' ),
+				'slug'            => 'requests',
+				'parent_url'      => trailingslashit( $user_domain . 'message-center' ),
+				'parent_slug'     => 'message-center',
+				'screen_function' => array( $this,'wbcom_friends_screen_requests' ),
+				'position'        => 50,
+			)
+		);
+		// add send msg to all connections as sub tab under message center
+		bp_core_new_subnav_item( array(
+			'name'            => __( 'Send Message To My Connections', 'buddyboss' ),
+			'slug'            => 'send-msg-my-connection',
+			'parent_url'      => trailingslashit( $user_domain . 'message-center' ),
+			'parent_slug'     => 'message-center',
+			'screen_function' => function() {
+				// Redirect to the compose message screen with ?all_connections=1
+				$redirect_url = bp_loggedin_user_domain() . bp_get_messages_slug() . '/compose/?all_connections=1';
+				wp_redirect( $redirect_url );
+				exit;
+			},
+			'position'        => 50,
+		) );
+
+		bp_core_new_subnav_item( array(
+			'name'            => __( 'Send Message To All Connections', 'buddyboss' ),
+			'slug'            => 'send-msg-all-connection',
+			'parent_url'      => trailingslashit( $user_domain . 'message-center' ),
+			'parent_slug'     => 'message-center',
+			'screen_function' => function() {
+				// Redirect to the compose message screen with ?all_connections=1
+				$redirect_url = bp_loggedin_user_domain() . bp_get_messages_slug() . '/compose/';
+				wp_redirect( $redirect_url );
+				exit;
+			},
+			'position'        => 50,
+		) );
+
+	}
+
+	/**
+	* Add content for message center tab
+	*/
+	public function wbcom_member_messege_center_tab_screen(){		
+		wp_redirect( bp_displayed_user_domain() . 'message-center/send-invites' );
+		exit;
+	}
+
+	/**
+	 * Incoming Invites(Requests) tab callback
+	 */
+	public function wbcom_friends_screen_requests(){
+		add_action( 'bp_template_content', array( $this, 'wbcom_user_profile_request_screen' ) );
+		bp_core_load_template( apply_filters( 'bp_invites_screen_send_invite', 'members/single/plugins' ) );
+	}
+
+	/**
+	 * Incoming Invites(Requests) tab content
+	 */
+	public function wbcom_user_profile_request_screen(){		
+		bp_get_template_part( 'members/single/friends/requests' );
 	}
 
 	/**
@@ -474,6 +575,39 @@ class Sayansi_Core_Public {
 		);
 		
 		?>
+
+		<!-- Add search on course tab in user profile -->	
+		<div class="buddypress-wrap bbpress-forum-wrap">
+			<div class="flex bp-secondary-header align-items-center">
+				<div class="push-right flex"> 
+						
+		<input type="text" name="course-search-input" class="form-input" id="course-search-input" placeholder="<?php esc_html_e( 'Find a course', 'buddyboss-pro' ); ?>">			
+		<!-- Add search on course filter in user profile -->		
+		<div id="courses-filters" class="courses-component-filters subnav-filters" data-tab="<?php echo esc_attr($current_course_subtab); ?>">
+			<div id="courses-order-select" class="component-filters filter">
+				<label class="bp-screen-reader-text" for="courses-order-by">
+					<span>Order By:</span>
+				</label>
+				<div class="select-wrap">
+					<select id="courses-order-by">
+						<option value=""><?php esc_html_e('Course Filter', 'sayansi-core'); ?></option>
+						<option value="alphabetical"><?php esc_html_e('Alphabetical', 'sayansi-core'); ?></option>
+						<option value="recent"><?php esc_html_e('Newly Created', 'sayansi-core'); ?></option>
+					</select>
+					<span class="select-arrow" aria-hidden="true"></span>
+				</div>
+			</div>
+		</div>
+		<!-- Add layout on course in user profile -->	
+		<div class="grid-filters">
+			<a href="#" class="layout-view layout-grid-view bp-tooltip" data-view="course-grid" data-bp-tooltip-pos="up" data-bp-tooltip="<?php echo esc_attr( 'Grid View' ); ?>"> <i class="bb-icon-l bb-icon-grid-large" aria-hidden="true"></i> </a>
+			<a href="#" class="layout-view layout-list-view bp-tooltip list" data-view="course-list" data-bp-tooltip-pos="up" data-bp-tooltip="<?php echo esc_attr( 'List View' );?>"> <i class="bb-icon-l bb-icon-bars" aria-hidden="true"></i> </a>
+		</div>
+					
+				</div>
+			</div>
+		</div>
+
 
 		<div class="profile-all-courses-tab container grid-xl">
 		<div class="columns mpcs-cards">
@@ -511,12 +645,15 @@ class Sayansi_Core_Public {
 								?>
 								<a href="<?php echo esc_url( $author_url ); ?>">
 									<?php
-									echo bp_core_fetch_avatar(
-										array(
-											'item_id' => $user_id,
-											'html' => true,
+									echo wp_kses_post(
+										bp_core_fetch_avatar(
+											array(
+												'item_id' => $user_id,
+												'html'    => true,
+											)
 										)
-									) . bp_core_get_user_displayname( $user_id );
+									);
+									echo esc_html( bp_core_get_user_displayname( $user_id ) );
 									?>
 								</a>
 							</span>
@@ -530,6 +667,7 @@ class Sayansi_Core_Public {
 		
 		</div>
 		</div>
+						
 		<?php
 	}
 
@@ -546,7 +684,48 @@ class Sayansi_Core_Public {
 	 */
 	public function wbcom_render_member_all_forum_content(){		
         ?>
-        <div class="all-forums-tab-content">                        
+        <!-- Add search, filter and grid/list layout -->
+		<div class="flex bp-secondary-header align-items-center">
+			<h3><?php esc_html_e( 'All Forums', 'sayansi-core'); ?></h3>
+			<div class="push-right flex">
+
+				<!-- for search -->
+				<div class="bp-forums-filter-wrap subnav-filters">	
+					<form action="" method="get" class="bp-dir-search-form search-form-has-reset" id="" autocomplete="off">
+						<label for="bbpress-forums-search" class="bp-screen-reader-text">Search Forum…</label>
+						<input id="bbpress-forums-search" name="bbpress_forum_search" type="search" placeholder="Search Forum…">
+						<button type="reset" class="search-form_reset">
+							<span class="bb-icon-rf bb-icon-times" aria-hidden="true"></span>
+							<span class="bp-screen-reader-text">Reset</span>
+						</button>
+					</form>
+				</div>
+
+				<!-- for filter -->
+				<div id="forums-filters" class="foums-component-filters clearfix subnav-filters">
+					<div id="forums-order-select" class="component-filters filter">
+						<label class="bp-screen-reader-text" for="forums-order-by">
+							<span>Order By:</span>
+						</label>
+						<div class="select-wrap">
+							<select id="forums-order-by" data-bp-filter="groups">
+								<option value="alphabetical"><?php esc_html_e( 'Alphabetical', 'sayansi-core' ); ?></option>
+						<option value="recent"><?php esc_html_e( 'Newly Created', 'sayansi-core' ); ?></option>
+							</select>
+							<span class="select-arrow" aria-hidden="true"></span>
+						</div>
+					</div>
+				</div>
+
+				<!-- for grid/list layout -->
+				<div class="grid-filters">
+					<a href="#" class="layout-view layout-grid-view bp-tooltip" data-view="grid" data-bp-tooltip-pos="up" data-bp-tooltip="<?php echo esc_attr( 'Grid View' ); ?>"> <i class="bb-icon-l bb-icon-grid-large" aria-hidden="true"></i> </a>
+					<a href="#" class="layout-view layout-list-view bp-tooltip list" data-view="list" data-bp-tooltip-pos="up" data-bp-tooltip="<?php echo esc_attr( 'List View' );?>"> <i class="bb-icon-l bb-icon-bars" aria-hidden="true"></i> </a>
+				</div>	
+
+			</div>
+		</div>
+        <div id="response-container">                        
 			<?php
             // Pagination parameters
             $paged = ( isset( $_GET['page'] ) ) ? absint( $_GET['page'] ) : 1;
@@ -584,7 +763,7 @@ class Sayansi_Core_Public {
 							</div>
 
 							<div class="bb-forum-content-wrap">
-								<div class="bb-forum-content"><?php echo bbp_get_forum_content_excerpt_view_more( bbp_get_forum_id(), 150, '&hellip;' ); ?></div>
+								<div class="bb-forum-content"><?php echo wp_kses_post( bbp_get_forum_content_excerpt_view_more( bbp_get_forum_id(), 150, '&hellip;' ) ); ?></div>
 							</div>
 
 							<div class="forums-meta bb-forums-meta">
@@ -626,19 +805,25 @@ class Sayansi_Core_Public {
 						$from = ( $paged - 1 ) * $per_page + 1;
 						$to = min( $paged * $per_page, $total_forums );
 						// Display the "Viewing X - Y of Z forums" text
-						echo '<p>Viewing ' . $from . ' - ' . $to . ' of ' . $total_forums . ' forums</p>';
+						echo '<p>Viewing ' . $from . ' - ' . $to . ' of ' . $total_forums . ' forums</p>'; //phpcs:ignore
+						echo sprintf(
+							'<p>%s</p>',
+							esc_html( sprintf( 'Viewing %d - %d of %d forums', $from, $to, $total_forums ) )
+						);
 						?>
 					</div>
 					<div class="bbp-pagination-links">
 					<?php
-                // Display pagination
-                echo paginate_links( array(
-                    'total'   => $forums->max_num_pages, // Total number of pages
-                    'current' => $paged,                 // Current page number
-                    'format'  => '?page=%#%',            // Pagination format
-                    'prev_text' => '&laquo; Previous',   // Previous page text
-                    'next_text' => 'Next &raquo;',       // Next page text
-                ) );
+	                // Display pagination
+	               	echo wp_kses_post(
+						paginate_links( array(
+						'total'   => $forums->max_num_pages, // Total number of pages
+						'current' => $paged,                 // Current page number
+						'format'  => '?page=%#%',            // Pagination format
+						'prev_text' => '&laquo; Previous',   // Previous page text
+						'next_text' => 'Next &raquo;',       // Next page text
+						) )
+					);
                 
                 wp_reset_postdata();  // Reset the post data after custom query
             } else {
@@ -666,12 +851,18 @@ class Sayansi_Core_Public {
             // Query all groups
             $args = array(
                 'per_page' => 20, // Number of groups per page
+                'order'              => 'ASC',         // 'ASC' or 'DESC'
+        		'orderby'            => 'name',
             );            
             $groups = groups_get_groups( $args );            
             if ( !empty( $groups['groups'] ) ) {
                 echo '<ul id="groups-list" class="item-list groups-list bp-list grid bb-cover-enabled left	groups-dir-list">';
                 foreach ( $groups['groups'] as $group ) {                    
 					$bp_group_id =  $group->id;
+					$gp_business_link = groups_get_groupmeta( $bp_group_id, 'bp-group-business', true );
+					if( $gp_business_link ){
+						continue;
+					}
 					$group_cover_image_url = bp_attachments_get_attachment(
 							'url',
 							array(
@@ -691,12 +882,12 @@ class Sayansi_Core_Public {
 								<div class="item  ">
 									<div class="group-item-wrap">
 										<div class="item-block">
-											<h2 class="list-title groups-title"><a href="<?php echo esc_url($group->permalink ); ?>" class="bp-group-home-link oceanography-home-link"><?php echo $group->name; ?></a></h2>											
+											<h2 class="list-title groups-title"><a href="<?php echo esc_url($group->permalink ); ?>" class="bp-group-home-link oceanography-home-link"><?php echo esc_html( $group->name ); ?></a></h2>											
 										</div>
 										<div class="item-desc group-item-desc only-list-view"></div>
 									</div>						
 									<div class="group-footer-wrap  ">
-										<div class="group-members-wrap">
+										<!-- <div class="group-members-wrap">
 											<span class="bs-group-members">
 												<span class="bs-group-member" data-bp-tooltip-pos="up-left" data-bp-tooltip="LAWRENCE">
 													<a href="http://sayansinewbu.local/members/admin/">
@@ -704,7 +895,7 @@ class Sayansi_Core_Public {
 													</a>
 												</span>
 											</span>
-										</div>
+										</div> -->
 										<div class="groups-loop-buttons footer-button-wrap">
 											<div class="bp-generic-meta groups-meta action">
 												<div id="groupbutton-24" class="generic-button">
@@ -745,8 +936,51 @@ class Sayansi_Core_Public {
 	 */
 	public function wbcom_all_individual_screen_content(){		
 		?>
-		<div id="members-dir-list" class="members dir-list" data-bp-list="" data-ajax="true" style="">
-        <h3>All Members</h3>        
+		<!-- remove unneccsary filter, which are not working -->
+		<style>
+			.bb-subnav-filters-container{
+				display: none;
+			}
+			
+		</style>		
+		<!-- Add search, filter, layout -->
+		<div class="buddypress-wrap network-individual-members-wrap">
+                <div class="flex bp-secondary-header align-items-center">
+					<h3><?php esc_html_e( 'All Members', 'sayansi-core' ); ?></h3>
+                    <div class="push-right flex"> 
+                        <div class="bp-ind-members-filter-wrap subnav-filters subnav-search">	
+                            <form action="" method="get" class="bp-dir-search-individual-members search-individual-members-has-reset" id="" autocomplete="off">
+                                <label for="individual-member-search" class="bp-screen-reader-text">Search Members…</label>
+                                <input id="individual-member-search" name="individual_member_search" type="search" placeholder="Search Members..">                               
+                            </form>
+                        </div>
+                                
+                        <div id="individual-members-filters" class="foums-component-filters clearfix subnav-filters">
+                            <div id="individual-members-order-select" class="component-filters filter">
+                                <label class="bp-screen-reader-text" for="individual-members-order-by">
+                                    <span>Order By:</span>
+                                </label>
+                                <div class="select-wrap">
+                                    <select id="individual-members-order-by">
+                                        <option value="alphabetical"><?php esc_html_e( 'Alphabetical', 'sayansi-core' ); ?></option>
+                                <option value="recent"><?php esc_html_e( 'Newly Created', 'sayansi-core' ); ?></option>
+                                    </select>
+                                    <span class="select-arrow" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid-filters" data-object="<?php echo esc_attr( $component ); ?>">
+                            <a href="#" class="layout-view layout-grid-view bp-tooltip grid" data-view="grid" data-bp-tooltip-pos="up" data-bp-tooltip="<?php _e( 'Grid View', 'sayansi-core' ); ?>"> <i class="bb-icon-l bb-icon-grid-large" aria-hidden="true"></i> </a>
+
+                            <a href="#" class="layout-view layout-list-view bp-tooltip list" data-view="list" data-bp-tooltip-pos="up" data-bp-tooltip="<?php _e( 'List View', 'sayansi-core' );?>"> <i class="bb-icon-l bb-icon-bars" aria-hidden="true"></i> </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+		<!-- End Add search, filter, layout -->
+		<div id="members-dir-list" class="members dir-list" data-bp-list="" data-ajax="true" style="">       
         
         <?php
         // Fetch members (you can modify this to suit your needs, like adding pagination)
@@ -754,12 +988,14 @@ class Sayansi_Core_Public {
             'per_page' => 20, // Limit the number of members per page
             'page'     => 1,   // Page number
             'type'     => 'active', // Active members only
+            'orderby'  => 'display_name',
+    		'order'    => 'ASC',
         );
 
         $members = new WP_User_Query( $args );
 
         if ( ! empty( $members->results ) ) :
-            echo '<ul id="members-list" class="item-list members-list bp-list grid">';
+            echo '<ul id="members-list" class="item-list members-list bp-list individual-members-list">';
             foreach ( $members->results as $member ) :
 				$member_joined_date = bb_get_member_joined_date( $member->ID );
 				$member_last_activity = bp_get_last_activity( $member->ID );
@@ -776,7 +1012,9 @@ class Sayansi_Core_Public {
 							<div class="item">
 								<div class="item-block">								
 									<h2 class="list-title member-name">
-										<?php echo esc_html( $member->display_name ); ?>
+										<a href="<?php echo esc_url( bp_core_get_user_domain( $member->ID ) ); ?>"> 
+											<?php echo esc_html( $member->display_name ); ?>
+										</a>
 									</h2>
 									<p class="item-meta last-activity"><?php echo wp_kses_post( $member_joined_date );?><span class="separator">&bull;</span><?php echo wp_kses_post( $member_last_activity ); ?></p>							
 								</div>
@@ -837,7 +1075,14 @@ class Sayansi_Core_Public {
 	 */
 	public function wbcom_all_partners_screen_content(){		
 		bp_business_profile_locate_template('business-loop.php');
+		if( 'connections' !== bp_current_component() ){
 		?>
+		<style>
+			#business-list-container{
+				display:none;
+			}
+		</style>
+		<?php } ?>
 		<style>
 			article.business.type-business{
 				display:none!important;
@@ -881,8 +1126,8 @@ class Sayansi_Core_Public {
 			foreach ($activities['activities'] as $activity) {
 				// Display activity content
 				echo '<div class="activity-item">';
-				echo '<p>' . bp_core_get_userlink($activity->user_id) . ' ' . $activity->content . '</p>';
-				echo '<span>' . bp_core_time_since($activity->date_recorded) . ' ago</span>';
+				echo '<p>' . bp_core_get_userlink($activity->user_id) . ' ' . $activity->content . '</p>'; //phpcs:ignore
+				echo '<span>' . bp_core_time_since($activity->date_recorded) . ' ago</span>'; //phpcs:ignore
 				echo '</div>';
 			}
 		} else {
@@ -942,43 +1187,43 @@ class Sayansi_Core_Public {
 		if( ! empty( xprofile_get_field_data( 'Feature Image', $user_id ) ) ) {
 			?>
 				<div class="profile-home-header">
-					<?php echo xprofile_get_field_data( 'Feature Image', $user_id ); ?>
+					<?php echo wp_kses_post( xprofile_get_field_data( 'Feature Image', $user_id ) ); ?>
 				</div>
 			<?php
 		}
 		?>
 		<div class="profile-home-column">
 			<div class="profile-home-columns">
-				<a href="<?php echo xprofile_get_field_data( 'Column One - Link', $user_id ); ?>">
+				<a href="<?php echo esc_url( xprofile_get_field_data( 'Column One - Link', $user_id ) ); ?>">
 					<div class="profile-home-columns-img">
-						<?php echo xprofile_get_field_data( 'Column One - Logo', $user_id ); ?>
+						<?php echo wp_kses_post( xprofile_get_field_data( 'Column One - Logo', $user_id ) ); ?>
 					</div>
-					<h3 class="profile-home-columns-title"><?php echo xprofile_get_field_data( 'Column One - Title', $user_id ); ?></h3>
-					<div class="profile-home-columns-content"><?php echo xprofile_get_field_data( 'Column One - Description', $user_id ); ?></div>
+					<h3 class="profile-home-columns-title"><?php echo esc_html( xprofile_get_field_data( 'Column One - Title', $user_id ) ); ?></h3>
+					<div class="profile-home-columns-content"><?php echo esc_html( xprofile_get_field_data( 'Column One - Description', $user_id ) ); ?></div>
 				</a>
 			</div>
 
 			<div class="profile-home-columns">
-				<a href="<?php echo xprofile_get_field_data( 'Column Two - Link', $user_id ); ?>">
-					<div class="profile-home-columns-img"><?php echo xprofile_get_field_data( 'Column Two - Logo', $user_id ); ?></div>
-					<h3 class="profile-home-columns-title"><?php echo xprofile_get_field_data( 'Column Two - Title', $user_id ); ?></h3>
-					<div class="profile-home-columns-content"><?php echo xprofile_get_field_data( 'Column Two - Description', $user_id ); ?></div>
+				<a href="<?php echo esc_url( xprofile_get_field_data( 'Column Two - Link', $user_id ) ); ?>">
+					<div class="profile-home-columns-img"><?php echo wp_kses_post( xprofile_get_field_data( 'Column Two - Logo', $user_id ) ); ?></div>
+					<h3 class="profile-home-columns-title"><?php echo esc_html( xprofile_get_field_data( 'Column Two - Title', $user_id ) ); ?></h3>
+					<div class="profile-home-columns-content"><?php echo esc_html( xprofile_get_field_data( 'Column Two - Description', $user_id ) ); ?></div>
 				</a>
 			</div>
 
 			<div class="profile-home-columns">
-				<a href="<?php echo xprofile_get_field_data( 'Column Three - Link', $user_id ); ?>">
-					<div class="profile-home-columns-img"><?php echo xprofile_get_field_data( 'Column Three - Logo', $user_id ); ?></div>
-					<h3 class="profile-home-columns-title"><?php echo xprofile_get_field_data( 'Column Three - Title', $user_id ); ?></h3>
-					<div class="profile-home-columns-content"><?php echo xprofile_get_field_data( 'Column Three - Description', $user_id ); ?></div>
+				<a href="<?php echo esc_url( xprofile_get_field_data( 'Column Three - Link', $user_id ) ); ?>">
+					<div class="profile-home-columns-img"><?php echo wp_kses_post( xprofile_get_field_data( 'Column Three - Logo', $user_id ) ); ?></div>
+					<h3 class="profile-home-columns-title"><?php echo esc_html( xprofile_get_field_data( 'Column Three - Title', $user_id ) ); ?></h3>
+					<div class="profile-home-columns-content"><?php echo esc_html( xprofile_get_field_data( 'Column Three - Description', $user_id ) ); ?></div>
 				</a>
 			</div>
 
 			<div class="profile-home-columns">
-				<a href="<?php echo xprofile_get_field_data( 'Column Four - Link', $user_id ); ?>">
-					<div class="profile-home-columns-img"><?php echo xprofile_get_field_data( 'Column Four - Logo', $user_id ); ?></div>
-					<h3 class="profile-home-columns-title"><?php echo xprofile_get_field_data( 'Column Four - Title', $user_id ); ?></h3>
-					<div class="profile-home-columns-content"><?php echo xprofile_get_field_data( 'Column Four - Description', $user_id ); ?></div>
+				<a href="<?php echo esc_url( xprofile_get_field_data( 'Column Four - Link', $user_id ) ); ?>">
+					<div class="profile-home-columns-img"><?php echo wp_kses_post( xprofile_get_field_data( 'Column Four - Logo', $user_id ) ); ?></div>
+					<h3 class="profile-home-columns-title"><?php echo esc_html( xprofile_get_field_data( 'Column Four - Title', $user_id ) ); ?></h3>
+					<div class="profile-home-columns-content"><?php echo esc_html( xprofile_get_field_data( 'Column Four - Description', $user_id ) ); ?></div>
 				</a>
 			</div>
 		</div>
@@ -1183,19 +1428,60 @@ class Sayansi_Core_Public {
 	}
 
 
+	// public function wbcom_save_business_excerpt( $business_id ) {
+	// 	if ( empty( $business_id ) ) {
+	// 		return;
+	// 	}
+
+	// 	$beam_line_excerpt = isset( $_REQUEST['beam_line_excerpt'] ) ? wp_kses_post( $_REQUEST['beam_line_excerpt'] ) : '';
+
+	// 	update_field( 'beam_line_excerpt', wpautop( $beam_line_excerpt ), $business_id );
+
+	// 	// add groups in the partner from group selection on partner creation
+	// 	$group_id = isset( $_POST[ 'business-group' ] ) ? $_POST[ 'business-group' ] : '';		
+	// 	groups_update_groupmeta( $group_id, 'bp-group-add-business', $business_id );
+	// 	update_post_meta( $business_id, 'bp-link-group', $group_id );
+	// }
+
+
+
 	public function wbcom_save_business_excerpt( $business_id ) {
-		if ( empty( $business_id ) ) {
-			return;
+	    if ( empty( $business_id ) ) {
+	        return;
+	    }
+
+	    // Save the excerpt
+	    $beam_line_excerpt = isset( $_REQUEST['beam_line_excerpt'] ) ? wp_kses_post( $_REQUEST['beam_line_excerpt'] ) : '';
+	    update_field( 'beam_line_excerpt', wpautop( $beam_line_excerpt ), $business_id );
+
+	    // add groups in the partner from group selection on partner creation
+		$group_ids = isset( $_POST[ 'business-group' ] ) ? $_POST[ 'business-group' ] : '';		
+		if ( ! empty( $group_ids ) && is_array( $group_ids ) ) {
+			foreach ( $group_ids as $group_id ) {
+				// Retrieve the existing business IDs for this group (if any)
+				$existing_business_ids = groups_get_groupmeta( $group_id, 'bp-group-add-business', true );
+	
+				// If there are no existing business IDs, initialize as an empty array
+				// if ( empty( $existing_business_ids ) ) {
+				// 	$existing_business_ids = array();
+				// }
+
+				// Ensure $existing_business_ids is an array, even if it's a string or empty
+				if ( ! is_array( $existing_business_ids ) ) {
+					$existing_business_ids = ( ! empty( $existing_business_ids ) ) ? array( $existing_business_ids ) : array();
+				}
+	
+				// Make sure that business_id is not already in the array to prevent duplicates
+				if ( ! in_array( $business_id, $existing_business_ids ) ) {
+					// Add the current business ID to the array of business IDs for this group
+					$existing_business_ids[] = $business_id;
+	
+					// Update the group meta with the new array of business IDs
+					groups_update_groupmeta( $group_id, 'bp-group-add-business', $existing_business_ids );
+				}
+			}
 		}
-
-		$beam_line_excerpt = isset( $_REQUEST['beam_line_excerpt'] ) ? wp_kses_post( $_REQUEST['beam_line_excerpt'] ) : '';
-
-		update_field( 'beam_line_excerpt', wpautop( $beam_line_excerpt ), $business_id );
-
-		// add groups in the partner from group selection on partner creation
-		$group_id = isset( $_POST[ 'business-group' ] ) ? $_POST[ 'business-group' ] : '';		
-		groups_update_groupmeta( $group_id, 'bp-group-add-business', $business_id );
-
+		update_post_meta( $business_id, 'bp-link-group', $group_ids );
 	}
 
 
@@ -1294,7 +1580,7 @@ class Sayansi_Core_Public {
 	                        echo '<p>' . esc_html($value) . '</p>';
 	                        break;
 	                    case 'wysiwyg':
-	                        echo $value;
+	                        echo $value; //phpcs:ignore
 	                        break;
 	                }
 	            }
@@ -1316,12 +1602,13 @@ class Sayansi_Core_Public {
 		$reviews_slug  = bp_business_profile_get_business_slug() . '-reviews';
 		$settings_slug = bp_business_profile_get_business_slug() . '-settings';
 		$items = array(
-			'home'               => esc_html__( 'My Home Page', 'bp-business-profile' ),
+			'home'               => esc_html__( 'Partner Home Page', 'bp-business-profile' ),
 			'about'              => esc_html__( 'About', 'bp-business-profile' ),
+			'blog'    			 => esc_html__( 'Partner Blog', 'bp-business-profile' ),
+			'medias'             => esc_html__( 'Media', 'bp-business-profile' ), // partner library
+			'activity' 			 => esc_html__( 'Activity', 'bp-business-profile' ),
 			'follower'           => esc_html__( 'Followers', 'bp-business-profile' ),
-			'beam-line-activity' => esc_html__( 'Activity', 'bp-business-profile' ),
-			'beam-line-blogs'    => esc_html__( 'Partner Blog', 'bp-business-profile' ),
-			'medias'             => esc_html__( 'Media', 'bp-business-profile' ),
+			'groups'           	 => esc_html__( 'Groups', 'bp-business-profile' ),			
 			$reviews_slug        => esc_html__( 'Reviews', 'bp-business-profile' ),			
 			'inbox'              => esc_html__( 'Inbox', 'bp-business-profile' ),
 			$settings_slug       => esc_html__( 'Settings', 'bp-business-profile' ),
@@ -1333,6 +1620,8 @@ class Sayansi_Core_Public {
 			unset( $items['inbox'] );
 			//unset( $items['medias'] );
 		}
+
+		
 
 		if ( is_single() && get_post_type() === 'business' ) {
 			$business_id  = get_the_ID();
@@ -1360,7 +1649,7 @@ class Sayansi_Core_Public {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 				$upload = wp_handle_upload($file, ['test_form' => false]);
 				if (isset($upload['error'])) {
-				wp_die('Upload error: ' . $upload['error']);
+				wp_die('Upload error: ' . $upload['error']); //phpcs:ignore
 			}
 			$file_url = $upload['url'];
 			groups_update_groupmeta( $group_id, 'group_feature_image', $file_url );
@@ -1379,7 +1668,7 @@ class Sayansi_Core_Public {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 				$upload = wp_handle_upload($file, ['test_form' => false]);
 				if (isset($upload['error'])) {
-				wp_die('Upload error: ' . $upload['error']);
+				wp_die('Upload error: ' . $upload['error']); //phpcs:ignore
 			}
 			$file_url = $upload['url'];
 			groups_update_groupmeta( $group_id, 'group_column_one_logo', $file_url);
@@ -1398,7 +1687,7 @@ class Sayansi_Core_Public {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 				$upload = wp_handle_upload($file, ['test_form' => false]);
 				if (isset($upload['error'])) {
-				wp_die('Upload error: ' . $upload['error']);
+				wp_die('Upload error: ' . $upload['error']); //phpcs:ignore
 			}
 			$file_url = $upload['url'];
 			groups_update_groupmeta( $group_id, 'group_column_two_logo', $file_url );
@@ -1417,7 +1706,7 @@ class Sayansi_Core_Public {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 				$upload = wp_handle_upload($file, ['test_form' => false]);
 				if (isset($upload['error'])) {
-				wp_die('Upload error: ' . $upload['error']);
+				wp_die('Upload error: ' . $upload['error']); //phpcs:ignore
 			}
 			$file_url = $upload['url'];
 			groups_update_groupmeta( $group_id, 'group_column_three_logo', $file_url );
@@ -1436,7 +1725,7 @@ class Sayansi_Core_Public {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 				$upload = wp_handle_upload($file, ['test_form' => false]);
 				if (isset($upload['error'])) {
-				wp_die('Upload error: ' . $upload['error']);
+				wp_die('Upload error: ' . $upload['error']); //phpcs:ignore
 			}
 			$file_url = $upload['url'];
 			groups_update_groupmeta( $group_id, 'group_column_four_logo', $file_url );
@@ -1463,8 +1752,18 @@ class Sayansi_Core_Public {
 			'parent_slug'     => bp_get_current_group_slug(),
 			'parent_url'      => bp_get_group_permalink( groups_get_current_group() ),
 			'screen_function' => array( $this, 'wbcom_display_group_partner_screen' ),
-			'position'        => 30,
+			'position'        => 40,
 			), 'groups' );
+
+		// add Message Center tab
+		// bp_core_new_subnav_item( array(
+		// 	'name'                => _x( 'Message Center', 'Message Center', 'sayansi-core' ),
+		// 	'slug'            => 'message-center',
+		// 	'parent_slug'     => bp_get_current_group_slug(),
+		// 	'parent_url'      => bp_get_group_permalink( groups_get_current_group() ),
+		// 	'screen_function' => array( $this, 'wbcom_display_manage_center_screen' ),
+		// 	'position'        => 60,
+		// 	), 'groups' );
 	}
 
 	public function wbcom_my_home_show_screen(){
@@ -1480,8 +1779,12 @@ class Sayansi_Core_Public {
 			if( $get_feature_img ){
 			?>
 			<img src="<?php echo esc_url( $get_feature_img ); ?>" alt="logo" width="500" height="600">
-			<?php } else{
-				echo '<p>No Feature Image Found</p>';
+			<?php } else{				
+				echo sprintf(
+				'<p>%s</p>',
+					esc_html__( 'No Feature Image Found', 'sayansi-core' )
+				);
+
 			}?>
 		</div>
 		<div class="profile-home-column">
@@ -1493,25 +1796,36 @@ class Sayansi_Core_Public {
 						if( $group_column_one_logo ){
 						?>
 						<img src="<?php echo esc_url( $group_column_one_logo ); ?>" alt="logo" width="500" height="600"> 
-						<?php } else{ 
-							echo '<p>No Column one Logo Found</p>';
-						}?>
+						<?php } else{ 							
+							echo sprintf(
+								'<p>%s</p>',
+									esc_html__( 'No Column one Logo Found', 'sayansi-core' )
+								);
+							}
+						?>
 					</div>
 					<?php
 					$group_column_one_title = groups_get_groupmeta( $group_id, 'group_column_one_title' );
 					if( $group_column_one_title ){					
 					?>
-					<h3 class="profile-home-columns-title"><?php echo groups_get_groupmeta( $group_id, 'group_column_one_title' ); ?></h3>
-					<?php } else{
-						echo '<p>No Column one Tiltle Found</p>';
-					}
+					<h3 class="profile-home-columns-title"><?php echo esc_html( groups_get_groupmeta( $group_id, 'group_column_one_title' ) ); ?></h3>
+					<?php } else {						
+						echo sprintf(
+								'<p>%s</p>',
+									esc_html__( 'No Column one Tiltle Found', 'sayansi-core' )
+								);
+						}
 					$group_column_one_desc = groups_get_groupmeta( $group_id, 'group_column_one_desc' );
 					if($group_column_one_desc){
 					?>
-					<div class="profile-home-columns-content"><?php echo $group_column_one_desc; ?></div>
-					<?php } else{
-						echo '<p>No Column one Content Found</p>';
-					}?>
+					<div class="profile-home-columns-content"><?php echo esc_html( $group_column_one_desc ); ?></div>
+					<?php } else {						
+							echo sprintf(
+							'<p>%s</p>',
+								esc_html__( 'No Column one Content Found', 'sayansi-core' )
+							);
+						}
+					?>
 				</a>
 			</div>
 
@@ -1523,24 +1837,30 @@ class Sayansi_Core_Public {
 						if( $group_column_two_logo ){
 						?>
 						<img src="<?php echo esc_url( $group_column_two_logo ); ?>" alt="logo" width="500" height="600"> 
-						<?php } else{ 
-							echo '<p>No Column two Logo Found</p>';
+						<?php } else{ 							
+							echo sprintf(
+							'<p>%s</p>',
+								esc_html__( 'No Column two Logo Found', 'sayansi-core' )
+							);
 						}?>
 					</div>
 					<?php
 					$group_column_two_title = groups_get_groupmeta( $group_id, 'group_column_two_title' );
 					if( $group_column_two_title ){					
 					?>
-					<h3 class="profile-home-columns-title"><?php echo groups_get_groupmeta( $group_id, 'group_column_two_title' ); ?></h3>
+					<h3 class="profile-home-columns-title"><?php echo esc_html( groups_get_groupmeta( $group_id, 'group_column_two_title' ) ); ?></h3>
 					<?php } else{
 						echo '<p>No Column two Tiltle Found</p>';
 					}
 					$group_column_two_desc = groups_get_groupmeta( $group_id, 'group_column_two_desc' );
 					if($group_column_two_desc){
 					?>
-					<div class="profile-home-columns-content"><?php echo $group_column_two_desc; ?></div>
-					<?php } else{
-						echo '<p>No Column two Content Found</p>';
+					<div class="profile-home-columns-content"><?php echo esc_html( $group_column_two_desc ); ?></div>
+					<?php } else {						
+						echo sprintf(
+							'<p>%s</p>',
+								esc_html__( 'No Column two Content Found', 'sayansi-core' )
+							);
 					}?>
 				</a>
 			</div>
@@ -1553,24 +1873,33 @@ class Sayansi_Core_Public {
 						if( $group_column_three_logo ){
 						?>
 						<img src="<?php echo esc_url( $group_column_three_logo ); ?>" alt="logo" width="500" height="600"> 
-						<?php } else{ 
-							echo '<p>No Column three Logo Found</p>';
+						<?php } else { 							
+							echo sprintf(
+							'<p>%s</p>',
+								esc_html__( 'No Column three Logo Found', 'sayansi-core' )
+							);
 						}?>
 					</div>
 					<?php
 					$group_column_three_title = groups_get_groupmeta( $group_id, 'group_column_three_title' );
 					if( $group_column_three_title ){					
 					?>
-					<h3 class="profile-home-columns-title"><?php echo groups_get_groupmeta( $group_id, 'group_column_three_title' ); ?></h3>
-					<?php } else{
-						echo '<p>No Column three Tiltle Found</p>';
+					<h3 class="profile-home-columns-title"><?php echo esc_html( groups_get_groupmeta( $group_id, 'group_column_three_title' ) ); ?></h3>
+					<?php } else {						
+						echo sprintf(
+							'<p>%s</p>',
+								esc_html__( 'No Column three Tiltle Found', 'sayansi-core' )
+							);
 					}
 					$group_column_three_desc = groups_get_groupmeta( $group_id, 'group_column_three_desc' );
 					if($group_column_three_desc){
 					?>
-					<div class="profile-home-columns-content"><?php echo $group_column_three_desc; ?></div>
-					<?php } else{
-						echo '<p>No Column three Content Found</p>';
+					<div class="profile-home-columns-content"><?php echo esc_html( $group_column_three_desc ); ?></div>
+					<?php } else {						
+						echo sprintf(
+							'<p>%s</p>',
+								esc_html__( 'No Column three Content Found', 'sayansi-core' )
+							);
 					}?>
 				</a>
 			</div>
@@ -1583,24 +1912,33 @@ class Sayansi_Core_Public {
 						if( $group_column_four_logo ){
 						?>
 						<img src="<?php echo esc_url( $group_column_four_logo ); ?>" alt="logo" width="500" height="600"> 
-						<?php } else{ 
-							echo '<p>No Column four Logo Found</p>';
+						<?php } else { 							
+							echo sprintf(
+							'<p>%s</p>',
+								esc_html__( 'No Column four Logo Found', 'sayansi-core' )
+							);
 						}?>
 					</div>
 					<?php
 					$group_column_four_title = groups_get_groupmeta( $group_id, 'group_column_four_title' );
 					if( $group_column_four_title ){					
 					?>
-					<h3 class="profile-home-columns-title"><?php echo groups_get_groupmeta( $group_id, 'group_column_four_title' ); ?></h3>
-					<?php } else{
-						echo '<p>No Column four Tiltle Found</p>';
+					<h3 class="profile-home-columns-title"><?php echo esc_html( groups_get_groupmeta( $group_id, 'group_column_four_title' ) ); ?></h3>
+					<?php } else {						
+						echo sprintf(
+							'<p>%s</p>',
+								esc_html__( 'No Column four Tiltle Found', 'sayansi-core' )
+							);
 					}
 					$group_column_four_desc = groups_get_groupmeta( $group_id, 'group_column_four_desc' );
 					if($group_column_four_desc){
 					?>
-					<div class="profile-home-columns-content"><?php echo $group_column_four_desc; ?></div>
-					<?php } else{
-						echo '<p>No Column four Content Found</p>';
+					<div class="profile-home-columns-content"><?php echo esc_html( $group_column_four_desc ); ?></div>
+					<?php } else {						
+						echo sprintf(
+							'<p>%s</p>',
+								esc_html__( 'No Column four Content Found', 'sayansi-core' )
+							);
 					}?>
 				</a>
 			</div>
@@ -1616,124 +1954,110 @@ class Sayansi_Core_Public {
 	// Display partner under the group
 	public function wbcom_group_partner_screen_display(){
 		$group_id = bp_get_current_group_id(); 
-		$business_id = groups_get_groupmeta( $group_id, 'bp-group-add-business', true );		
-		$business = get_post( $business_id );
-		$_business_cover_image  = get_post_meta( $business_id, '_business_cover_image', true );
-		$_business_avatar_image = get_post_meta( $business_id, '_business_avatar_image', true );
-		$average_rating         = bp_business_profile_get_average_rating_for_business( $business_id );
-		$category               = get_the_terms( $business_id, 'business-category' );
-		$category_name          = '';
-		
-		if( $business_id ){
-		?>
-			<div id="business-dir-list" class="business dir-list" data-bp-list="business">	<div id="business-list-container" class="business-list-container">
-			<div id="business-list-container" class="business-list-container">
-				<ul id="business-list" class="item-list business-list row grid">
-					<li class="col col-md-4 col-sm-6 col-xs-12">
-						<div class="bp-business-list-wrap">
-							<a href="<?php echo esc_url( get_permalink() ); ?>" class="bp-business-list-inner-wrap">
-								<div class="bp-business-cover-img">					
-								<?php if ( $_business_cover_image != '' ) : ?>
-									<?php echo wp_get_attachment_image( esc_attr($_business_cover_image), 'full' ); ?>
-								<?php else : ?>
-									<?php bp_business_profile_defaut_cover_image(); ?>
-								<?php if ( $category_name != '' ) : ?>
-									<span class="bp-business-category"><?php echo esc_html( $category_name ); ?></span>
-								<?php endif; ?>
-								<?php endif ?>
-									<span class="bp-business-category"><?php echo esc_html( $business->post_title ); ?></span>				
-								</div>
-							</a>
-							<div class="item-avatar bp-business-avatar">				
-								<?php 
-									if ( $_business_avatar_image != '' ) :
-										echo wp_get_attachment_image( $_business_avatar_image );
-									else :
-										bp_business_profile_defaut_avatar();
-									endif; 
+	
+		// Get the business IDs, assuming they are stored as an array in groupmeta
+		$business_ids = groups_get_groupmeta( $group_id, 'bp-group-add-business' );
+	
+		// Check if $business_ids is an array and contains data
+		if ( !empty( $business_ids ) && is_array( $business_ids ) ) {
+			?>
+			<div id="business-dir-list" class="business dir-list" data-bp-list="business">
+				<div id="business-list-container" class="business-list-container">
+					<ul id="business-list" class="item-list business-list row grid">
+						<?php
+						foreach ( $business_ids as $business_id ) {
+							$business = get_post( $business_id );
+							$_business_cover_image  = get_post_meta( $business_id, '_business_cover_image', true );
+							$_business_avatar_image = get_post_meta( $business_id, '_business_avatar_image', true );
+							$average_rating          = bp_business_profile_get_average_rating_for_business( $business_id );
+							$category                = get_the_terms( $business_id, 'business-category' );
+							
+							$category_name = '';
+							if ( !empty( $category ) ) {
+								$category_name = $category[0]->name;
+							}
+	
+							if ( $business ) {
 								?>
-							</div>
-							<?php do_action( 'bp_business_before_content_wrap' ); ?>
-
-							<div class="bp-business-content-wrap">
-								<h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-								<?php if ( $average_rating > 0 ) : ?>
-									<div class="bp-business-rating">
-										<span class="bp-business-rating-wrap">
-											<?php bp_business_profile_reviews_html( esc_html($average_rating), esc_html($business_id) ); ?>
-										</span>
+								<li class="col col-md-4 col-sm-6 col-xs-12">
+									<div class="bp-business-list-wrap">
+										<a href="<?php echo esc_url( get_permalink( $business_id ) ); ?>" class="bp-business-list-inner-wrap">
+											<div class="bp-business-cover-img">					
+												<?php if ( $_business_cover_image != '' ) : ?>
+													<?php echo wp_get_attachment_image( esc_attr($_business_cover_image), 'full' ); ?>
+												<?php else : ?>
+													<?php bp_business_profile_defaut_cover_image(); ?>
+												<?php endif; ?>
+												
+												<?php if ( $category_name != '' ) : ?>
+													<span class="bp-business-category"><?php echo esc_html( $category_name ); ?></span>
+												<?php endif; ?>
+											</div>
+										</a>
+	
+										<div class="item-avatar bp-business-avatar">				
+											<?php 
+												if ( $_business_avatar_image != '' ) :
+													echo wp_get_attachment_image( $_business_avatar_image );
+												else :
+													bp_business_profile_defaut_avatar();
+												endif; 
+											?>
+										</div>
+	
+										<?php do_action( 'bp_business_before_content_wrap' ); ?>
+	
+										<div class="bp-business-content-wrap">
+											<h3><a href="<?php echo esc_url( get_permalink( $business_id ) ); ?>"><?php echo esc_html( $business->post_title ); ?></a></h3>
+											<?php if ( $average_rating > 0 ) : ?>
+												<div class="bp-business-rating">
+													<span class="bp-business-rating-wrap">
+														<?php bp_business_profile_reviews_html( esc_html($average_rating), esc_html($business_id) ); ?>
+													</span>
+												</div>
+											<?php endif; ?>
+	
+											<?php do_action( 'bp_business_before_profile_excerpt' ); ?>
+	
+											<?php if ( get_the_excerpt( $business_id ) != '' ) : ?>
+												<div class="bp-business-profile-excerpt">
+													<?php echo esc_html( wp_trim_words( get_the_excerpt( $business_id ), 20 ) ); ?>
+												</div>
+											<?php endif; ?>
+	
+											<?php do_action( 'bp_business_after_profile_excerpt' ); ?>			
+										</div>
+	
+										<div class="bp-business-follow-button-container-wrapper">
+											<div class="bp-business-item-actions">
+												<div id="bp-business-follow-button-<?php echo esc_attr( $business_id ); ?>" class="bp-business-header-nav-button bp-business-follow-button-container bp-business-listing-follow-button">
+													<?php echo wp_kses_post( bp_business_get_follow_button( $business_id, $group_id ) ); ?>
+												</div>
+											</div>
+										</div>					
 									</div>
-								<?php endif; ?>
-
-								<?php do_action( 'bp_business_before_profile_excerpt' ); ?>
-
-								<?php if ( get_the_excerpt() != '' ) : ?>
-									<div class="bp-business-profile-excerpt">
-										<?php echo esc_html( wp_trim_words( get_the_excerpt(), 20 ) ); ?>
-									</div>
-								<?php endif; ?>
-								
-								<?php do_action( 'bp_business_after_profile_excerpt' ); ?>			
-							</div>
-
-							<div class="bp-business-follow-button-container-wrapper">
-								<div class="bp-business-item-actions">
-									<div id="bp-business-follow-button-<?php echo esc_attr( $business_id ); ?>" class="bp-business-header-nav-button bp-business-follow-button-container bp-business-listing-follow-button">
-
-										<?php echo bp_business_get_follow_button( $business_id, $group_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-
-									</div>
-								</div>
-							</div>					
-						</div>
-					</li>
-				</ul>
+								</li>
+								<?php
+							}
+						}
+						?>
+					</ul>
+				</div>
 			</div>
-		</div>
 			<?php
-		} else{
+		} else {
 			esc_html_e( 'Not Found Any Partner !!', 'sayansi-core' );
 		}
 	}
 
-	// Display the fields dynamically
-	public function wbcom_display_business_info_fields_in_general() {		
-		$post_id = get_the_ID();
-		$fields = wbcom_get_business_info_fields();
+	// public function wbcom_display_manage_center_screen(){
+	// 	add_action( 'bp_template_content', array( $this,'wbcom_manage_group_center_screen_display' ) );
+	// 	bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
+	// }
 
-		echo '<form method="post" enctype="multipart/form-data">';
-		wp_nonce_field('wbcom_save_business_info', 'wbcom_business_info_nonce');
-
-		foreach ($fields as $field_key => $field) {
-			$value = get_post_meta($post_id, $field_key, true);
-
-			echo '<p>';
-			echo '<label for="' . esc_attr($field_key) . '">' . esc_html($field['label']) . ':</label><br>';
-
-			// Generate the field based on its type
-			switch ($field['type']) {
-				case 'textarea':
-					echo '<textarea name="' . esc_attr($field_key) . '" id="' . esc_attr($field_key) . '">' . esc_textarea($value) . '</textarea>';
-					break;
-				case 'text':                                   
-						echo '<input type="text" name="' . esc_attr($field_key) .'" value="' . esc_attr($value) . '"> ' .'<br>';               
-					break;
-				case 'file':
-				//   foreach ($field['options'] as $option_value => $option_label) {                    
-						echo '<input type="file" name="' . esc_attr($field_key) .'" value="' . esc_attr($value) . '"> ' . '<br>';
-						echo '<img src="' . esc_url( $value ) .'" alt="logo" width="500" height="600">';
-					// }
-					break;
-				default: // Default to text input
-					echo '<input type="' . esc_attr($field['type']) . '" name="' . esc_attr($field_key) . '" id="' . esc_attr($field_key) . '" value="' . esc_attr($value) . '">';
-					break;
-			}
-
-			echo '</p>';
-		}
-
-		echo '</form>';
-	}
+	// public function wbcom_manage_group_center_screen_display(){
+	// 	echo 'Manage Center';
+	// }
 
 	public function wbcom_save_business_general_info_fields( $post_id ){
 		if (!isset($_POST['wbcom_business_info_nonce']) || !wp_verify_nonce($_POST['wbcom_business_info_nonce'], 'wbcom_save_business_info')) {
@@ -1741,19 +2065,19 @@ class Sayansi_Core_Public {
 		}
 		$fields = wbcom_get_business_info_fields();   
 		foreach ($fields as $field_key => $field) {        
-			if (isset($_POST[$field_key])) {
-				$value = $_POST[$field_key];
-				update_post_meta($post_id, $field_key, $value);
-			}
-			if( isset( $_FILES[$field_key] )  ){
+			if (isset($_FILES[$field_key]) && !empty($_FILES[$field_key]['name'])) {
 				$file = $_FILES[$field_key];
 				require_once ABSPATH . 'wp-admin/includes/file.php';
-					$upload = wp_handle_upload($file, ['test_form' => false]);
-					if (isset($upload['error'])) {
-					wp_die('Upload error: ' . $upload['error']);
+				$upload = wp_handle_upload($file, ['test_form' => false]);
+
+				if (!isset($upload['error'])) {
+					$file_url = $upload['url'];
+					update_post_meta($post_id, $field_key, $file_url);
 				}
-				$file_url = $upload['url'];
-				update_post_meta($post_id, $field_key, $file_url);
+			} elseif (isset($_POST[$field_key])) {
+				// Only update text fields if present in POST.
+				$value = $_POST[$field_key];
+				update_post_meta($post_id, $field_key, $value);
 			}
 		}
 	}
@@ -2094,7 +2418,7 @@ class Sayansi_Core_Public {
 		    'next_text' => __('Next &raquo;', 'sayansi-core'),		    
 		);
 	    echo '<div class="bbp-pagination">';
-	    echo '<div class="bbp-pagination-count">Viewing '. esc_html($start) . ' - ' . esc_html($end) . ' of ' . esc_html($total_forums) . ' forums </div>';
+	    echo '<div class="bbp-pagination-count">Viewing '. esc_html($start) . ' - ' . esc_html($end) . ' of ' . esc_html($total_forums) . ' forums </div>'; //phpcs:ignore
 	    echo '<div class="bbp-pagination-links">' . paginate_links($pagination_args) . '</div>';
 	    echo '</div>';
 		
@@ -2110,20 +2434,20 @@ class Sayansi_Core_Public {
 	    if (bp_is_group() && isset($bp->groups->nav)) {		
 	        // Access the group navigation
 			$nav['name'] = esc_html__( 'Group Blog', 'sayansi-core' );
-			$nav['position'] = 9;
+			$nav['position'] = 10;
 	    }	
 		return $nav;
 	}
 
-	public function wbcom_bp_stats_group_statistics_tabs_position( $pos ){
-		 global $bp;	
-	    // Check if we’re in a group context
-	    if (bp_is_group() && isset($bp->groups->nav)) {		
-	        // Access the group navigation
-			$pos = 90;
-	    }	
-		return $pos;
-	}
+	// public function wbcom_bp_stats_group_statistics_tabs_position( $pos ){
+	// 	 global $bp;	
+	//     // Check if we’re in a group context
+	//     if (bp_is_group() && isset($bp->groups->nav)) {		
+	//         // Access the group navigation
+	// 		$pos = 90;
+	//     }	
+	// 	return $pos;
+	// }
 
 	// add group dropdown on business creation
 	public function wbcom_group_selection_business_creation(){
@@ -2133,14 +2457,14 @@ class Sayansi_Core_Public {
 				'per_page' 	  => -1,
 			)
 		);		
-		echo '<label for="business-group">Select Group</label>';
-		echo '<p class="bp-business-description">Select group to associated partner</p>';
-		echo '<select name="business-group" id="business-group" aria-required="true" class="business-group">';
+		echo '<label for="business-group">' . esc_html( 'Select Groups' ) . '</label>';
+		echo '<p class="bp-business-description">' . esc_html( 'Select groups to associate with your activity' ) . '</p>';
+		echo '<select name="business-group" id="business-group" aria-required="true" class="business-group" multiple="multiple">';
 		echo '<option>' . esc_html( 'Select Group' ) . '</option>';
 		foreach ( $groups['groups'] as $group ) {
 			$business_meta = groups_get_groupmeta( $group->id, 'bp-group-business');
 			if( empty( $business_meta ) ){				 				
-				echo '<option value=" ' . $group->id . ' " > ' . $group->name . ' </option>';				 
+				echo '<option value=" ' . $group->id . ' " > ' . $group->name . ' </option>'; //phpcs:ignore			 
 			}
 		}
 		echo '<select>';
@@ -2218,7 +2542,7 @@ class Sayansi_Core_Public {
 									 echo bp_core_fetch_avatar(array(
 										 'item_id' => $user_id,
 										 'html' => true,
-									 )) . bp_core_get_user_displayname($user_id);
+									 )) . bp_core_get_user_displayname($user_id); //phpcs:ignore
 									 ?>
 								 </a>
 							 </span>
@@ -2240,26 +2564,38 @@ class Sayansi_Core_Public {
 		if (bp_is_my_profile() ) {
 			$compose_url = bp_loggedin_user_domain() . bp_get_messages_slug() . '/compose/?all_connections=1';
 		?>
-		<div class="bp-connections-send-message">
-			<a href="<?php echo esc_url($compose_url); ?>" class="button send-message-to-connections">
-				<?php _e('Send Message', 'buddyboss'); ?>
-			</a>
-		</div>
+		<div class="bp-business-my-connections-label">
+			<h3><?php esc_html_e( 'My Connections', 'sayansi-core' ); ?></h3>
+		</div>		
 		<?php
 		}
 	}
 
 	// manage rediretion on click the send button on use profile under connection tab - mass messaging on user profile
 	public function wbcom_handle_message_redirect() {
-		if (isset($_GET['all_connections']) && $_GET['all_connections'] == 1 && bp_is_messages_component() && bp_is_current_action('compose')) {
+		if (isset($_GET['all_connections']) && ! isset($_GET['component']) && $_GET['all_connections'] == 1 && bp_is_messages_component() && bp_is_current_action('compose')) {						
+			add_action('wp_footer', array($this, 'wbcom_pre_select_connections_on_compose'));
+		} elseif( isset($_GET['component']) && $_GET['component'] == 'team' ){			
 			add_action('wp_footer', array($this, 'wbcom_pre_select_connections_on_compose'));
 		}
 	}
 
 	// manage auto select the connection on the compose - mass messaging on user profile
 	public function wbcom_pre_select_connections_on_compose() {
-		// Get the current user's connections (friend IDs)
-		$connections = friends_get_friend_user_ids(bp_loggedin_user_id());
+		$current_url = home_url(add_query_arg(array(), $_SERVER['REQUEST_URI']));
+		parse_str(parse_url($current_url, PHP_URL_QUERY), $params); 
+		$has_team = isset($params['component']) && $params['component'] === 'team';		
+
+		if ($has_team) {
+			$referel_url = home_url(add_query_arg(array(), $_SERVER['HTTP_REFERER']));		
+			$path = parse_url($referel_url, PHP_URL_PATH); 
+			$segments = explode('/', trim($path, '/')); 
+			$circle_id = end($segments);
+			$connections = bcircles_get_circle_users( $circle_id );
+		} else {
+			// Get the current user's connections (friend IDs)
+			$connections = friends_get_friend_user_ids(bp_loggedin_user_id());
+		}
 
 		// If no connections, exit early
 		if (empty($connections)) {
@@ -2319,71 +2655,533 @@ class Sayansi_Core_Public {
 	<?php
 	}
 
-	// Display confirmation popup on the user profile send message - mass messaging on user profile
-	public function wbcom_add_confirmation_popup_to_send_message(){
-	?>
-		<script type="text/javascript">
-			jQuery(document).ready(function($) {
-				if ($('#bp-messages-send').length) {
-					// Store reference to the button
-					var $sendButton = $('#bp-messages-send');
-					var $form = $('#send_message_form');
+	// Create a tab under the partner setting for display link group with partner
+	public function wbcom_create_link_groups_tab_partner_setting( $settings_tabs ) {
+		$settings_tabs['link-groups'] = 'Link Groups';
+		$settings_tabs['partner-home'] = 'Homepage Settings';
+		$settings_tabs['about'] = 'About';
+		// Rename the default "Delete Partners" to "Delete Partner"
+		if ( isset( $settings_tabs['delete'] ) ) {
+			$settings_tabs['delete'] = esc_html__( 'Delete Partner', 'your-textdomain' );
+		}
 
-					// Handle click on the Send button
-					$sendButton.on('click.messageConfirm', function(e) {
-						e.preventDefault();
-						
-						// Check if dialog already exists
-						if ($('.ui-dialog').length) {
-							return false;
-						}
+		// Desired new order
+		$reordered_tabs = array();
 
-						// Create and show confirmation dialog
-						$('<div class="msg-bulk-dialog"></div>').appendTo('body')
-							.html('<div><h6>Are you sure you want to send this message?</h6></div>')
-							.dialog({
-								modal: true,
-								title: 'Confirm Message Send',
-								zIndex: 10000,
-								autoOpen: true,
-								width: '350px',
-								resizable: false,
-								buttons: {
-									"Yes": function() {
-										// Remove our custom handler temporarily
-										$sendButton.off('click.messageConfirm');
-										
-										// Trigger the original BuddyBoss send action
-										if (typeof bp !== 'undefined' && bp.Messages && bp.Messages.Views) {
-											// Trigger BuddyBoss's internal send mechanism if available
-											$sendButton.trigger('click');
-										} else {
-											// Fallback: simulate the original button click
-											$sendButton[0].click();
-										}
-										
-										// Close dialog
-										$(this).dialog("close");
-									},
-									"No": function() {
-										$(this).dialog("close");
-									}
-								},
-								close: function() {
-									$(this).remove();
-									// Reattach our handler after dialog closes
-									setTimeout(function() {
-										$sendButton.off('click.messageConfirm').on('click.messageConfirm', arguments.callee.caller);
-									}, 100);
-								}
-							});
-						
-						return false;
-					});
+		foreach ( $settings_tabs as $key => $label ) {
+			// Add 'General Settings' first
+			if ( 'general-settings' === $key ) {
+				$reordered_tabs[ $key ] = $label;
+				$reordered_tabs['partner-home'] = $settings_tabs['partner-home']; // Insert Homepage Setting just after General
+			}
+
+			// Add 'Contact Info' and then 'Delete Partners'
+			elseif ( 'contact-info' === $key ) {
+				$reordered_tabs[ $key ] = $label;
+				$reordered_tabs['link-groups'] = $settings_tabs['link-groups']; // Insert Link Groups just after Contact Info
+			}
+
+			// Skip custom keys to avoid duplicate addition
+			elseif ( 'partner-home' !== $key && 'link-groups' !== $key ) {
+				$reordered_tabs[ $key ] = $label;
+			}
+		}
+
+		return $reordered_tabs;
+	}
+
+
+	//remove group from partne under link group tab in partner setting
+	public function wbcom_remove_business_group(){
+		// Check if the required parameters are passed
+		if ( isset($_POST['business_id']) && isset($_POST['group_id']) ) {
+			$business_id = intval( $_POST['business_id'] );
+			$group_id = intval( $_POST['group_id'] );
+	
+			// Get the current groups for the business
+			$partner_groups = get_post_meta( $business_id, 'bp-link-group', true );
+			
+			// Ensure $partner_groups is an array
+			if ( ! is_array( $partner_groups ) ) {
+				$partner_groups = array();
+			}
+			$key = array_search( $group_id, $partner_groups );
+			// If the group ID is in the array, remove it
+			if ( $key !== false ) {
+				unset( $partner_groups[$key] );
+				$partner_groups = array_values( $partner_groups );
+				
+				// Update the business meta with the new group list
+				update_post_meta( $business_id, 'bp-link-group', $partner_groups );
+
+
+				 // Now we need to remove the business_id from the group's meta
+				 $group_businesses = groups_get_groupmeta( $group_id, 'bp-group-add-business', true );
+
+				 // Ensure $group_businesses is an array
+				 if ( ! is_array( $group_businesses ) ) {
+					 $group_businesses = array();
+				 }
+	 
+				 // Remove the business_id from the group’s meta array
+				 $group_key = array_search( $business_id, $group_businesses );
+				 if ( $group_key !== false ) {
+					 unset( $group_businesses[$group_key] ); // Remove the business ID from the group array
+					 // Reindex the array to avoid gaps in keys
+					 $group_businesses = array_values( $group_businesses );
+	 
+					 // Update the group meta with the new business list
+					 groups_update_groupmeta( $group_id, 'bp-group-add-business', $group_businesses );
+					                 	
+				 }
+				 // Return success response
+				wp_send_json_success();
+			} else {
+				// If the group is not found in the meta
+				wp_send_json_error();
+			}
+		} else {
+			// If the necessary data is not provided, return an error
+			wp_send_json_error();
+		}
+	
+		// Always die at the end of an AJAX action
+		wp_die();
+	}
+
+	//added group from partne under link group tab in partner setting
+	public function wbcom_update_partner_groups() {
+		// Check if the required data is available
+		if (isset($_POST['business_id']) && isset($_POST['selected_groups'])) {
+			$business_id = sanitize_text_field($_POST['business_id']); // Sanitize business ID
+
+			$selected_group = sanitize_text_field($_POST['selected_groups']); // Sanitize single group ID
+
+	        // Convert to an array since post meta expects an array
+	        $existing_groups = get_post_meta($business_id, 'bp-link-group', true);
+	        if (!is_array($existing_groups)) {
+	            $existing_groups = [];
+	        }
+
+	        // Add the group if it's not already present
+	        if (!in_array($selected_group, $existing_groups)) {
+	            $existing_groups[] = $selected_group;
+	        }
+
+	        // Update the post meta for the specific business (post) ID
+	        $updated = update_post_meta($business_id, 'bp-link-group', $existing_groups);
+
+	        // Process group meta for 'bp-group-add-business'
+	        $group_businesses = groups_get_groupmeta($selected_group, 'bp-group-add-business', true);
+	        if (!is_array($group_businesses)) {
+	            $group_businesses = [];
+	        }
+
+	        // Add the business ID if it's not already there
+	        if (!in_array($business_id, $group_businesses)) {
+	            $group_businesses[] = $business_id;
+	        }
+
+	        // Update the group meta
+	        groups_update_groupmeta($selected_group, 'bp-group-add-business', $group_businesses);
+
+	
+			if ($updated) {
+				// Success response
+				wp_send_json_success();
+			} else {
+				// Failure response
+				wp_send_json_error();
+			}
+		} else {
+			// Invalid data
+			wp_send_json_error();
+		}
+	
+		wp_die(); // Always call this to terminate the AJAX request
+	}
+
+	// add search for course in user profile
+	public function wbcom_search_courses_user_profile(){
+		$search_query = isset( $_POST['s'] ) ? sanitize_text_field( $_POST['s'] ) : '';
+		$paged = isset( $_POST['page'] ) ? absint( $_POST['page'] ) : 1;
+		$per_page = 15;
+	
+		$args = array(
+			'post_type'      => 'mpcs-course',
+			'posts_per_page' => $per_page,
+			'post_status'    => 'publish',
+			'orderby'        => 'title',
+			'order'          => 'ASC',
+			'paged'          => $paged,
+		);
+	
+		// Only add search parameter if it's not empty
+		if ( ! empty( $search_query ) ) {
+			$args['s'] = $search_query;
+		}
+		
+		$courses = new WP_Query( $args );		
+		ob_start();
+		if ( $courses->have_posts() ) {
+			while ( $courses->have_posts() ) {
+				$courses->the_post();
+				?>
+				<div class="column col-4 col-md-6 col-xs-12">
+					<div class="card s-rounded">
+						<div class="card-image">
+							<a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>">
+								<?php
+								if ( has_post_thumbnail() ) :
+									the_post_thumbnail( 'mpcs-course-thumbnail', array( 'class' => 'img-responsive' ) );
+								else :
+									?>
+									<img src="<?php echo esc_url( bb_meprlms_integration_url( '/assets/images/course-placeholder.jpg' ) ); ?>"
+										class="img-responsive" alt="">
+								<?php endif; ?>
+							</a>
+						</div>
+						<div class="card-content-section">
+							<div class="card-header">
+								<div class="card-title">
+									<h2 class="h5"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
+								</div>
+							</div>
+							<div class="card-body"><?php the_excerpt(); ?></div>
+						</div>
+					</div>
+				</div>				
+				<?php
+			}
+		} else {
+			echo '<p>No courses found.</p>';
+		}
+		wp_reset_postdata();
+	
+		$output = ob_get_clean();
+		echo $output; //phpcs:ignore
+		wp_die();
+	}
+
+	// Reorder the business setting tab( photo, cover image )
+	public function wbcom_reorder_business_setting_tab( $settings_tabs ){
+		if ( isset( $settings_tabs['business-avatar'] ) && isset( $settings_tabs['cover-image'] ) ) {
+			// Store the required tabs
+			$cover_image = $settings_tabs['cover-image'];
+			$business_avatar = $settings_tabs['business-avatar'];
+	
+			// Remove them from the original array
+			unset( $settings_tabs['cover-image'], $settings_tabs['business-avatar'] );
+	
+			// Find the index of 'general-settings' to insert after it
+			$new_settings_tabs = [];
+			foreach ( $settings_tabs as $key => $value ) {
+				$new_settings_tabs[$key] = $value;
+	
+				// Insert 'cover-image' and 'business-avatar' after 'general-settings'
+				if ( $key === 'general-settings' ) {
+					$new_settings_tabs['cover-image'] = $cover_image;
+					$new_settings_tabs['business-avatar'] = $business_avatar;
 				}
-			});
+			}
+	
+			return $new_settings_tabs;
+		}
+	
+		return $settings_tabs;
+	}
 
-		</script>
+	// Hide the business author from the team widget when more than one admin exist.
+	public function wbcom_business_team_widget_admin_user_filter( $business_id, $admin_users_ids ){ ?>
+		<div class="bp-business-member-list-section" id="bp-business-list-section-admin_team">
+			<?php
+			$author_id   = (int) get_post_field( 'post_author', $business_id );
+			// Remove author ID if count of admin users is greater than one
+			if ( count( $admin_users_ids ) > 1 ) {
+				$admin_users_ids = array_diff( $admin_users_ids, array( $author_id ) );
+			}			
+			foreach ( $admin_users_ids as $admin_user ) :		
+				$admin = get_user_by( 'ID', $admin_user );	
+				?>
+				<div class="wpe-wps-member">
+					<a href="<?php echo esc_url( isset( buddypress()->buddyboss ) ? bp_core_get_user_domain( $admin->ID ) : bp_members_get_user_url( $admin->ID ) ); ?>">
+						<?php
+						echo bp_core_fetch_avatar( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							array(
+								'item_id' => $admin->ID,
+								'type'    => 'thumb',
+							)
+						);
+						?>
+					</a>
+
+					<a class="item-title" href="<?php echo esc_url( isset( buddypress()->buddyboss ) ? bp_core_get_user_domain( $admin->ID ) : bp_members_get_user_url( $admin->ID ) ); ?>">
+						<?php echo esc_html( $admin->display_name ); ?>
+					</a>
+
+				</div>
+			<?php endforeach; ?>
+		</div>
 	<?php
 	}
+
+	public function wbcom_indiviual_members_search(){
+
+		$search_user = isset($_POST['user']) ? sanitize_text_field($_POST['user']) : '';
+		$members_order  = isset($_POST['forum_order']) ? sanitize_text_field($_POST['forum_order']) : 'alphabetical';
+		$order 			= sanitize_text_field($_POST['order']);	
+		$layout 		= sanitize_text_field($_POST['layout']);	
+		$args = array(
+			'number'         => 10,
+			'search_columns' => array( 'user_login', 'user_nicename', 'user_email', 'display_name' ),
+		);
+
+		// Add search only if not empty
+		if ( ! empty( $search_user ) ) {
+			$args['search'] = '*' . esc_attr( $search_user ) . '*';
+		}
+
+		// Set the order based on the parameter
+		if ($order === 'alphabetical') {
+			$args['orderby'] = 'title'; // Order by title
+			$args['order'] = 'ASC'; // Ascending order
+		}
+
+		// Apply ordering
+		if ( $members_order === 'recent' ) {
+			$args['orderby'] = 'registered';
+			$args['order']   = 'DESC';
+		} else {
+			// Default to alphabetical
+			$args['orderby'] = 'display_name';
+			$args['order']   = 'ASC';
+		}
+
+		if ( empty( $search_user ) ) {
+			unset( $args['search'] );
+			unset( $args['search_columns'] );
+		}
+
+		$user_query = new WP_User_Query( $args );
+		$users      = $user_query->get_results();
+
+		ob_start();
+
+	if ( ! empty( $users ) ) :		
+		echo '<ul id="members-list" class="' . esc_attr($layout) . ' item-list members-list bp-list individual-members-list">';
+		foreach ( $users as $member ) :
+			$member_id             = $member->ID;
+			$member_joined_date    = function_exists( 'bb_get_member_joined_date' ) ? bb_get_member_joined_date( $member_id ) : '';
+			$member_last_activity  = function_exists( 'bp_get_last_activity' ) ? bp_get_last_activity( $member_id ) : '';
+			$profile_actions       = function_exists( 'bb_member_directories_get_profile_actions' ) ? bb_member_directories_get_profile_actions( $member_id ) : array();
+			?>
+
+			<li class="item-entry odd is-online" data-bp-item-id="<?php echo esc_attr( $member_id ); ?>" data-bp-item-component="members">
+				<a href="<?php echo esc_url( bp_core_get_user_domain( $member_id ) ); ?>">
+					<div class="list-wrap footer-buttons-on no-secondary-buttons no-primary-buttons">
+						<div class="list-wrap-inner">
+							<div class="item-avatar">
+								<?php echo get_avatar( $member_id, 32 ); ?>
+							</div>
+							<div class="item">
+								<div class="item-block">								
+									<h2 class="list-title member-name">
+										<a href="<?php echo esc_url( bp_core_get_user_domain( $member_id ) ); ?>">
+											<?php echo esc_html( $member->display_name ); ?>
+										</a>
+									</h2>
+									<p class="item-meta last-activity">
+										<?php echo wp_kses_post( $member_joined_date ); ?>
+										<span class="separator">&bull;</span>
+										<?php echo wp_kses_post( $member_last_activity ); ?>
+									</p>							
+								</div>
+								<div class="flex align-items-center follow-container justify-center"></div>
+							</div><!-- .item -->
+
+							<div class="member-buttons-wrap">
+								<?php if ( ! empty( $profile_actions['secondary'] ) ) : ?>
+									<div class="flex only-grid-view button-wrap member-button-wrap footer-button-wrap">
+										<?php echo wp_kses_post( $profile_actions['secondary'] ); ?>
+									</div>
+								<?php endif; ?>
+
+								<?php if ( ! empty( $profile_actions['primary'] ) ) : ?>
+									<div class="flex only-list-view align-items-center primary-action justify-center">
+										<?php echo wp_kses_post( $profile_actions['primary'] ); ?>
+									</div>
+								<?php endif; ?>
+							</div><!-- .member-buttons-wrap -->
+						</div>
+
+						<div class="bp-members-list-hook">
+							<div class="bp-members-list-hook-inner"></div>
+						</div>
+					</div>
+				</a>
+			</li>
+
+			<?php
+		endforeach;
+		echo '</ul>';		
+	else :
+		echo '<p>No members found.</p>';
+	endif;
+
+	$response = ob_get_clean();
+	echo $response; //phpcs:ignore
+	wp_die();
+	}
+
+	/*
+	* Add search, filter, layout in all partners sub tab under network tab
+	*/
+	public function wbcom_network_all_partners(){
+		if ( ! wp_verify_nonce( $_POST['nonce'], 'sayansi_ajax_security' ) ) {
+			die( 'Nonce value cannot be verified.' );
+		}
+		
+		$search_query 	= isset( $_POST['query'] ) ? sanitize_text_field( $_POST['query'] ) : '';
+		$partner_order  = isset($_POST['partner_order']) ? sanitize_text_field($_POST['partner_order']) : 'alphabetical';
+		$layout 		= sanitize_text_field($_POST['layout']);		
+
+		$args = array(
+			'post_type'      => 'business',			
+			'post_status'    => 'publish',			
+		);
+	
+		// Only add search parameter if it's not empty
+		if ( ! empty( $search_query ) ) {
+			$args['s'] = $search_query;
+		}
+		
+		if ($partner_order === 'alphabetical') {
+			$args['orderby'] = 'title'; // Order by title
+			$args['order'] = 'ASC'; // Ascending order
+		} elseif ($partner_order === 'recent') {
+			$args['orderby'] = 'date'; // Order by date
+			$args['order'] = 'DESC'; // Descending order (newest first)
+		}
+		
+		$partners = new WP_Query( $args );
+		ob_start();
+		if ( $partners->have_posts() ) {
+			?>
+			<ul id="business-list" class="<?php echo esc_attr($layout);?> item-list business-list row grid">
+				<?php
+			while ( $partners->have_posts() ) {
+				$partners->the_post();
+				$category      = get_the_terms( get_the_ID(), 'business-category' );
+			$category_name = '';
+			if ( ! empty( $category ) ) {
+				$category_name = $category['0']->name;
+			}
+			$_business_avatar_image = get_post_meta( get_the_ID(), '_business_avatar_image', true );
+			$_business_cover_image  = get_post_meta( get_the_ID(), '_business_cover_image', true );
+			$average_rating         = round( bp_business_profile_get_average_rating_for_business( get_the_ID() ) );
+			$stars_on               = $average_rating;
+			$stars_off              = 5 - $stars_on;
+		?>		
+		<li class="col col-md-4 col-sm-6 col-xs-12">
+			<div class="bp-business-list-wrap">
+				<a href="<?php the_permalink(); ?>" class="bp-business-list-inner-wrap">
+					<div class="bp-business-cover-img">
+
+						<?php if ( $_business_cover_image != '' ) : ?>
+
+							<?php echo wp_get_attachment_image( $_business_cover_image, 'full' ); ?>
+
+						<?php else : ?>
+
+							<?php bp_business_profile_defaut_cover_image(); ?>
+
+						<?php endif ?>
+
+						<?php if ( $category_name != '' ) : ?>
+
+							<span class="bp-business-category"><?php echo esc_html( $category_name ); ?></span>
+
+						<?php endif; ?>
+
+					</div>
+				</a>
+				<div class="item-avatar bp-business-avatar">
+					<?php if ( $_business_avatar_image != '' ) : ?>
+
+						<?php echo wp_get_attachment_image( $_business_avatar_image ); ?>
+
+					<?php else : ?>
+
+						<?php bp_business_profile_defaut_avatar(); ?>
+
+					<?php endif; ?>
+				</div>
+
+				<?php do_action( 'bp_business_before_content_wrap' ); ?>
+
+				<div class="bp-business-content-wrap">
+					<h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+					<?php if ( $stars_on > 0 ) : ?>
+						<div class="bp-business-rating">
+							<span class="bp-business-rating-wrap">
+								<?php for ( $i = 1; $i <= $stars_on; $i++ ) { ?>
+									<span class="fas fa-star stars bp-business-stars bp-business-star-rate"></span>
+									<?php
+								}
+								for ( $i = 1; $i <= $stars_off; $i++ ) {
+									?>
+									<span class="far fa-star stars bp-business-stars bp-business-star-rate"></span>
+								<?php } ?>
+							</span>
+						</div>
+					<?php endif; ?>
+
+					<?php do_action( 'bp_business_before_profile_excerpt' ); ?>
+
+					<?php if (  ! empty( get_field( "beam_line_excerpt" ) ) ) : ?>
+						<div class="bp-business-profile-excerpt">
+							<?php echo get_field( "beam_line_excerpt" ); //phpcs:ignore ?>
+						</div>
+						<?php endif; ?>
+
+					<?php do_action( 'bp_business_after_profile_excerpt' ); ?>
+				</div>
+
+				<?php do_action( 'bp_business_after_content_wrap' ); ?>
+
+			</div>
+			</li>
+		
+			<?php
+			}
+			?>
+			</ul>
+			<?php
+		} else {
+			echo '<p>No partners found.</p>';
+		}
+		wp_reset_postdata();
+	
+		$output = ob_get_clean();
+		echo $output;  //phpcs:ignore
+		wp_die();
+	}
+
+	/*
+	* Add per page for member directory
+	*/
+	public function wbcom_bp_increase_members_per_page_on_directory($r){
+		$r['per_page'] = 21; 
+		return $r; 
+	}
+
+	/*
+	* Add per page for group directory
+	*/
+	public function wbcom_bp_increase_groups_per_page_on_directory( $r ) {
+	  $r['per_page'] = 21; // Change this value to your desired number
+	  return $r;
+	}
+	
+		
 }

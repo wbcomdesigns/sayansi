@@ -185,7 +185,7 @@ class Sayansi_Core {
 		// $this->loader->add_filter( 'bb_user_can_create_document', $plugin_public, 'wbcom_bb_user_can_create_document' );
 		$this->loader->add_action( 'groups_group_details_edited', $plugin_public, 'wbcom_group_detail' );
 		$this->loader->add_action( 'bp_actions', $plugin_public, 'wbcom_bp_add_group_subnav_tab' );
-		$this->loader->add_action('business_profile_after_general_settings', $plugin_public, 'wbcom_display_business_info_fields_in_general');
+	
 		$this->loader->add_action('save_post', $plugin_public, 'wbcom_save_business_general_info_fields');
 		$this->loader->add_filter( 'bp_after_has_document_parse_args', $plugin_public, 'wbcom_has_document_parse_args', 10, 1 );
 		$this->loader->add_action('wp_ajax_load_forum_discussion', $plugin_public, 'wbcom_load_forum_discussion');
@@ -206,7 +206,7 @@ class Sayansi_Core {
 		$this->loader->add_action('bp_blog_pro_group_blog_tab', $plugin_public, 'wbcom_bp_blog_pro_reorder_group_blog_tab_position', 999);
 
 		// reorder bp stats tab
-		$this->loader->add_action('bp_stats_group_statistics_tab_filter', $plugin_public, 'wbcom_bp_stats_group_statistics_tabs_position', 999);
+		// $this->loader->add_action('bp_stats_group_statistics_tab_filter', $plugin_public, 'wbcom_bp_stats_group_statistics_tabs_position', 999);
 
 		// add group dropdown on the business creation
 		$this->loader->add_action( 'bp_business_create_after_field', $plugin_public, 'wbcom_group_selection_business_creation' );	
@@ -215,10 +215,40 @@ class Sayansi_Core {
 		// add course filter
 		$this->loader->add_action( 'wp_ajax_filter_courses', $plugin_public, 'wbcom_filter_courses' );
 
-		// mass messaging hook to send message from user profile connection tab
-		$this->loader->add_action( 'wp_footer', $plugin_public, 'wbcom_add_confirmation_popup_to_send_message' );
+		// mass messaging hook to send message from user profile connection tab		
 		$this->loader->add_action('bp_before_member_friends_content', $plugin_public, 'wbcom_add_send_message_button_user_connection_tab');
 		$this->loader->add_action('wp', $plugin_public, 'wbcom_handle_message_redirect');
+
+		// create link group tab on partner setting
+		$this->loader->add_filter( 'bp_business_profile_single_settings_tabs', $plugin_public, 'wbcom_create_link_groups_tab_partner_setting',999,1);
+
+		//remove group from partne under link group tab in partner setting
+		$this->loader->add_action( 'wp_ajax_remove_business_group', $plugin_public, 'wbcom_remove_business_group' );
+		$this->loader->add_action( 'wp_ajax_update_partner_groups', $plugin_public, 'wbcom_update_partner_groups' );
+
+		// search added on course for user profile
+		$this->loader->add_action( 'wp_ajax_search_courses_user_profile', $plugin_public, 'wbcom_search_courses_user_profile' );
+
+		// Reorder the business setting tab( photo, cover image )
+		$this->loader->add_filter( 'bp_business_profile_single_settings_tabs', $plugin_public, 'wbcom_reorder_business_setting_tab');
+
+		// Hide the business author from the team widget when more than one admin exist.
+		$this->loader->add_action( 'bp_business_profile_team_widget_before_admins', $plugin_public, 'wbcom_business_team_widget_admin_user_filter', 10,2 );
+
+		//for individual members under network tab search, filter, layout 
+		$this->loader->add_action( 'wp_ajax_indiviual_members_search', $plugin_public, 'wbcom_indiviual_members_search');
+		$this->loader->add_action( 'wp_ajax_nopriv_indiviual_members_search', $plugin_public, 'wbcom_indiviual_members_search');
+
+		//for all partner under network tab search, filter, layout 	
+		$this->loader->add_action( 'wp_ajax_network_all_partners', $plugin_public, 'wbcom_network_all_partners');
+		$this->loader->add_action( 'wp_ajax_nopriv_network_all_partners', $plugin_public, 'wbcom_network_all_partners');
+
+		//Add per page for member directory
+		$this->loader->add_filter( 'bp_after_has_members_parse_args', $plugin_public, 'wbcom_bp_increase_members_per_page_on_directory');
+
+		//Add per page for group directory
+		$this->loader->add_filter( 'bp_after_has_groups_parse_args', $plugin_public, 'wbcom_bp_increase_groups_per_page_on_directory' );
+
 					
 	}
 

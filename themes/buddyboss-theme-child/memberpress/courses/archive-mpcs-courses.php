@@ -42,26 +42,8 @@ get_header();
 				<div class="buddypress-wrap bbpress-forum-wrap">
 					<div class="flex bp-secondary-header align-items-center">
 						<div class="push-right flex">
-
+							
 							<div class="dropdown">
-								<a href="#" class="btn btn-link dropdown-toggle" tabindex="0">
-									<?php esc_html_e( 'FIlter', 'buddyboss-pro' ); ?>: <span></span><i class="mpcs-down-dir"></i>
-								</a>
-								<ul class="menu">
-									<?php
-									$terms = get_terms( 'mpcs-course-categories' ); // Get all terms of a taxonomy.
-
-									printf( '<li><input type="text" class="form-input mpcs-dropdown-search" placeholder="%s" id="mpmcSearchCategory"></li>', esc_html__( 'Search', 'buddyboss-pro' ) );
-
-									printf( '<li class="%s"><a href="%s">%s</a></li>', esc_attr( '' === $category ? 'active' : 'noactive' ), esc_url( add_query_arg( 'category', '', $filter_base_url ) ), esc_html__( 'All', 'buddyboss-pro' ) );
-									foreach ( $terms as $term ) {
-										printf( '<li class="%s"><a href="%s">%s</a></li>', esc_attr( $category === $term->slug ? 'active' : 'noactive' ), esc_url( add_query_arg( 'category', $term->slug, $filter_base_url ) ), esc_html( $term->name ) );
-									}
-									?>
-								</ul>
-							</div>
-
-							<div class="dropdown" style="display: none;">
 								<a href="#" class="btn btn-link dropdown-toggle" tabindex="0">
 									<?php esc_html_e( 'Author', 'buddyboss-pro' ); ?>: <span></span><i class="mpcs-down-dir"></i>
 								</a>
@@ -80,14 +62,7 @@ get_header();
 									?>
 								</ul>
 							</div>
-
-							<div class="archives-authors-section">
-								<ul>
-
-								</ul>
-							</div>
-			
-
+							
 							<div class="column col-sm-12">
 								<form method="GET" class="" action="<?php echo esc_url( $courses_page ); ?>">
 									<div class="input-group">
@@ -98,6 +73,30 @@ get_header();
 									</div>
 								</form>
 
+							</div>
+							
+							<div class="dropdown">
+								<a href="#" class="btn btn-link dropdown-toggle" tabindex="0">
+									<?php esc_html_e( 'FIlter', 'buddyboss-pro' ); ?>: <span></span><i class="mpcs-down-dir"></i>
+								</a>
+								<ul class="menu">
+									<?php
+									$terms = get_terms( 'mpcs-course-categories' ); // Get all terms of a taxonomy.
+
+									printf( '<li><input type="text" class="form-input mpcs-dropdown-search" placeholder="%s" id="mpmcSearchCategory"></li>', esc_html__( 'Search', 'buddyboss-pro' ) );
+
+									printf( '<li class="%s"><a href="%s">%s</a></li>', esc_attr( '' === $category ? 'active' : 'noactive' ), esc_url( add_query_arg( 'category', '', $filter_base_url ) ), esc_html__( 'All', 'buddyboss-pro' ) );
+									foreach ( $terms as $term ) {
+										printf( '<li class="%s"><a href="%s">%s</a></li>', esc_attr( $category === $term->slug ? 'active' : 'noactive' ), esc_url( add_query_arg( 'category', $term->slug, $filter_base_url ) ), esc_html( $term->name ) );
+									}
+									?>
+								</ul>
+							</div>
+
+							<div class="archives-authors-section">
+								<ul>
+
+								</ul>
 							</div>
 
 						<div class="grid-filters">

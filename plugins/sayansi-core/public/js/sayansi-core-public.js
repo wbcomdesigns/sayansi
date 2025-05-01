@@ -177,6 +177,7 @@
 
 
 		jQuery(document).ready(function($) {
+			var business_id = sayansi_ajax_object.business_id;
 			if( sayansi_ajax_object.check_group_component ){
 				return;
 			}		
@@ -299,6 +300,204 @@
 				});
 			});
 
+
+			$( "#business-group" ).selectize({
+				plugins: ["remove_button"],
+				delimiter: ",",
+				persist: false,
+				create: false, // Do not allow new options to be created
+				sortField: "text", // Sort options alphabetically
+				create: function (input) {
+				  return {
+					value: input,
+					text: input,
+				  };
+				},
+			  });
+
+			$("#partner_groups").selectize({
+				plugins: ["remove_button"],
+				delimiter: ",",
+				persist: false,
+				create: false, // Do not allow new options to be created
+				sortField: "text", // Sort options alphabetically
+				create: function (input) {
+				  return {
+					value: input,
+					text: input,
+				  };
+				},
+				onItemAdd: function(values) {
+					// Use AJAX to send the data to a server-side script (PHP, for example)
+					$.ajax({
+						url: sayansi_ajax_object.ajax_url,
+						type: 'POST', 
+						data: {
+							action: 'update_partner_groups',
+							business_id: business_id,
+							selected_groups: values
+						},
+						success: function(response) {							
+							alert("Group added successfully");
+						},
+						error: function(xhr, status, error) {
+							console.error('AJAX Error:', error); // Handle any errors in the request
+						}
+					});
+				},
+				onItemRemove: function (value) {					
+					$.ajax({
+						url: sayansi_ajax_object.ajax_url,
+						type: "POST",
+						data: { 
+							action: "remove_business_group", 
+							business_id: business_id,
+							group_id: value // Send removed group ID
+						},
+						success: function (response) {
+							alert("Group Removed successfully");
+						},
+						error: function (xhr, status, error) {
+							console.log("Remove Error:", error);
+						}
+					});
+				}
+			});
+
+			// add search for course in user profile
+			function fetchCourses(searchQuery = '') {
+				$.ajax({
+					url: sayansi_ajax_object.ajax_url,
+					type: 'POST',
+					data: {
+						action: 'search_courses_user_profile',
+						s: searchQuery
+					},
+					success: function(response) {						
+						$('.mpcs-cards').html(response);
+					}
+				});
+			}
+
+			$('#course-search-input').on('keyup', function() {				
+				var searchQuery = $(this).val().trim();
+				fetchCourses(searchQuery);
+			});
+			// end add search for course in user profile
+
+
+			// search, filter on user profile network->all inidividual tab
+			// Forums search functionality
+			function fetchMembers(searchUser = '', order = 'alphabetical', forum_order = '', selectedLayout = 'grid', paged = 1 ) {
+				$.ajax({
+					url: sayansi_ajax_object.ajax_url,
+					type: 'POST',
+					data: {
+						action: 'indiviual_members_search',
+						user: searchUser,
+						order: order,
+						forum_order: forum_order,
+						layout: selectedLayout,
+						paged: paged
+					},
+					success: function(response) {
+						$('#members-dir-list').html(response);
+					}
+				});
+			}
+		
+			// Forum Search functionality
+			$('#individual-member-search').on('keyup', function() {
+				var searchUser = $(this).val();
+				var selectedLayout = $('.layout-view.active').data('view'); // Get the active layout view							
+				fetchMembers(searchUser, 'alphabetical', '', selectedLayout );
+			});
+
+			// Prevent form submission on Enter key press
+			$('#individual-member-search').on('keydown', function(e) {
+				if (e.key === 'Enter') {
+					e.preventDefault();
+					var searchQuery = $(this).val();
+					fetchMembers(searchQuery);
+				}
+			});
+			
+			// Filter the member alphabatically or recently 
+			$('#individual-members-order-by').on('change', function() {
+				var members_order = $(this).val();
+				var selectedLayout = $('.layout-view.active').data('view'); // Get the active layout view
+				fetchMembers( '', 'alphabetical', members_order, selectedLayout );				
+			});	
+
+			// end search, filter on user profile network->all inidividual tab
+
+			//Add active, grid, list class also maintain the classes on page nevigation
+			var savedLayout = localStorage.getItem('forumLayout') || 'grid'; // Default to grid if not set			
+		   	$('#members-list').removeClass('grid list').addClass(savedLayout);
+
+			$('.layout-view').on('click', function(e) {
+				e.preventDefault(); // Prevent default anchor behavior
+
+				var view = $(this).data('view'); // Get the view type (grid or list)
+				
+				$('.layout-view').removeClass('active');
+				$(this).addClass('active');
+
+				localStorage.setItem('forumLayout', view);
+				// Remove existing classes and add the new one
+				$('#members-list').removeClass('grid list').addClass(view);
+				$('#business-list').removeClass('grid list').addClass(view);			
+
+			});
+
+			// search, filter , layout on user profile network->all partner tab
+			function fetchPartners(searchQuery = '', order = 'alphabetical', partner_order = '', selectedLayout = 'grid', paged = 1 ) {
+				$.ajax({
+					url: sayansi_ajax_object.ajax_url,
+					type: 'POST',
+					data: {
+						action: 'network_all_partners',
+						nonce: sayansi_ajax_object.ajax_nonce,
+						query: searchQuery,
+						order: order,
+						partner_order: partner_order,
+						layout: selectedLayout,
+						paged: paged
+					},
+					success: function(response) {
+						$('#business-list-container').html(response);
+					}
+				});
+			}
+		
+			// Forum Search functionality
+			$('#network-all-partners-search').on('keyup', function() {
+				var searchQuery = $(this).val();				
+				var selectedLayout = $('.layout-view.active').data('view'); // Get the active layout view							
+				fetchPartners(searchQuery, 'alphabetical', '', selectedLayout );
+			});
+
+			// Filter the member alphabatically or recently 
+			$('#network-all-partners-order-by').on('change', function() {
+				var partner_order = $(this).val();
+				var selectedLayout = $('.layout-view.active').data('view'); // Get the active layout view
+				fetchPartners( '', 'alphabetical', partner_order, selectedLayout );				
+			});	
+
+			//Add active, grid, list class also maintain the classes on page nevigation
+			var savedLayout = localStorage.getItem('forumLayout') || 'grid'; // Default to grid if not se			
+			$('#business-list').addClass(savedLayout); // Set the default class for the forum list
+			// end search, filter , layout on user profile network->all partner tab
+
+			// this is for that hide save partner setting button from the partner/settings/about
+			$('.bp-profile-setting-sub-tab').click( function(){
+				$('body').removeClass('about_list');
+				// Check if this is the About tab
+				if ($(this).data('id') === 'about') {
+					$('body').addClass('about_list');
+				}				
+			});
+			
 		});
 		
 	});

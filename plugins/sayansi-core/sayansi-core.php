@@ -208,7 +208,7 @@ add_action('save_post', 'wbcom_update_business_excerpt_value');
 
 add_action('wp', 'wbcom_document');
 function wbcom_document(){
-	if ( ! current_user_can( 'manage_options' ) ) {
+	if ( ! current_user_can( 'manage_options' ) && 'document' == bp_current_component() ) {
 	?>
 	<style>
 		.document-options #bp-add-document,

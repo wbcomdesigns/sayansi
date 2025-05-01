@@ -1,79 +1,77 @@
-/**
- * All of the CSS for your public-facing functionality should be
- * included in this file.
- */
+.profile-home-header img {
+    height: 300px;
+    width: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 10px;
+    margin-bottom: -50px;
+}
 
+.profile-home-column {
+    display: -webkit-box;
+    display: -moz-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+    max-width: 90%;
+    margin: auto;
+}
 
- .profile-home-header img {
-     height: 300px;
-	 width: 100%;
-     object-fit: cover;
-     display: block;
-     border-radius: 10px;
-     margin-bottom: -50px;
- }
+.profile-home-columns {
+    width: calc(25% - 15px);
+    padding: 30px;
+    -webkit-box-shadow: 0 0 7px 1px rgba(75, 131, 252, 0.15);
+    -ms-box-shadow: 0 0 7px 1px rgba(75, 131, 252, 0.15);
+    -o-box-shadow: 0 0 7px 1px rgba(75, 131, 252, 0.15);
+    box-shadow: 0 0 7px 1px rgba(75, 131, 252, 0.15);
+    border-radius: 10px;
+    -webkit-transition: all ease 0.5s;
+    transition: all ease 0.5s;
+    background: #fff;
+}
 
- .profile-home-column {
-     display: -webkit-box;
-     display: -moz-flex;
-     display: -ms-flexbox;
-     display: flex;
-     -ms-flex-wrap: wrap;
-     flex-wrap: wrap;
-     gap: 20px;
-     width: 100%;
-     max-width: 90%;
-     margin: auto;
- }
+.profile-home-columns .profile-home-columns-img img {
+    max-height: 80px;
+    max-width: 80px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    display: block;
+}
 
- .profile-home-columns {
-     width: calc(25% - 15px);
-     padding: 30px;
-     -webkit-box-shadow: 0 0 7px 1px rgba(75, 131, 252, 0.15);
-     -ms-box-shadow: 0 0 7px 1px rgba(75, 131, 252, 0.15);
-     -o-box-shadow: 0 0 7px 1px rgba(75, 131, 252, 0.15);
-     box-shadow: 0 0 7px 1px rgba(75, 131, 252, 0.15);
-     border-radius: 10px;
-     -webkit-transition: all ease 0.5s;
-     transition: all ease 0.5s;
-     background: #fff;
- }
+.profile-home-columns .profile-home-columns-title {
+    margin-bottom: 10px;
+}
 
- .profile-home-columns .profile-home-columns-img img {
-     max-height: 80px;
-     max-width: 80px;
-     margin-bottom: 20px;
-     border-radius: 10px;
-     display: block;
- }
-
- .profile-home-columns .profile-home-columns-title {
-     margin-bottom: 10px;
- }
-
-#edit-personal-li, #change-avatar-personal-li, #change-cover-image-personal-li{
+#edit-personal-li,
+#change-avatar-personal-li,
+#change-cover-image-personal-li {
     display: none;
- }
+}
 
-#page #buddypress #item-body .bp-profile-wrapper #subnav li#cv-personal-li, 
+#page #buddypress #item-body .bp-profile-wrapper #subnav li#cv-personal-li,
 #page #buddypress #item-body .bp-profile-wrapper #subnav li#add-personal-li {
     display: none;
 }
 
-body.profile-edit #edit-personal-li, body.change-avatar #edit-personal-li, body.change-cover-image #edit-personal-li {
+body.profile-edit #edit-personal-li,
+body.change-avatar #edit-personal-li,
+body.change-cover-image #edit-personal-li {
     display: block;
 }
 
 body.profile-edit #change-avatar-personal-li,
 body.change-avatar #change-avatar-personal-li,
 body.change-cover-image #change-avatar-personal-li {
- display: block;
+    display: block;
 }
 
 body.profile-edit #change-cover-image-personal-li,
 body.change-avatar #change-cover-image-personal-li,
 body.change-cover-image #change-cover-image-personal-li {
-  display: block;
+    display: block;
 }
 
 body.my-document a#bp-add-document {
@@ -88,37 +86,38 @@ body.my-document a#bb-create-folder-child {
     display: block;
 }
 
-div#bp-business-list-section-owner, .bp-business-team h4:first-of-type {
+div#bp-business-list-section-owner,
+.bp-business-team h4:first-of-type {
     display: none;
 }
 
- @media only screen and (max-width: 920px) {
+@media only screen and (max-width: 920px) {
 
-     .profile-home-columns {
-         width: calc(50% - 15px);
-     }
+    .profile-home-columns {
+        width: calc(50% - 15px);
+    }
 
- }
-
- @media only screen and (max-width: 567px) {
-
-     .profile-home-columns {
-         width: 100%;
-     }
-
- }
-
- .bp-business-profile-excerpt{
-    text-align: justify;
- }
-
-.profile-fields.bp-tables-user img{
-	height:100px;
-	object-fit:cover;
 }
 
-body .bpht-hashtags-wrapper.bpht-hashtags-wrapper-cloud > div{
-	background: rgb(243 243 243 / 50%);
+@media only screen and (max-width: 567px) {
+
+    .profile-home-columns {
+        width: 100%;
+    }
+
+}
+
+.bp-business-profile-excerpt {
+    text-align: justify;
+}
+
+.profile-fields.bp-tables-user img {
+    height: 100px;
+    object-fit: cover;
+}
+
+body .bpht-hashtags-wrapper.bpht-hashtags-wrapper-cloud>div {
+    background: rgb(243 243 243 / 50%);
 }
 
 .bp-invites-container nav {
@@ -126,15 +125,15 @@ body .bpht-hashtags-wrapper.bpht-hashtags-wrapper-cloud > div{
 }
 
 /* hide mention, friends, favourites, hashtag tab from new feed page */
-body.directory #activity-mentions, 
+body.directory #activity-mentions,
 body.directory #activity-friends,
 body.directory #activity-favorites,
-body.directory #activity-hashtag{
+body.directory #activity-hashtag {
     display: none;
 }
 
-.card-content-section{
-	display: flex;
+.card-content-section {
+    display: flex;
     flex-direction: column;
     height: 100%;
 }
@@ -143,79 +142,88 @@ body.directory #activity-hashtag{
 .user-courses .item-body-inner .columns.mpcs-cards .column.col-4,
 .profile-all-courses-tab.container .columns.mpcs-cards .column.col-3,
 .instructor-courses .item-body-inner .columns.mpcs-cards .column.col-4,
-.post-type-archive-mpcs-course .columns.mpcs-cards .column.col-3{
+.post-type-archive-mpcs-course .columns.mpcs-cards .column.col-3 {
     width: 33.33%;
 }
 
 .user-courses .item-body-inner .columns.mpcs-cards.course-list .column.col-4,
 .profile-all-courses-tab.container .columns.mpcs-cards.course-list .column.col-3,
 .instructor-courses .item-body-inner .columns.mpcs-cards.course-list .column.col-4,
-.post-type-archive-mpcs-course .columns.mpcs-cards.course-list .column.col-3{
-	width: 100%;
+.post-type-archive-mpcs-course .columns.mpcs-cards.course-list .column.col-3 {
+    width: 100%;
 }
 
 .user-courses .item-body-inner .columns.mpcs-cards.course-list .column.col-4 .card,
 .profile-all-courses-tab.container .columns.mpcs-cards.course-list .column.col-3 .card,
 .instructor-courses .item-body-inner .columns.mpcs-cards.course-list .column.col-4 .card,
-.post-type-archive-mpcs-course .columns.mpcs-cards.course-list .column.col-3 .card{
-	flex-direction: row;
-	padding: 0;
+.post-type-archive-mpcs-course .columns.mpcs-cards.course-list .column.col-3 .card {
+    flex-direction: row;
+    padding: 0;
 }
 
 .columns.mpcs-cards.course-list .column.col-4 .card .card-image,
-.columns.mpcs-cards.course-list .column.col-3 .card .card-image{
-	margin:0px;
-	padding:0px;
-	flex:0 0 200px;
+.columns.mpcs-cards.course-list .column.col-3 .card .card-image {
+    margin: 0px;
+    padding: 0px;
+    flex: 0 0 200px;
 }
 
 .columns.mpcs-cards.course-list .column.col-4 .card .card-image img,
-.columns.mpcs-cards.course-list .column.col-3 .card .card-image img{
-	border-radius: var(--mpcs-block-radius-inner) 0 0 var(--mpcs-block-radius-inner);
+.columns.mpcs-cards.course-list .column.col-3 .card .card-image img {
+    border-radius: var(--mpcs-block-radius-inner) 0 0 var(--mpcs-block-radius-inner);
 }
 
 
-.columns.mpcs-cards.course-list .card-content-section{
-	padding:20px;
+.columns.mpcs-cards.course-list .card-content-section {
+    padding: 20px;
 }
 
-.columns.mpcs-cards.course-list .card-content-section{
-	padding:20px;
+.columns.mpcs-cards.course-list .card-content-section {
+    padding: 20px;
 }
 
-.columns.mpcs-cards.course-list .card-content-section .card-header{
-	padding:0px;
+.columns.mpcs-cards.course-list .card-content-section .card-header {
+    padding: 0px;
 }
 
-.columns.mpcs-cards.course-list .card-content-section .card-header h2.h5{
-	font-size: 20px;
+.columns.mpcs-cards.course-list .card-content-section .card-header h2.h5 {
+    font-size: 20px;
 }
 
-.post-type-archive-mpcs-course .mpcs-course-filter .column{
-	flex: auto;
+.post-type-archive-mpcs-course .mpcs-course-filter .column {
+    flex: auto;
 }
 
-.post-type-archive-mpcs-course .mpcs-course-filter .dropdown .menu{
-	top:auto;
+.mpcs-course-filter form {
+    margin-bottom: 0;
 }
 
-#bb_meprlms_courses_search_form .search-field-top{
-	height:36px;
-	margin-right:12px;
+.post-type-archive-mpcs-course .mpcs-course-filter .column+.dropdown {
+    margin-right: 10px;
+}
+
+.post-type-archive-mpcs-course .mpcs-course-filter .dropdown .menu {
+    top: auto;
+}
+
+#bb_meprlms_courses_search_form .search-field-top {
+    height: 36px;
+    margin-right: 12px;
 }
 
 .post-type-archive-mpcs-course .mpcs-course-filter .dropdown a.dropdown-toggle,
-.post-type-archive-mpcs-course .mpcs-course-filter .dropdown{
-	width:100%;
+.post-type-archive-mpcs-course .mpcs-course-filter .dropdown {
+    width: 100%;
+    min-width: 110px;
 }
 
 
 @media screen and (max-width: 840px) {
 
     .profile-all-courses-tab.container .columns.mpcs-cards .column.col-3,
-	.user-courses .item-body-inner .columns.mpcs-cards .column.col-4,
-	.instructor-courses .item-body-inner .columns.mpcs-cards .column.col-4,
-	.post-type-archive-mpcs-course .columns.mpcs-cards .column.col-3{
+    .user-courses .item-body-inner .columns.mpcs-cards .column.col-4,
+    .instructor-courses .item-body-inner .columns.mpcs-cards .column.col-4,
+    .post-type-archive-mpcs-course .columns.mpcs-cards .column.col-3 {
         width: 50%;
     }
 
@@ -223,111 +231,111 @@ body.directory #activity-hashtag{
 
 
 @media screen and (max-width: 800px) {
-	
-	.post-type-archive-mpcs-course .widget-area{
-		-webkit-box-flex: 0;
-		-ms-flex: 0 0 100%;
-		flex: 0 0 100%;
-		max-width: 100%;
-	}
+
+    .post-type-archive-mpcs-course .widget-area {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
 }
 
 @media screen and (max-width: 600px) {
-	
-	.post-type-archive-mpcs-course .mpcs-course-filter .input-group{
-		margin:0px;
-	}
-	
+
+    .post-type-archive-mpcs-course .mpcs-course-filter .input-group {
+        margin: 0px;
+    }
+
 }
 
 @media screen and (max-width: 520px) {
-	
-	.post-type-archive-mpcs-course .mpcs-course-filter .input-group{
-		margin:0px;
-	}
-	
-	.post-type-archive-mpcs-course .mpcs-course-filter .push-right.flex{
-		flex-wrap:nowrap;
-	}
-	
-	.buddypress-wrap .subnav-filters .component-filters{
-		margin:0px;
-	}
 
-	
+    .post-type-archive-mpcs-course .mpcs-course-filter .input-group {
+        margin: 0px;
+    }
+
+    .post-type-archive-mpcs-course .mpcs-course-filter .push-right.flex {
+        flex-wrap: nowrap;
+    }
+
+    .buddypress-wrap .subnav-filters .component-filters {
+        margin: 0px;
+    }
+
+
 }
 
 
 @media screen and (max-width: 480px) {
 
     .profile-all-courses-tab.container .columns.mpcs-cards .column.col-3,
-	.user-courses .item-body-inner .columns.mpcs-cards .column.col-4,
-	.instructor-courses .item-body-inner .columns.mpcs-cards .column.col-4,
-	.post-type-archive-mpcs-course .columns.mpcs-cards .column.col-3{
+    .user-courses .item-body-inner .columns.mpcs-cards .column.col-4,
+    .instructor-courses .item-body-inner .columns.mpcs-cards .column.col-4,
+    .post-type-archive-mpcs-course .columns.mpcs-cards .column.col-3 {
         width: 100%;
     }
-	
-	.columns.mpcs-cards.course-list .column.col-4 .card .card-image, 
-	.columns.mpcs-cards.course-list .column.col-3 .card .card-image{
-		flex:0 0 150px;
-	}
-	
-	.columns.mpcs-cards.course-list .column.col-4 .card .card-image img, 
-	.columns.mpcs-cards.course-list .column.col-3 .card .card-image img{
-		height:100%;
-	}
-	
-	.columns.mpcs-cards.course-list .card-content-section .card-header h2.h5{
-		font-size: 18px;
-	}
-	
-	.post-type-archive-mpcs-course .mpcs-course-filter .push-right.flex{
-		row-gap:10px;
-		width: 100%;
-		flex-wrap:wrap;
-	}
-	
-	.post-type-archive-mpcs-course .mpcs-course-filter .column{
-		padding:0px;
-	}
-	
-	.user-courses .item-body-inner .bp-secondary-header .push-right.flex{
-		flex-wrap:wrap;
-	}
-	
-	.user-courses .item-body-inner .bp-secondary-header .push-right.flex .subnav-filters{
-		width:100%;
-		margin-bottom:0px;
-	}
-	
-	.user-courses .item-body-inner .bp-secondary-header .push-right.flex .subnav-filters form{
-		margin:0px;
-		justify-content:flex-start;
-	}
-	
-	.user-courses .item-body-inner .bp-secondary-header .push-right.flex .subnav-filters form label,
-	.user-courses .item-body-inner .bp-secondary-header .push-right.flex .subnav-filters form input{
-		width:100%;
-	}
-	
-	#bb_meprlms_courses_search_form,
-	#bb_meprlms_courses_search_form .search-field-top{
-		margin:0px;
-	}
-	
-	.buddypress-wrap .subnav-filters .select-wrap{
-		margin-right:0px !important;
-	}
-	
-	
-	.post-type-archive-mpcs-course .mpcs-course-filter .column form{
-		margin:0px;
-	}
-	
+
+    .columns.mpcs-cards.course-list .column.col-4 .card .card-image,
+    .columns.mpcs-cards.course-list .column.col-3 .card .card-image {
+        flex: 0 0 150px;
+    }
+
+    .columns.mpcs-cards.course-list .column.col-4 .card .card-image img,
+    .columns.mpcs-cards.course-list .column.col-3 .card .card-image img {
+        height: 100%;
+    }
+
+    .columns.mpcs-cards.course-list .card-content-section .card-header h2.h5 {
+        font-size: 18px;
+    }
+
+    .post-type-archive-mpcs-course .mpcs-course-filter .push-right.flex {
+        row-gap: 10px;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .post-type-archive-mpcs-course .mpcs-course-filter .column {
+        padding: 0px;
+    }
+
+    .user-courses .item-body-inner .bp-secondary-header .push-right.flex {
+        flex-wrap: wrap;
+    }
+
+    .user-courses .item-body-inner .bp-secondary-header .push-right.flex .subnav-filters {
+        width: 100%;
+        margin-bottom: 0px;
+    }
+
+    .user-courses .item-body-inner .bp-secondary-header .push-right.flex .subnav-filters form {
+        margin: 0px;
+        justify-content: flex-start;
+    }
+
+    .user-courses .item-body-inner .bp-secondary-header .push-right.flex .subnav-filters form label,
+    .user-courses .item-body-inner .bp-secondary-header .push-right.flex .subnav-filters form input {
+        width: 100%;
+    }
+
+    #bb_meprlms_courses_search_form,
+    #bb_meprlms_courses_search_form .search-field-top {
+        margin: 0px;
+    }
+
+    .buddypress-wrap .subnav-filters .select-wrap {
+        margin-right: 0px !important;
+    }
+
+
+    .post-type-archive-mpcs-course .mpcs-course-filter .column form {
+        margin: 0px;
+    }
+
 }
 
-.user-courses .bp_members #buddypress.buddypress-wrap .bb-profile-grid #secondary.widget-area{
-	 display:block;
+.user-courses .bp_members #buddypress.buddypress-wrap .bb-profile-grid #secondary.widget-area {
+    display: block;
 }
 
 
@@ -337,33 +345,33 @@ body.directory #activity-hashtag{
     display: none;
 }
 
-.buddypress-wrap #bbpress-forums-search{
-	border: 0;
+.buddypress-wrap #bbpress-forums-search {
+    border: 0;
     background-color: transparent;
     padding-left: 35px;
-	padding-right: 30px;
+    padding-right: 30px;
     font-size: 14px;
     height: 34px;
 }
 
-.buddypress-wrap .subnav-filters.bp-forums-filter-wrap{
-	margin-right: 12px;
+.buddypress-wrap .subnav-filters.bp-forums-filter-wrap {
+    margin-right: 12px;
 }
 
-#bbpress-forums .bb-forums-list.list li{
+#bbpress-forums .bb-forums-list.list li {
     flex: 0 0 100%;
     max-width: 100%;
 }
 
-#bbpress-forums .bb-forums-list.list li .bb-cover-list-item{
+#bbpress-forums .bb-forums-list.list li .bb-cover-list-item {
     flex: 0 0 100%;
     display: flex;
     padding: 0;
     overflow: hidden;
 }
 
-#bbpress-forums .bb-forums-list.list li .bb-cover-list-item .bb-cover-wrap{
-	flex: 0 0 200px;
+#bbpress-forums .bb-forums-list.list li .bb-cover-list-item .bb-cover-wrap {
+    flex: 0 0 200px;
     min-height: 150px;
     height: 100%;
     padding: 0;
@@ -371,102 +379,102 @@ body.directory #activity-hashtag{
 }
 
 #bbpress-forums .bb-forums-list.list li .bs-card-forum-details {
-	width:100%;
+    width: 100%;
 }
 
-.buddypress-wrap.bbpress-forum-wrap .bp-secondary-header{
-	margin-top:20px;
+.buddypress-wrap.bbpress-forum-wrap .bp-secondary-header {
+    margin-top: 20px;
 }
 
 
 @media screen and (max-width: 520px) {
-		
-	.bbpress-forum-discussion .forum-subnav{
-		gap: 5px !important;
-	}
-	
-	.bbpress-forum-discussion .forum-subnav li a{
-		padding: 5px 10px !important;
-	}
-	
-	.buddypress-wrap.bbpress-forum-wrap .flex{
-		flex-wrap:wrap;
-	}
-	
-	.buddypress-wrap.bbpress-forum-wrap .bp-forums-filter-wrap{
-		 width: 100%;
-   		 margin: 0 0 10px;
-	}
-	
-	.buddypress-wrap.bbpress-forum-wrap .subnav-filters{
-		width: 100%;
-	}
-	
-	.buddypress-wrap.bbpress-forum-wrap .subnav-filters .select-wrap{
-		margin:0px;
-	}
-	
-	.buddypress-wrap.bbpress-forum-wrap  .subnav-filters .component-filters,
-	.buddypress-wrap.bbpress-forum-wrap .subnav-filters .component-filters .select-wrap{
-		margin-top:0px;
-	}
-	
+
+    .bbpress-forum-discussion .forum-subnav {
+        gap: 5px !important;
+    }
+
+    .bbpress-forum-discussion .forum-subnav li a {
+        padding: 5px 10px !important;
+    }
+
+    .buddypress-wrap.bbpress-forum-wrap .flex {
+        flex-wrap: wrap;
+    }
+
+    .buddypress-wrap.bbpress-forum-wrap .bp-forums-filter-wrap {
+        width: 100%;
+        margin: 0 0 10px;
+    }
+
+    .buddypress-wrap.bbpress-forum-wrap .subnav-filters {
+        width: 100%;
+    }
+
+    .buddypress-wrap.bbpress-forum-wrap .subnav-filters .select-wrap {
+        margin: 0px;
+    }
+
+    .buddypress-wrap.bbpress-forum-wrap .subnav-filters .component-filters,
+    .buddypress-wrap.bbpress-forum-wrap .subnav-filters .component-filters .select-wrap {
+        margin-top: 0px;
+    }
+
 }
 
 /* remove the partner count from user pfoile*/
 
-#user-bp-business-profile .count{
+#user-bp-business-profile .count {
     display: none;
 }
 
-.ui-widget.ui-widget-content{
-	border-radius: 10px;
+.ui-widget.ui-widget-content {
+    border-radius: 10px;
     border: none;
     padding: 20px;
     box-shadow: none;
 }
 
-.ui-draggable .ui-dialog-titlebar{
-	padding: 0 !important;
+.ui-draggable .ui-dialog-titlebar {
+    padding: 0 !important;
     border: none;
     text-align: center;
 }
 
-.ui-dialog .ui-dialog-title{
+.ui-dialog .ui-dialog-title {
     float: none !important;
     margin: 0px !important;
     font-size: 21px;
     color: #2c8f3d;
 }
 
-.ui-dialog .ui-dialog-content{
+.ui-dialog .ui-dialog-content {
     width: 100% !important;
     text-align: center;
     padding: 10px 20px 20px !important;
 }
 
-.ui-dialog .ui-dialog-content h6{
+.ui-dialog .ui-dialog-content h6 {
     font-size: 19px;
     margin: 0;
 }
 
-.ui-dialog .ui-dialog-buttonpane{
-	border: none;
-	padding: 0px;
-	margin: 0px;
+.ui-dialog .ui-dialog-buttonpane {
+    border: none;
+    padding: 0px;
+    margin: 0px;
 }
 
-.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset{
-	display:flex;
-	float:none;
-	width:100%;
-	justify-content: center;
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
+    display: flex;
+    float: none;
+    width: 100%;
+    justify-content: center;
 }
 
-.ui-dialog .ui-dialog-buttonpane button{
-    background-color: var(--bb-primary-button-background-regular);
+.ui-dialog .ui-dialog-buttonpane button {
+    background-color: var(--bb-headings-color);
     color: var(--bb-primary-button-text-regular);
-    border: 1px solid var(--bb-primary-button-border-regular);
+    border: 1px solid var(--bb-headings-color);
     border-radius: var(--bb-button-radius);
     box-shadow: none;
     text-transform: uppercase;
@@ -483,8 +491,8 @@ body.directory #activity-hashtag{
     width: 100% !important;
 }
 
-.ui-dialog .ui-dialog-titlebar-close span.ui-icon-closethick:before{
-	content: '\e828';
+.ui-dialog .ui-dialog-titlebar-close span.ui-icon-closethick:before {
+    content: '\e828';
     font-family: bb-icons;
     font-style: normal;
     speak: never;
@@ -501,15 +509,304 @@ body.directory #activity-hashtag{
     -moz-osx-font-smoothing: grayscale;
 }
 
-.ui-button.ui-dialog-titlebar-close{
-	top:-20px !important;
-	right:-15px !important;
+.ui-button.ui-dialog-titlebar-close {
+    top: -20px !important;
+    right: -15px !important;
 }
 
-.bp-connections-send-message{
-	margin-bottom:20px;
+.bcircles-single-circle-button-sec {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.bcircles-single-circle-button-sec .bp-connections-send-message {
+    margin: 0px;
+}
+
+.bcircles-single-circle-info h3 {
+    margin-bottom: 10px !important;
+}
+
+
+.bcircles-single-circle-info {
+    margin-bottom: 30px;
+/*    margin-top: -55px;*/
 }
 
 
 
 
+@media screen and (max-width: 520px) {
+
+    .bp-connections-send-message {
+        margin-top: 0;
+    }
+
+    .bcircles-single-circle-info {
+        margin-top: 0;
+    }
+
+}
+
+body.messages .buddypress-wrap {
+    max-width: 100%;
+}
+
+/* string hide on network user tab */
+.bb-item-count {
+    display: none;
+}
+
+#bp-profile-settings-tabs-nav li#bp-profile-setting-link-groups-li>a:before {
+    content: '\f0c6';
+}
+
+#bp-profile-settings-tabs-nav li#bp-profile-setting-partner-home-li>a:before {
+    content: '\f015';
+}
+
+#bp-profile-settings-tabs-nav li#bp-profile-setting-about-li>a:before {
+    content: '\f2bb';
+}
+
+
+.grid {
+    max-width: 100%;
+}
+
+ul#business-list.row {
+    max-width: none;
+}
+
+.columns.mpcs-cards {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+ul.bcircles-circle-list {
+    margin: 0px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;
+    gap: 15px;
+}
+
+ul.bcircles-circle-list li.item.bcircles-circle-item {
+    background-color: var(--bb-content-background-color);
+    border: 1px solid var(--bb-content-border-color);
+    border-radius: var(--bb-block-radius);
+    margin: 0;
+    margin: 0;
+    padding: 20px;
+    flex: 0 0 calc(25% - 15px);
+    max-width: calc(25% - 15px);
+}
+
+ul.bcircles-circle-list .bcircles-circle-label {
+    text-transform: none;
+    font-size: 18px;
+    color: var(--bb-headings-color);
+    line-height: 1.4;
+    padding: 0;
+    font-weight: 600;
+}
+
+.bcircles-circle-edit-section .bcircles-row input[type="text"],
+.bcircles-circle-edit-section .bcircles-row select {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.bcircles-circle-edit-section .bcircles-row.bcircles-row-edit-circle-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.bcircles-circle-edit-section .bcircles-row.bcircles-row-edit-circle-buttons input[type="submit"],
+.bcircles-circle-edit-section .bcircles-row.bcircles-row-edit-circle-buttons input[type="button"] {
+    width: 48% !important;
+}
+
+/*remove all letter in uppercase on team page under user profile*/
+.bcircles-circle-label {
+    text-transform: none !important;
+}
+
+.bcircles-add-circle-section .bcircles-add-circle-form {
+    display: flex;
+    gap: 10px;
+}
+
+.bcircles-add-circle-section .bcircles-add-circle-form .bcircles-new-circle-name-wrapper {
+    width: 100%;
+}
+
+.bcircles-add-circle-form .bcircles-new-circle-name {
+    width: 100%;
+}
+
+.bcircles-add-circle-form select {
+    flex: 0 0 200px;
+}
+
+.bcircles-wrapper .bcircles-add-circle-section {
+    padding: 0px;
+    border: none;
+    margin-bottom: 0;
+}
+
+@media only screen and (max-width: 990px) {
+
+    ul.bcircles-circle-list li.item.bcircles-circle-item {
+        flex: 0 0 calc(33.33% - 15px);
+        max-width: calc(33.33% - 15px);
+    }
+
+}
+
+
+@media only screen and (max-width: 768px) {
+
+    ul.bcircles-circle-list li.item.bcircles-circle-item {
+        flex: 0 0 calc(50% - 15px);
+        max-width: calc(50% - 15px);
+    }
+
+    .bcircles-add-circle-section .bcircles-add-circle-form {
+        flex-wrap: wrap;
+    }
+
+    .bcircles-add-circle-form select {
+        flex: 1 1 auto;
+    }
+
+}
+
+@media only screen and (max-width: 480px) {
+
+    ul.bcircles-circle-list li.item.bcircles-circle-item {
+        flex: 0 0 calc(100% - 15px);
+        max-width: calc(100% - 15px);
+    }
+
+}
+
+/*remove the main admin html from the team widget*/
+#bp-business-list-section-admins {
+    display: none;
+}
+
+/* Network Individual */
+.buddypress-wrap .grid-filters a {
+    min-width: auto;
+}
+
+#members-list.item-list.grid.individual-members-list .list-wrap.no-primary-buttons.no-secondary-buttons {
+    padding-bottom: 52px;
+}
+
+.network-individual-members-wrap #individual-member-search,
+input#network-all-partners-search {
+    font-size: 14px;
+    height: 36px;
+}
+
+.buddypress-wrap.network-individual-members-wrap .flex,
+.buddypress-wrap.network-all-partners-wrap .flex {
+    flex-wrap: wrap;
+}
+
+input#network-all-partners-search {
+    margin-right: 10px;
+}
+
+form.bp-dir-search-individual-members.search-individual-members-has-reset {
+    margin: 0;
+}
+
+.bp-business-my-partner-label {
+    margin-right: auto;
+}
+
+.bp-business-profile-list-grid-filter {
+    border-radius: 6px !important;
+}
+
+.buddypress-wrap.network-all-partners-wrap .bb-profile-grid .subnav-filters {
+    margin: 0;
+}
+
+@media screen and (max-width: 511px) {
+    .buddypress-wrap.network-all-partners-wrap .subnav-filters div {
+        margin: 0;
+    }
+
+    .buddypress-wrap.network-individual-members-wrap .subnav-filters .select-wrap,
+    .buddypress-wrap.network-all-partners-wrap .subnav-filters .select-wrap {
+        margin: 0;
+        margin-right: 10px !important;
+    }
+}
+
+/* My Connections */
+.bp-connections-send-message {
+    margin-bottom: 20px;
+}
+
+@media screen and (min-width: 512px) {
+    .bp-business-my-connections-label {
+        margin-top: -50px;
+    }
+}
+
+/* Remove Ads Widget From User Home */
+body.bp-user.home .bp-wrap .widget-area {
+    display: none;
+}
+
+/*hide component filters under the user profile->network(connections)->team tab*/
+.teams .component-filters {
+    display: none !important;
+}
+
+/* remove upload files button from the group library, not from the doc folder */
+body.groups.documents a#bp-add-document.sayansi_doc_folder {
+    display: none;
+}
+
+/* Manage Colors and Border Radius */
+.bb-grid {
+    --global-border-color: var(--bb-content-border-color);
+    --content-background-color: var(--bb-content-background-color);
+    --global-border-radius: var(--bb-block-radius);
+}
+
+body .buddypress-wrap .bp-businesses-content .select-wrap,
+body #buddypress.buddypress-wrap .bp-business-settings-content select,
+body .bp-businesses-content select,
+body .buddypress-wrap .bp-businesses-content select,
+body .bp-business-profile-list-grid-filter,
+body .bp-businesses-content input[type=search],
+body #bp-businesses-content .business-search .bp-dir-search-form {
+    border-radius: var(--bb-input-radius) !important;
+}
+
+/* Courses Page */
+.mcs-course-directory-title {
+    margin-bottom: 0;
+    margin-left: 20px;
+}
+
+@media (max-width: 799px) {
+    .mcs-course-directory-title {
+        margin-left: 10px;
+    }
+}
+
+/* this is for that hide save partner setting button from the partner/settings/about */
+body.about_list #bp-business-settings-submit{
+    display: none!important;
+}

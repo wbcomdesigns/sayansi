@@ -1,10 +1,18 @@
 <?php
+ 
 $term_slug = bp_current_action(); // This will output 'beamlines'
+
 if( $term_slug == 'partner' ){
 $term_slug = 'agencies';
 } else {
 $term_slug = bp_current_action();
 }
+
+$term = get_term_by( 'slug', bp_current_action(), 'business-category' );
+
+
+echo '<h3>' . esc_html( $term->name ) .'</h3>';
+
 $args = array(
     'post_type'      => 'business', // Specify the post type
     'post_status'    => 'publish',   // Only get published posts
@@ -22,8 +30,48 @@ $args = array(
         ),
     ),
 );
+$term = get_term_by( 'slug', $term_slug, 'business-category' );
+
 $business_query = new WP_Query( $args );
 ?>
+<?php if ( $business_query->have_posts() ) { ?>
+ <!-- Add search, filter, layout -->
+        <div class="buddypress-wrap network-all-partners-wrap">            
+            <div class="flex bp-secondary-header align-items-center">
+                <div class="push-right flex"> 
+                    <div class="bp-ind-members-filter-wrap subnav-filters"> 
+                        <form action="" method="get" class="bp-dir-search-individual-members search-individual-members-has-reset" id="" autocomplete="off">
+                            <label for="network-all-partners-search" class="bp-screen-reader-text">Search Partners…</label>
+                            <input id="network-all-partners-search" name="network_all_partners_search" type="search" placeholder="Search Members..">                               
+                        </form>
+                    </div>
+                            
+                    <div id="network-all-partners-filters" class="foums-component-filters clearfix subnav-filters">
+                        <div id="network-all-partners-order-select" class="component-filters filter">
+                            <label class="bp-screen-reader-text" for="network-all-partners-order-by">
+                                <span>Order By:</span>
+                            </label>
+                            <div class="select-wrap">
+                                <select id="network-all-partners-order-by">
+                                    <option value="alphabetical"><?php esc_html_e( 'Alphabetical', 'sayansi-core' ); ?></option>
+                                    <option value="recent"><?php esc_html_e( 'Newly Created', 'sayansi-core' ); ?></option>
+                                </select>
+                                <span class="select-arrow" aria-hidden="true"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-filters" data-object="<?php echo esc_attr( $component ); ?>">
+                        <a href="#" class="layout-view layout-grid-view bp-tooltip grid" data-view="grid" data-bp-tooltip-pos="up" data-bp-tooltip="<?php esc_attr_e( 'Grid View', 'sayansi-core' ); ?>"> <i class="bb-icon-l bb-icon-grid-large" aria-hidden="true"></i> </a>
+
+                        <a href="#" class="layout-view layout-list-view bp-tooltip list" data-view="list" data-bp-tooltip-pos="up" data-bp-tooltip="<?php esc_attr_e( 'List View', 'sayansi-core' );?>"> <i class="bb-icon-l bb-icon-bars" aria-hidden="true"></i> </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>   
+        <!-- End Add search, filter, layout -->
+<?php } ?>
 <div id="bp-businesses-content" class="entry-content bp-businesses-content">
 <div id="business-dir-list" class="business dir-list" data-bp-list="business">
 <?php

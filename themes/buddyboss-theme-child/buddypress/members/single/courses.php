@@ -28,11 +28,28 @@ if ( class_exists( 'BB_MeprLMS_Profile' ) ) {
 $displayed_user_id = bp_displayed_user_id();
 
 // echo bb_meprlms_get_course_search_form();
+$courses_page    = get_home_url( null, helpers\Courses::get_permalink_base() );
+$search          = isset( $_GET['s'] ) ? esc_attr( $_GET['s'] ) : '';  // phpcs:ignore
 ?>
 
 <div class="flex bp-secondary-header align-items-center">
 	<div class="push-right flex">
-	<div id="search-filters" class="search-component-filters subnav-filters"><?php echo bb_meprlms_get_course_search_form(); ?></div>	
+	<!-- <div id="search-filters" class="search-component-filters subnav-filters"><?php //echo bb_meprlms_get_course_search_form(); ?></div>	 -->
+
+	<!-- Add search on course tab in user profile -->
+	<!-- <div class="column col-sm-12">
+		<form method="GET" class="" action="<?php echo esc_url( bp_core_get_user_domain( get_current_user_id() ) ) . 'courses'; ?>">
+			<div class="input-group">
+				<input type="text" name="s" class="form-input"
+						placeholder="<?php esc_html_e( 'Find a course', 'buddyboss-pro' ); ?>"
+						value="<?php echo esc_attr( $search ); ?>">
+				<button class="btn input-group-btn"><i class="bb-icon-l bb-icon-search"></i></button>
+			</div>
+		</form>
+
+	</div> -->
+	
+	<input type="text" name="course-search-input" class="form-input" id="course-search-input" placeholder="<?php esc_html_e( 'Find a course', 'buddyboss-pro' ); ?>">
 		
 	<div id="courses-filters" class="courses-component-filters subnav-filters" data-tab="<?php echo esc_attr($current_course_subtab); ?>">
 		<div id="courses-order-select" class="component-filters filter">

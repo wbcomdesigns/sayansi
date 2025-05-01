@@ -17,6 +17,12 @@ if ( ! function_exists( 'buddyboss_bbpress' ) && 'left' == $sidebar_position ) {
     </label>
     
     <?php
+    if( function_exists( 'bbp_get_forum_post_type' ) && 'forum' == bbp_get_forum_post_type() ){ 
+     $forums_page = get_post( get_the_ID() );
+     echo '<p>' . wp_kses_post( $forums_page->post_content ) . '</p>';
+    } else {
+     echo '<p>' . esc_html( 'Description Not Found' ) . '</p>';
+    }
 	$bbpress_banner = buddyboss_theme_get_option( 'bbpress_banner_switch' );
     if ( bbp_is_forum_archive() && ! $bbpress_banner ) { ?>
     	<header class="entry-header buddypress-wrap">              
