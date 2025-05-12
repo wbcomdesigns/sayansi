@@ -14,7 +14,11 @@ $all_groups = groups_get_groups($args);
 if (!empty($all_groups['groups'])) :
 ?>
     <ul id="groups-list" class="item-list groups-list bp-list list bb-cover-enabled left groups-dir-list grid">
-        <?php foreach ($all_groups['groups'] as $group) : ?>
+        <?php foreach ($all_groups['groups'] as $group) : 
+            if( 'Auto Draft' == $group->name ){
+                continue;
+            }
+            ?>
             <li class="item-entry public group-has-avatar" data-bp-item-id="<?php echo esc_attr($group->id); ?>" data-bp-item-component="groups">
                 <div class="list-wrap">
                     <div class="bs-group-cover only-grid-view has-default cover-small">

@@ -249,6 +249,10 @@ class Sayansi_Core {
 		//Add per page for group directory
 		$this->loader->add_filter( 'bp_after_has_groups_parse_args', $plugin_public, 'wbcom_bp_increase_groups_per_page_on_directory' );
 
+		// Resume layout section add on edit resume template and save the value in the usermeta
+		$this->loader->add_action( 'bprm_after_upload_resume_image_section', $plugin_public, 'wbcom_add_resume_layout_setting_on_edit_resume');
+		$this->loader->add_action( 'wp_head', $plugin_public, 'wbcom_save_resume_layout_on_edit_resume' );
+
 					
 	}
 

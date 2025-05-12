@@ -13,9 +13,9 @@ $bp_is_user_change_avatar      = bp_is_user_change_avatar();
 $bp_is_user_change_cover_image = bp_is_user_change_cover_image();
 
 
-if( 'public' === bp_current_action() ) {
+//if( 'public' === bp_current_action() ) {
 	bp_get_template_part( 'members/single/parts/item-subnav' );
-}
+//}
 
 if ( $bp_is_user_profile_edit || $bp_is_user_change_avatar || $bp_is_user_change_cover_image ) { ?>
 	<header class="profile-header flex align-items-center">

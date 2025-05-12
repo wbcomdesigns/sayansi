@@ -86,10 +86,10 @@ body.my-document a#bb-create-folder-child {
     display: block;
 }
 
-div#bp-business-list-section-owner,
+/*div#bp-business-list-section-owner,
 .bp-business-team h4:first-of-type {
     display: none;
-}
+}*/
 
 @media only screen and (max-width: 920px) {
 
@@ -570,11 +570,6 @@ body.messages .buddypress-wrap {
     content: '\f2bb';
 }
 
-
-.grid {
-    max-width: 100%;
-}
-
 ul#business-list.row {
     max-width: none;
 }
@@ -809,4 +804,48 @@ body #bp-businesses-content .business-search .bp-dir-search-form {
 /* this is for that hide save partner setting button from the partner/settings/about */
 body.about_list #bp-business-settings-submit{
     display: none!important;
+}
+
+.bp-business-team h4 strong{
+    font-weight: 500;
+}
+
+/* Message Center */
+body #buddypress .bp-list.message-center-list .action.message-center-meta {
+    margin-top: 12px;
+}
+
+body #buddypress .bp-list.message-center-list .action.message-center-meta .generic-button {
+    margin: 0;
+}
+
+body #buddypress .bp-list.message-center-list .action.message-center-meta .generic-button a {
+    background-color: var(--bb-secondary-button-background-regular);
+    color: var(--bb-secondary-button-text-regular);
+    border: 1px solid var(--bb-secondary-button-border-regular);
+}
+
+body #buddypress .bp-list.message-center-list .action.message-center-meta .generic-button a:hover {
+    background-color: var(--bb-secondary-button-background-hover);
+    color: var(--bb-secondary-button-text-hover);
+    border: 1px solid var(--bb-secondary-button-border-hover);
+}
+
+/* request subtab remove from the connection tab on user profile*/
+.connections #requests-personal-li{
+    display: none;
+}
+
+/* Members Search Form */
+.wprm-input-field label {
+    font-size: 12px;
+}
+
+.wprm-input-field p.wprm-description {
+    margin: 0;
+}
+
+/*change the resume header color on the member directory*/
+.bprm-profile-search-toggle-wrap{
+    background: #000951!important;
 }

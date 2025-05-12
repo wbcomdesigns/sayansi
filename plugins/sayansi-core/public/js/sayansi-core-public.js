@@ -486,7 +486,12 @@
 
 			//Add active, grid, list class also maintain the classes on page nevigation
 			var savedLayout = localStorage.getItem('forumLayout') || 'grid'; // Default to grid if not se			
-			$('#business-list').addClass(savedLayout); // Set the default class for the forum list
+			// $('#business-list').addClass(savedLayout); // Set the default class for the forum list
+
+			var $businessList = $('#business-list-container ul');
+			$businessList.removeClass('grid list'); // Remove both classes
+			$businessList.addClass(savedLayout);
+
 			// end search, filter , layout on user profile network->all partner tab
 
 			// this is for that hide save partner setting button from the partner/settings/about

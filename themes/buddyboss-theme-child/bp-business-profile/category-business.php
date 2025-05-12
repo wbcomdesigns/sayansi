@@ -40,7 +40,31 @@ if ( have_posts() ) :
 		</ul>
 		<?php if ( ! isset( $_REQUEST['args']['limit'] ) ) { ?>
 			<div class="bp-business-pagination bp-business-navigation navigation pagination">
-				<?php bp_business_profile_paginate(); ?>
+				<?php //bp_business_profile_paginate(); ?>
+				<?php
+					global $wp_query;
+					$total = $wp_query->max_num_pages;
+					if ( $total > 1 ) {
+						$current_page = max( 1, get_query_var( 'paged' ) );
+						// Get current URL without query parameters
+						$current_url = get_pagenum_link( 1 );
+						$format      = 'page/%#%/';
+						echo wp_kses_post(
+							paginate_links(
+								array(
+									'base'      => trailingslashit( $current_url ) . $format,
+									'format'    => $format,
+									'current'   => $current_page,
+									'total'     => $total,
+									'end_size'  => 1,
+									'mid_size'  => 2,
+									'prev_next' => true,
+									'type'      => 'plain',
+								)
+							)
+						);
+					}
+				?>
 			</div>
 		<?php } ?>
 	</div>

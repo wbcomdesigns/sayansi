@@ -120,5 +120,3 @@ add_filter( 'classic_editor_enabled_editors_for_post_type', function ( $editors,
   }
   return $editors;
 }, 10, 2 );
-
-

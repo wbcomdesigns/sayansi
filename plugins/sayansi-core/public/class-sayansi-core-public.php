@@ -171,7 +171,7 @@ class Sayansi_Core_Public {
 		bp_core_remove_nav_item( bp_get_invites_slug() );
 		bp_core_remove_subnav_item( bp_get_invites_slug(), 'invites' );
 		bp_core_remove_subnav_item( bp_get_invites_slug(), 'sent-invites' );
-		bp_core_remove_subnav_item( bp_get_friends_slug(), 'requests' );
+		// bp_core_remove_subnav_item( bp_get_friends_slug(), 'requests' );
 
 		// remove the membership tab from user profile
 		$main_slug = MeprHooks::apply_filters('mepr-bp-info-main-nav-slug', 'mp-membership');
@@ -236,6 +236,17 @@ class Sayansi_Core_Public {
 			)
 		);
 		//remove all partner subtab under the partner tab and added all partner subtab	
+
+		bp_core_new_subnav_item(
+				array(
+					'name'            => $tab_resume_name,
+					'slug'            => $profile_menu_slug,
+					'parent_url'      => trailingslashit( $user_domain . bp_get_profile_slug() ),
+					'parent_slug'     => bp_get_profile_slug(),
+					'screen_function' => array( $resume_manager, 'bprm_show_saved_resume_screen' ),
+					'position'        => 8,
+				)
+			);
 		
 		bp_core_new_subnav_item(
 			array(
@@ -249,6 +260,8 @@ class Sayansi_Core_Public {
 		);		
 
 		if ( bp_is_my_profile() || current_user_can( 'administrator' ) ) {
+
+			
 			//Info Sub Menu
 			bp_core_new_subnav_item(
 			array(
@@ -295,16 +308,7 @@ class Sayansi_Core_Public {
 			);
 			
 
-			bp_core_new_subnav_item(
-				array(
-					'name'            => $tab_resume_name,
-					'slug'            => $profile_menu_slug,
-					'parent_url'      => trailingslashit( $user_domain . bp_get_profile_slug() ),
-					'parent_slug'     => bp_get_profile_slug(),
-					'screen_function' => array( $resume_manager, 'bprm_show_saved_resume_screen' ),
-					'position'        => 20,
-				)
-			);
+			
 
 			if ( bprm_check_user_resume_data( $user_id, 'bprm_resume_' ) ) {
 				$tab_name = __( 'Edit ', 'sayansi-core' ) . $tab_resume_name;
@@ -493,6 +497,19 @@ class Sayansi_Core_Public {
 				'position'        => 50,
 			)
 		);
+		bp_core_new_subnav_item( array(
+			'name'            => __( 'Send Message to Fellow Member(s)', 'buddyboss' ),
+			'slug'            => 'send-msg-all-connection',
+			'parent_url'      => trailingslashit( $user_domain . 'message-center' ),
+			'parent_slug'     => 'message-center',
+			'screen_function' => function() {
+				// Redirect to the compose message screen with ?all_connections=1
+				$redirect_url = bp_loggedin_user_domain() . bp_get_messages_slug() . '/compose/';
+				wp_redirect( $redirect_url );
+				exit;
+			},
+			'position'        => 50,
+		) );
 		// add send msg to all connections as sub tab under message center
 		bp_core_new_subnav_item( array(
 			'name'            => __( 'Send Message To My Connections', 'buddyboss' ),
@@ -507,21 +524,6 @@ class Sayansi_Core_Public {
 			},
 			'position'        => 50,
 		) );
-
-		bp_core_new_subnav_item( array(
-			'name'            => __( 'Send Message To All Connections', 'buddyboss' ),
-			'slug'            => 'send-msg-all-connection',
-			'parent_url'      => trailingslashit( $user_domain . 'message-center' ),
-			'parent_slug'     => 'message-center',
-			'screen_function' => function() {
-				// Redirect to the compose message screen with ?all_connections=1
-				$redirect_url = bp_loggedin_user_domain() . bp_get_messages_slug() . '/compose/';
-				wp_redirect( $redirect_url );
-				exit;
-			},
-			'position'        => 50,
-		) );
-
 	}
 
 	/**
@@ -1078,7 +1080,7 @@ class Sayansi_Core_Public {
 		if( 'connections' !== bp_current_component() ){
 		?>
 		<style>
-			#business-list-container{
+			#business-list-container-personal{
 				display:none;
 			}
 		</style>
@@ -3181,6 +3183,61 @@ class Sayansi_Core_Public {
 	public function wbcom_bp_increase_groups_per_page_on_directory( $r ) {
 	  $r['per_page'] = 21; // Change this value to your desired number
 	  return $r;
+	}
+
+	/*
+	* Add resume layout on the edit resume template
+	*/
+	public function wbcom_add_resume_layout_setting_on_edit_resume(){
+		$user_id                  = bp_displayed_user_id();
+		$bprm_user_resume_layout  = get_user_meta( $user_id, 'bprm_user_resume_layout' );
+		$bprm_user_resume_setting = isset( $bprm_user_resume_layout[0] ) ? $bprm_user_resume_layout[0] : '';
+		?>
+		<div class="bprm-user-resume-layout">
+				<h2 class="screen-heading general-settings-screen">
+					<?php esc_html_e( 'Choose Resume Layout', 'bp-resume-manager' ); ?>
+				</h2>
+				<ul class="bprm-resume-template-setting-list">
+					<li>
+						<input type="radio" class="bprm-resume-layouts" name="bprm_user_resume_template_settings[resume_layout]" value="one" <?php ( isset( $bprm_user_resume_setting ) ) ? checked( $bprm_user_resume_setting, 'one' ) : ''; ?>>
+						<label for="member-wbtm-cover-header-type-1">
+							<img src="<?php echo esc_url( BPRM_PLUGIN_URL ) . 'admin/images/Resume-Layout-1.png'; ?>">
+							<span><?php esc_html_e( 'Layout #1', 'bp-resume-manager' ); ?></span>
+						</label>
+					</li>
+					<li>
+						<input type="radio" class="bprm-resume-layouts" name="bprm_user_resume_template_settings[resume_layout]" value="two"  <?php ( isset( $bprm_user_resume_setting ) ) ? checked( $bprm_user_resume_setting, 'two' ) : ''; ?>>
+						<label for="member-wbtm-cover-header-type-2">
+							<img src="<?php echo esc_url( BPRM_PLUGIN_URL ) . 'admin/images/Resume-Layout-2.png'; ?>">
+							<span><?php esc_html_e( 'Layout #2', 'bp-resume-manager' ); ?></span>
+						</label>
+					</li>
+					<li>
+						<input type="radio" class="bprm-resume-layouts" name="bprm_user_resume_template_settings[resume_layout]" value="three"  <?php ( isset( $bprm_user_resume_setting ) ) ? checked( $bprm_user_resume_setting, 'three' ) : ''; ?>>
+						<label for="member-wbtm-cover-header-type-3">
+							<img src="<?php echo esc_url( BPRM_PLUGIN_URL ) . 'admin/images/Resume-Layout-3.png'; ?>">
+							<span><?php esc_html_e( 'Layout #3', 'bp-resume-manager' ); ?></span>
+						</label>
+					</li>
+				</ul>
+				<?php wp_nonce_field( 'bprm-user-resume', 'save_bprm_user_resume' ); ?>			
+			</div>
+		<?php		
+	}
+
+	/*
+	* Save resume layout value in the usermeta
+	*/
+	public function wbcom_save_resume_layout_on_edit_resume(){
+		if( isset( $_POST['bprm_save_resume'] ) && 'Save Resume' == $_POST['bprm_save_resume'] ){
+			$user_id                = bp_displayed_user_id();
+			$bprm_user_resume_nonce = isset( $_POST['save_bprm_user_resume'] ) ? sanitize_text_field( wp_unslash( $_POST['save_bprm_user_resume'] ) ) : '';
+			if ( ! empty( $bprm_user_resume_nonce ) && ! wp_verify_nonce( $bprm_user_resume_nonce, 'bprm-user-resume' ) ) {
+				die;
+			}
+			$bprm_user_resume_layout = isset( $_POST['bprm_user_resume_template_settings']['resume_layout'] ) ? sanitize_text_field( wp_unslash( $_POST['bprm_user_resume_template_settings']['resume_layout'] ) ) : '';		
+			update_user_meta( $user_id, 'bprm_user_resume_layout', $bprm_user_resume_layout );
+		}
 	}
 	
 		
