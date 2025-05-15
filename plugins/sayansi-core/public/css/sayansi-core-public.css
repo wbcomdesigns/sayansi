@@ -849,3 +849,36 @@ body #buddypress .bp-list.message-center-list .action.message-center-meta .gener
 .bprm-profile-search-toggle-wrap{
     background: #000951!important;
 }
+
+/* Resume frontent */
+
+.wbcom-settings-section-options-heading{
+	margin-bottom:30px;
+}
+
+.resume-color-row{
+	display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.resume-color-row input{
+	border:0px;
+	border-radius:10px;
+	padding:0px;
+	margin-right:10px;
+}
+.resume-color-row small{
+	font-size:100%;
+}
+
+ul.bprm-resume-template-setting-list input[type="radio"]:checked::before{
+	border-radius:10px;
+}
+ul.bprm-resume-template-setting-list li{
+	overflow:hidden;
+	border-radius:10px;
+}
+
+
+

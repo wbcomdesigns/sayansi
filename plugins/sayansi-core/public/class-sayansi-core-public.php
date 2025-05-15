@@ -3189,9 +3189,50 @@ class Sayansi_Core_Public {
 	* Add resume layout on the edit resume template
 	*/
 	public function wbcom_add_resume_layout_setting_on_edit_resume(){
-		$user_id                  = bp_displayed_user_id();
-		$bprm_user_resume_layout  = get_user_meta( $user_id, 'bprm_user_resume_layout' );
-		$bprm_user_resume_setting = isset( $bprm_user_resume_layout[0] ) ? $bprm_user_resume_layout[0] : '';
+		$user_id                  	= bp_displayed_user_id();
+		$bprm_user_resume_layout  	= get_user_meta( $user_id, 'bprm_user_resume_layout' );
+		$bprm_user_resume_setting 	= isset( $bprm_user_resume_layout[0] ) ? $bprm_user_resume_layout[0] : '';
+
+		// global setting
+		$bprm_settings = get_option( 'bprm_resume_template_settings' );
+
+		$brm_btn_bg_color_g                = isset( $bprm_settings['btn_bg_color'] ) ? $bprm_settings['btn_bg_color'] : '';
+		$bprm_field_title_color_g          = isset( $bprm_settings['layout_one']['bprm_field_title_text_color'] ) ? $bprm_settings['layout_one']['bprm_field_title_text_color'] : '';
+		$bprm_t1_sidebar_header_bg_color_g = isset( $bprm_settings['layout_one']['bprm_sidebar_head_bg_color'] ) ? $bprm_settings['layout_one']['bprm_sidebar_head_bg_color'] : '';
+		$bprm_sidebar_txt_color_g          = isset( $bprm_settings['layout_one']['bprm_sidebar_text_color'] ) ? $bprm_settings['layout_one']['bprm_sidebar_text_color'] : '';
+		$bprm_content_txt_color_g          = isset( $bprm_settings['layout_one']['bprm_content_text_color'] ) ? $bprm_settings['layout_one']['bprm_content_text_color'] : '';
+
+		$bprm_t2_field_title_color_g       = isset( $bprm_settings['layout_two']['bprm_field_title_text_color'] ) ? $bprm_settings['layout_two']['bprm_field_title_text_color'] : '';
+		$bprm_t2_sidebar_header_bg_color_g = isset( $bprm_settings['layout_two']['bprm_sidebar_head_bg_color'] ) ? $bprm_settings['layout_two']['bprm_sidebar_head_bg_color'] : '';
+		$bprm_t2_sidebar_txt_color_g       = isset( $bprm_settings['layout_two']['bprm_sidebar_text_color'] ) ? $bprm_settings['layout_two']['bprm_sidebar_text_color'] : '';
+		$bprm_t2_content_txt_color_g       = isset( $bprm_settings['layout_two']['bprm_content_text_color'] ) ? $bprm_settings['layout_two']['bprm_content_text_color'] : '';
+
+		$bprm_t3_field_title_color_g 	   = isset( $bprm_settings['layout_three']['bprm_field_title_text_color'] ) ? $bprm_settings['layout_three']['bprm_field_title_text_color'] : '';
+		$bprm_t3_content_txt_color_g 	   = isset( $bprm_settings['layout_three']['bprm_content_text_color'] ) ? $bprm_settings['layout_three']['bprm_content_text_color'] : '';
+
+		//user specific setting
+
+		$bprm_user_resume_layout	= get_user_meta( $user_id, 'bprm_user_resume_layout' );
+		$bprm_layout_one 			= get_user_meta( $user_id, 'layout_one', true );
+		$bprm_layout_two 			= get_user_meta( $user_id, 'layout_two', true );
+		$bprm_layout_three 			= get_user_meta( $user_id, 'layout_three', true );
+		
+
+		$brm_btn_bg_color                = get_user_meta( $user_id, 'btn_bg_color' );
+
+
+		$bprm_field_title_color          = isset( $bprm_layout_one['bprm_field_title_text_color'] ) ? $bprm_layout_one['bprm_field_title_text_color'] : $bprm_field_title_color_g;
+		$bprm_t1_sidebar_header_bg_color = isset( $bprm_layout_one['bprm_sidebar_head_bg_color'] ) ? $bprm_layout_one['bprm_sidebar_head_bg_color'] : $bprm_t1_sidebar_header_bg_color_g;
+		$bprm_sidebar_txt_color          = isset( $bprm_layout_one['bprm_sidebar_text_color'] ) ? $bprm_layout_one['bprm_sidebar_text_color'] : $bprm_sidebar_txt_color_g;
+		$bprm_content_txt_color          = isset( $bprm_layout_one['bprm_content_text_color'] ) ? $bprm_layout_one['bprm_content_text_color'] : $bprm_content_txt_color_g;
+
+		$bprm_t2_field_title_color       = isset( $bprm_layout_two['bprm_field_title_text_color'] ) ? $bprm_layout_two['bprm_field_title_text_color'] : $bprm_t2_field_title_color_g;
+		$bprm_t2_sidebar_header_bg_color = isset( $bprm_layout_two['bprm_sidebar_head_bg_color'] ) ? $bprm_layout_two['bprm_sidebar_head_bg_color'] : $bprm_t2_sidebar_header_bg_color_g;
+		$bprm_t2_sidebar_txt_color       = isset( $bprm_layout_two['bprm_sidebar_text_color'] ) ? $bprm_layout_two['bprm_sidebar_text_color'] : $bprm_t2_sidebar_txt_color_g;
+		$bprm_t2_content_txt_color       = isset( $bprm_layout_two['bprm_content_text_color'] ) ? $bprm_layout_two['bprm_content_text_color'] : $bprm_t2_content_txt_color_g;
+
+		$bprm_t3_field_title_color = isset( $bprm_layout_three['bprm_field_title_text_color'] ) ? $bprm_layout_three['bprm_field_title_text_color'] : $bprm_t3_field_title_color_g;
+		$bprm_t3_content_txt_color = isset( $bprm_layout_three['bprm_content_text_color'] ) ? $bprm_layout_three['bprm_content_text_color'] : $bprm_t3_content_txt_color_g;
 		?>
 		<div class="bprm-user-resume-layout">
 				<h2 class="screen-heading general-settings-screen">
@@ -3222,6 +3263,131 @@ class Sayansi_Core_Public {
 				</ul>
 				<?php wp_nonce_field( 'bprm-user-resume', 'save_bprm_user_resume' ); ?>			
 			</div>
+
+			<!-- button color -->
+			<div class="wbcom-settings-section-wrap">
+				<div class="wbcom-settings-section-options-heading">
+					<h2><?php esc_html_e( 'Button Color', 'bp-resume-manager' ); ?></h2>
+					<div class="resume-color-row">		
+						<input type="color"  id="btn_bg_color" name="bprm_resume_template_settings[btn_bg_color]"  value="<?php echo esc_attr( $brm_btn_bg_color ); ?>">		
+						<div class="description" id="tagline-description"><?php esc_html_e( 'Select Share, Download Button Background Color', 'bp-resume-manager' ); ?></div>		
+					</div>
+				</div>
+				
+			</div>
+
+			<!-- layout one, two, three color option -->
+			<div class="wbcom-settings-section-wrap bprm-layout-one" style="
+						<?php
+						if ( 'one' !== $bprm_user_resume_setting ) {
+							?>
+							display:none;
+							<?php } ?>
+							">
+							<div class="wbcom-settings-section-options-heading">
+								<h2><?php esc_html_e( 'Resume Template Color', 'bp-resume-manager' ); ?></h2>
+							</div>
+								<div class="wbcom-settings-section-options">
+										<div class="resume-color-row">
+											<input type="color"  class="bprm_t1_field_title_text_color" name="bprm_resume_template_settings[layout_one][bprm_field_title_text_color]"  value="<?php echo esc_attr( $bprm_field_title_color );?>">
+										<label>
+											<small><?php esc_html_e( 'Select Field Title Text Color', 'bp-resume-manager' ); ?></small>
+										</label>
+										</div>				
+										
+										<div class="resume-color-row">					
+										<input type="color"  class="bprm_t1_sidebar_head_bg_color" name="bprm_resume_template_settings[layout_one][bprm_sidebar_head_bg_color]"  value="<?php echo esc_attr( $bprm_t1_sidebar_header_bg_color ); ?>">
+										<label>
+											<small><?php esc_html_e( 'Select Sidebar Background Color', 'bp-resume-manager' ); ?></small>
+										</label>
+									</div>
+												
+									<div class="resume-color-row">
+										<input type="color"  class="bprm_t1_sidebar_text_color" name="bprm_resume_template_settings[layout_one][bprm_sidebar_text_color]"  value="<?php echo esc_attr( $bprm_sidebar_txt_color ); ?>">
+										<label>
+											<small><?php esc_html_e( 'Select Sidebar Text Color', 'bp-resume-manager' ); ?></small>
+										</label>
+									</div>
+												
+									<div class="resume-color-row">
+										<input type="color"  class="bprm_t1_content_text_color" name="bprm_resume_template_settings[layout_one][bprm_content_text_color]"  value="<?php echo esc_attr( $$bprm_content_txt_color ); ?>">
+										<label>
+											<small><?php esc_html_e( 'Select Content Text Color', 'bp-resume-manager' ); ?></small>
+										</label>
+									</div>
+							</div>
+						</div>
+
+						<div class="wbcom-settings-section-wrap bprm-layout-two"  style="
+						<?php
+						if ( 'two' !== $bprm_user_resume_setting ) {
+							?>
+								display:none;
+							<?php } ?>
+							">
+							<div class="wbcom-settings-section-options-heading">
+								<h2><?php esc_html_e( 'Resume Template Color', 'bp-resume-manager' ); ?></h2>
+							</div>
+								<div class="wbcom-settings-section-options">
+										<div class="resume-color-row">				
+										<input type="color"  class="bprm_t2_field_title_text_color" name="bprm_resume_template_settings[layout_two][bprm_field_title_text_color]"  value="<?php echo esc_attr( $bprm_t2_field_title_color );?>">
+										<label>
+											<small><?php esc_html_e( 'Select Field Title Text Color', 'bp-resume-manager' ); ?></small>
+										</label>
+									</div>
+									
+									<div class="resume-color-row">
+										<input type="color"  class="bprm_t2_sidebar_head_bg_color" name="bprm_resume_template_settings[layout_two][bprm_sidebar_head_bg_color]"  value="<?php echo esc_attr( $bprm_t2_sidebar_header_bg_color ); ?>">
+										<label>
+											<small><?php esc_html_e( 'Select Header Background Color', 'bp-resume-manager' ); ?></small>
+										</label>
+									</div>
+												
+									<div class="resume-color-row">
+										<input type="color"  class="bprm_t2_sidebar_text_color" name="bprm_resume_template_settings[layout_two][bprm_sidebar_text_color]"  value="<?php echo esc_attr( $bprm_t2_sidebar_txt_color ) ?>">
+										<label>
+											<small><?php esc_html_e( 'Select Header Text Color', 'bp-resume-manager' ); ?></small>
+										</label>
+									</div>
+												
+									<div class="resume-color-row">
+										<input type="color"  class="bprm_t2_content_text_color" name="bprm_resume_template_settings[layout_two][bprm_content_text_color]"  value="<?php echo esc_attr( $bprm_t2_content_txt_color ); ?>">
+										<label>
+											<small><?php esc_html_e( 'Select Content Text Color', 'bp-resume-manager' ); ?></small>
+										</label>
+									</div>
+									
+							</div>
+						</div>
+
+						<div class="wbcom-settings-section-wrap bprm-layout-three" style="
+						<?php
+						if ( 'three' !== $bprm_user_resume_setting ) {
+							?>
+								display:none;
+							<?php } ?>
+							">
+							<div class="wbcom-settings-section-options-heading">
+								<h2><?php esc_html_e( 'Resume Template Color', 'bp-resume-manager' ); ?></h2>
+							</div>
+							<div class="wbcom-settings-section-options">
+									<div class="resume-color-row">					
+										<input type="color"  class="bprm_t3_field_title_text_color" name="bprm_resume_template_settings[layout_three][bprm_field_title_text_color]"  value="<?php echo esc_attr( $bprm_t3_field_title_color );?>">
+										<label>
+											<small><?php esc_html_e( 'Select Field Title Text Color', 'bp-resume-manager' ); ?></small>
+										</label>
+								</div>
+												
+								<div class="resume-color-row">
+										<input type="color"  class="bprm_t3_content_text_color" name="bprm_resume_template_settings[layout_three][bprm_content_text_color]"  value="<?php echo esc_attr( $bprm_t3_content_txt_color ); ?>">
+										<label>
+											<small><?php esc_html_e( 'Select Content Text Color', 'bp-resume-manager' ); ?></small>
+										</label>
+								</div>
+									
+							</div>
+						</div>
+
 		<?php		
 	}
 
@@ -3237,8 +3403,224 @@ class Sayansi_Core_Public {
 			}
 			$bprm_user_resume_layout = isset( $_POST['bprm_user_resume_template_settings']['resume_layout'] ) ? sanitize_text_field( wp_unslash( $_POST['bprm_user_resume_template_settings']['resume_layout'] ) ) : '';		
 			update_user_meta( $user_id, 'bprm_user_resume_layout', $bprm_user_resume_layout );
+
+
+
+			// Save layout data
+	        if ( isset( $_POST['bprm_resume_template_settings'] ) && is_array( $_POST['bprm_resume_template_settings'] ) ) {
+	            $settings = $_POST['bprm_resume_template_settings'];
+
+				//update button color
+				update_user_meta( $user_id, 'btn_bg_color', $settings['btn_bg_color'] );
+
+				//update layout cooresponding color
+	            foreach ( [ 'layout_one', 'layout_two', 'layout_three' ] as $layout_key ) {
+	                if ( isset( $settings[ $layout_key ] ) && is_array( $settings[ $layout_key ] ) ) {
+	                    // Sanitize each sub-value
+	                    $sanitized_layout = array_map( 'sanitize_text_field', $settings[ $layout_key ] );
+	                    update_user_meta( $user_id, $layout_key, $sanitized_layout );
+	                }
+	            }
+	        }
+
 		}
+
+		// global setting
+		$bprm_settings = get_option( 'bprm_resume_template_settings' );
+
+		$brm_btn_bg_color_g                = isset( $bprm_settings['btn_bg_color'] ) ? $bprm_settings['btn_bg_color'] : '';
+		$bprm_field_title_color_g          = isset( $bprm_settings['layout_one']['bprm_field_title_text_color'] ) ? $bprm_settings['layout_one']['bprm_field_title_text_color'] : '';
+		$bprm_t1_sidebar_header_bg_color_g = isset( $bprm_settings['layout_one']['bprm_sidebar_head_bg_color'] ) ? $bprm_settings['layout_one']['bprm_sidebar_head_bg_color'] : '';
+		$bprm_sidebar_txt_color_g          = isset( $bprm_settings['layout_one']['bprm_sidebar_text_color'] ) ? $bprm_settings['layout_one']['bprm_sidebar_text_color'] : '';
+		$bprm_content_txt_color_g          = isset( $bprm_settings['layout_one']['bprm_content_text_color'] ) ? $bprm_settings['layout_one']['bprm_content_text_color'] : '';
+
+		$bprm_t2_field_title_color_g       = isset( $bprm_settings['layout_two']['bprm_field_title_text_color'] ) ? $bprm_settings['layout_two']['bprm_field_title_text_color'] : '';
+		$bprm_t2_sidebar_header_bg_color_g = isset( $bprm_settings['layout_two']['bprm_sidebar_head_bg_color'] ) ? $bprm_settings['layout_two']['bprm_sidebar_head_bg_color'] : '';
+		$bprm_t2_sidebar_txt_color_g       = isset( $bprm_settings['layout_two']['bprm_sidebar_text_color'] ) ? $bprm_settings['layout_two']['bprm_sidebar_text_color'] : '';
+		$bprm_t2_content_txt_color_g       = isset( $bprm_settings['layout_two']['bprm_content_text_color'] ) ? $bprm_settings['layout_two']['bprm_content_text_color'] : '';
+
+		$bprm_t3_field_title_color_g 	   = isset( $bprm_settings['layout_three']['bprm_field_title_text_color'] ) ? $bprm_settings['layout_three']['bprm_field_title_text_color'] : '';
+		$bprm_t3_content_txt_color_g 	   = isset( $bprm_settings['layout_three']['bprm_content_text_color'] ) ? $bprm_settings['layout_three']['bprm_content_text_color'] : '';
+
+
+		$user_id          				 = bp_displayed_user_id();	
+
+		// user specific setting
+		$brm_btn_bg_color 				 = get_user_meta( $user_id, 'btn_bg_color',true );
+
+		$bprm_layout_one  				 = get_user_meta( $user_id, 'layout_one', true );
+		$bprm_layout_two  				 = get_user_meta( $user_id, 'layout_two', true );
+		$bprm_layout_three  			 = get_user_meta( $user_id, 'layout_three', true );
+
+		$bprm_field_title_color          = isset( $bprm_layout_one['bprm_field_title_text_color'] ) ? $bprm_layout_one['bprm_field_title_text_color'] : $bprm_field_title_color_g;
+		$bprm_t1_sidebar_header_bg_color = isset( $bprm_layout_one['bprm_sidebar_head_bg_color'] ) ? $bprm_layout_one['bprm_sidebar_head_bg_color'] : $bprm_t1_sidebar_header_bg_color_g;
+		$bprm_sidebar_txt_color          = isset( $bprm_layout_one['bprm_sidebar_text_color'] ) ? $bprm_layout_one['bprm_sidebar_text_color'] : $bprm_sidebar_txt_color_g;
+		$bprm_content_txt_color          = isset( $bprm_layout_one['bprm_content_text_color'] ) ? $bprm_layout_one['bprm_content_text_color'] : $bprm_content_txt_color_g;
+
+		$bprm_t2_field_title_color       = isset( $bprm_layout_two['bprm_field_title_text_color'] ) ? $bprm_layout_two['bprm_field_title_text_color'] : $bprm_t2_field_title_color_g;
+		$bprm_t2_sidebar_header_bg_color = isset( $bprm_layout_two['bprm_sidebar_head_bg_color'] ) ? $bprm_layout_two['bprm_sidebar_head_bg_color'] : $bprm_t2_sidebar_header_bg_color_g;
+		$bprm_t2_sidebar_txt_color       = isset( $bprm_layout_two['bprm_sidebar_text_color'] ) ? $bprm_layout_two['bprm_sidebar_text_color'] : $bprm_t2_sidebar_txt_color_g;
+		$bprm_t2_content_txt_color       = isset( $bprm_layout_two['bprm_content_text_color'] ) ? $bprm_layout_two['bprm_content_text_color'] : $bprm_t2_content_txt_color_g;
+
+		$bprm_t3_field_title_color = isset( $bprm_layout_three['bprm_field_title_text_color'] ) ? $bprm_layout_three['bprm_field_title_text_color'] : $bprm_t3_field_title_color_g;
+		$bprm_t3_content_txt_color = isset( $bprm_layout_three['bprm_content_text_color'] ) ? $bprm_layout_three['bprm_content_text_color'] : $bprm_t3_content_txt_color_g;	
+		?>
+
+		<style type="text/css">
+			.user-id-<?php echo $user_id; ?>.buddypress .bprm-header-button-wrapper .bprm-bprm-btn-primary,
+			.user-id-<?php echo $user_id; ?> .buddypress .bprm-header-button-wrapper .bprm-bprm-btn-primary,
+			.user-id-<?php echo $user_id; ?> .bprm-repeater-link a,
+			.user-id-<?php echo $user_id; ?> .bprm_resume_form .bprm_add_repeater_grp,
+			.user-id-<?php echo $user_id; ?> #buddypress .upload_bprm_profile_image input#bprm_select_resume_profile_img,
+			.user-id-<?php echo $user_id; ?> .bprm_resume_form input#bprm_save[name="bprm_save_resume"] {
+			<?php
+			echo "background:$brm_btn_bg_color !important" . ';'; //phpcs:ignore
+			echo "border-color:$brm_btn_bg_color !important" . ';'; //phpcs:ignore
+			?>
+			}		
+			.user-id-<?php echo $user_id; ?> .bprm-resume-wrapper .sidebar-wrapper {
+			<?php
+			echo "background:$bprm_t1_sidebar_header_bg_color !important" . ';'; //phpcs:ignore
+			?>
+			}
+			.user-id-<?php echo $user_id; ?> .bprm-resume-wrapper .sidebar-wrapper .bprm-group-title,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-template-one .bprm-resume-wrapper .level-bar-inner {
+			<?php
+			echo "background:$bprm_field_title_color !important" . ';'; //phpcs:ignore
+			?>
+			}
+			.user-id-<?php echo $user_id; ?> .bprm-resume-wrapper .sidebar-wrapper .fields-items,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-wrapper .sidebar-wrapper .fields-items a {
+			<?php
+			echo "color:$bprm_sidebar_txt_color !important" . ';'; //phpcs:ignore
+			?>
+			}		
+			.user-id-<?php echo $user_id; ?> .sidebar-wrapper .field-title,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-wrapper .main-wrapper .bprm-header-title {
+			<?php
+			echo "color:$bprm_field_title_color !important" . ';'; //phpcs:ignore
+			?>
+			}		
+			.user-id-<?php echo $user_id; ?> .bprm-resume-wrapper .sidebar-wrapper .bprm-group-title,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-template-one .bprm-education-item,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-template-one .bprm-education-item:before,
+			.user-id-<?php echo $user_id; ?> .bprm-group-section, .bprm-group-section:before, .bprm-resume-wrapper,
+			.user-id-<?php echo $user_id; ?> .bprm-user-image-wrapper img.avatar {
+			<?php
+			echo "border-color:$bprm_field_title_color !important" . ';'; //phpcs:ignore
+			?>
+			}
+			.user-id-<?php echo $user_id; ?> .bprm-resume-wrapper .main-wrapper h4.field-title{
+			<?php
+			echo "color:$bprm_content_txt_color !important" . ';'; //phpcs:ignore
+			?>
+			}
+			.user-id-<?php echo $user_id; ?> .bprm-resume-wrapper .main-wrapper .fields-items{
+			<?php
+			echo "color:$bprm_content_txt_color !important" . ';'; //phpcs:ignore
+			echo 'opacity: 0.7' . ';';
+			?>
+			}
+			.user-id-<?php echo $user_id; ?> .bprm-profile-wrapper,
+			.user-id-<?php echo $user_id; ?> .resume-share .bprm-resume-layout-wrapper .bprm-bprm-btn-primary,
+			.user-id-<?php echo $user_id; ?> .buddypress .buddypress-wrap .bprm-about-me .bprm-bprm-btn-primary,
+			.user-id-<?php echo $user_id; ?> .bprm-other-widget .level-bar-inner{
+			<?php
+			echo "background:$bprm_t2_sidebar_header_bg_color !important" . ';'; //phpcs:ignore
+			?>
+			}
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-two .bprm-profile-wrapper *,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-wrapper .bprm-bprm-btn-primary{
+			<?php
+			echo "color:$bprm_t2_sidebar_txt_color !important" . ';'; //phpcs:ignore
+			?>
+			}
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-two .bprm-resume-details p,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-two .bprm-resume-content-candidate *,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-two .bprm-other-widget span,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-two .bprm-personal-details-info{
+			<?php
+			echo "color:$bprm_t2_content_txt_color !important" . ';'; //phpcs:ignore
+			?>
+			}
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-two .bprm-other-widget small{
+			<?php
+			echo "color:$bprm_t2_content_txt_color !important" . ';'; //phpcs:ignore
+			echo 'opacity: 0.5' . ';';
+			?>
+			}
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-two h5.bprm-name-about-me{
+			<?php
+			echo "color:$bprm_t2_sidebar_header_bg_color !important" . ';'; //phpcs:ignore
+			?>
+			}
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-two .bprm-heading-section h4.bprm-header-title,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-two .bprm-resume-content-wrapper div span.edu_stats {
+			<?php
+			echo "color:$bprm_t2_field_title_color !important" . ';'; //phpcs:ignore
+			?>
+			}
+			.user-id-<?php echo $user_id; ?> #buddypress .bprm-resume-layout-two .bprm-heading-section h4:after,
+			.user-id-<?php echo $user_id; ?> .resume-share .bprm-resume-layout-two .bprm-heading-section h4:after{
+			<?php
+			echo "background:$bprm_t2_sidebar_header_bg_color !important" . ';'; //phpcs:ignore
+			?>
+			}
+			.user-id-<?php echo $user_id; ?> #buddypress .bprm-resume-layout-two .bprm-heading-section h4:before,
+			.user-id-<?php echo $user_id; ?> .resume-share .bprm-resume-layout-two .bprm-heading-section h4:before{
+			<?php
+			echo "background:$bprm_t2_field_title_color !important" . ';'; //phpcs:ignore
+			?>
+			}
+			.user-id-<?php echo $user_id; ?> .bprm-education-item:before{
+			<?php
+			echo "border-color:$bprm_t2_field_title_color !important" . ';'; //phpcs:ignore
+			?>
+			}
+			.user-id-<?php echo $user_id; ?> #buddypress .bprm-resume-layout-three .bprm-heading-section h4,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-three h4.bprm-header-title,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-three .bprm-profile-main h4.bprm-user-name{
+			<?php
+			echo "color:$bprm_t3_field_title_color !important" . ';'; //phpcs:ignore
+			?>
+			}
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-three .bprm-other-widget .level-bar-inner{
+			<?php
+			echo "background:$bprm_t3_field_title_color  !important" . ';'; //phpcs:ignore
+			?>
+			}
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-three span.edu_stats,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-three .bprm-resume-content-candidate *,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-three .bprm-profile-wrapper *,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-three .bprm-profile-wrapper *,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-three .bprm-sidebar-wrapper *,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-three .bprm-sidebar-wrapper div,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-three .bprm-profile-wrapper div,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-three .bprm-about-content p,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-three .bprm-resume-content-candidate .bprm-group-container div{
+			<?php
+			echo "color:$bprm_t3_content_txt_color !important" . ';'; //phpcs:ignore
+			?>
+			}
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-three .bprm-personal-detail-title,
+			.user-id-<?php echo $user_id; ?> .bprm-resume-layout-three .bprm-personal-information .bprm-personal-detail-title{
+			<?php
+			echo "color:$bprm_t3_field_title_color !important" . ';'; //phpcs:ignore
+			?>
+			}
+		</style>
+	<?php
 	}
-	
+
+	/*
+	* Add current user id class in the body tag 
+	*/
+	public function wbcom_add_body_classes( $classes ) {
+		$user_id = bp_displayed_user_id();
+		// Add your custom class
+		$classes[] = 'user-id-' . $user_id;
+
+		return $classes;
+		}	
 		
 }

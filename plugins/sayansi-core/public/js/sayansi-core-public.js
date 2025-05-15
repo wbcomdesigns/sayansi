@@ -502,6 +502,25 @@
 					$('body').addClass('about_list');
 				}				
 			});
+
+
+			// color option display according to resume layout on edit resume page
+			$(document).on("click", ".bprm-resume-layouts", function () {
+				var layout_value = this.value;
+				if (layout_value == "one") {
+					$(".bprm-layout-one").show();
+					$(".bprm-layout-two").hide();
+					$(".bprm-layout-three").hide();
+				} else if (layout_value == "two") {
+					$(".bprm-layout-one").hide();
+					$(".bprm-layout-two").show();
+					$(".bprm-layout-three").hide();
+				} else if (layout_value == "three") {
+					$(".bprm-layout-one").hide();
+					$(".bprm-layout-two").hide();
+					$(".bprm-layout-three").show();
+				}
+			});
 			
 		});
 		

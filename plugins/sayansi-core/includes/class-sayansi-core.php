@@ -253,6 +253,9 @@ class Sayansi_Core {
 		$this->loader->add_action( 'bprm_after_upload_resume_image_section', $plugin_public, 'wbcom_add_resume_layout_setting_on_edit_resume');
 		$this->loader->add_action( 'wp_head', $plugin_public, 'wbcom_save_resume_layout_on_edit_resume' );
 
+		//Add current user id class in the body tag 
+		$this->loader->add_filter( 'body_class', $plugin_public, 'wbcom_add_body_classes' );
+
 					
 	}
 
