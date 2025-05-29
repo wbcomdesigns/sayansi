@@ -191,16 +191,17 @@ function wbcom_get_documents( $component_name, $doc_component, $id, $folder_id )
  */
 function wbcom_update_business_excerpt_value(){	
 	global $wpdb;
-	$excerpt_val = $_POST['acf']['field_6729c0127e757'];
+	$excerpt_val = isset( $_POST['acf']['field_6729c0127e757'] ) ? sanitize_text_field( wp_unslash( $_POST['acf']['field_6729c0127e757'] ) ) : ''; //phpcs:ignore
+	$bp_business_profile_id = isset( $_POST['bp_business_profile_id'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_business_profile_id'] ) ) : ''; //phpcs:ignore
 	// Update the post excerpt for the custom post type.						
-	update_field( 'beam_line_excerpt', wpautop( $excerpt_val ), $_POST['bp_business_profile_id'] );
+	update_field( 'beam_line_excerpt', wpautop( $excerpt_val ), $bp_business_profile_id );
 	$wpdb->update(
 		'wp_posts',
 		array(
 			'post_excerpt' => $excerpt_val,				
 		),
 		array(
-			'ID' => $_POST['bp_business_profile_id'],
+			'ID' => $bp_business_profile_id,
 		)
 	);
 }

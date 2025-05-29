@@ -220,41 +220,43 @@ class Sayansi_Core {
 		$this->loader->add_action('wp', $plugin_public, 'wbcom_handle_message_redirect');
 
 		// create link group tab on partner setting
-		$this->loader->add_filter( 'bp_business_profile_single_settings_tabs', $plugin_public, 'wbcom_create_link_groups_tab_partner_setting',999,1);
+		$this->loader->add_filter( 'bp_business_profile_single_settings_tabs', $plugin_public, 'sayansi_create_link_groups_tab_partner_setting',999,1);
 
 		//remove group from partne under link group tab in partner setting
-		$this->loader->add_action( 'wp_ajax_remove_business_group', $plugin_public, 'wbcom_remove_business_group' );
-		$this->loader->add_action( 'wp_ajax_update_partner_groups', $plugin_public, 'wbcom_update_partner_groups' );
+		$this->loader->add_action( 'wp_ajax_remove_business_group', $plugin_public, 'sayansi_remove_business_group' );
+		$this->loader->add_action( 'wp_ajax_update_partner_groups', $plugin_public, 'sayansi_update_partner_groups' );
 
 		// search added on course for user profile
-		$this->loader->add_action( 'wp_ajax_search_courses_user_profile', $plugin_public, 'wbcom_search_courses_user_profile' );
+		$this->loader->add_action( 'wp_ajax_search_courses_user_profile', $plugin_public, 'sayansi_search_courses_user_profile' );
 
 		// Reorder the business setting tab( photo, cover image )
-		$this->loader->add_filter( 'bp_business_profile_single_settings_tabs', $plugin_public, 'wbcom_reorder_business_setting_tab');
+		$this->loader->add_filter( 'bp_business_profile_single_settings_tabs', $plugin_public, 'sayansi_reorder_business_setting_tab');
 
 		// Hide the business author from the team widget when more than one admin exist.
-		$this->loader->add_action( 'bp_business_profile_team_widget_before_admins', $plugin_public, 'wbcom_business_team_widget_admin_user_filter', 10,2 );
+		$this->loader->add_action( 'bp_business_profile_team_widget_before_admins', $plugin_public, 'sayansi_business_team_widget_admin_user_filter', 10,2 );
 
 		//for individual members under network tab search, filter, layout 
 		$this->loader->add_action( 'wp_ajax_indiviual_members_search', $plugin_public, 'wbcom_indiviual_members_search');
 		$this->loader->add_action( 'wp_ajax_nopriv_indiviual_members_search', $plugin_public, 'wbcom_indiviual_members_search');
 
 		//for all partner under network tab search, filter, layout 	
-		$this->loader->add_action( 'wp_ajax_network_all_partners', $plugin_public, 'wbcom_network_all_partners');
-		$this->loader->add_action( 'wp_ajax_nopriv_network_all_partners', $plugin_public, 'wbcom_network_all_partners');
+		$this->loader->add_action( 'wp_ajax_network_all_partners', $plugin_public, 'sayansi_network_all_partners');
+		$this->loader->add_action( 'wp_ajax_nopriv_network_all_partners', $plugin_public, 'sayansi_network_all_partners');
 
 		//Add per page for member directory
-		$this->loader->add_filter( 'bp_after_has_members_parse_args', $plugin_public, 'wbcom_bp_increase_members_per_page_on_directory');
+		$this->loader->add_filter( 'bp_after_has_members_parse_args', $plugin_public, 'sayansi_bp_increase_members_per_page_on_directory');
 
 		//Add per page for group directory
-		$this->loader->add_filter( 'bp_after_has_groups_parse_args', $plugin_public, 'wbcom_bp_increase_groups_per_page_on_directory' );
+		$this->loader->add_filter( 'bp_after_has_groups_parse_args', $plugin_public, 'sayansi_bp_increase_groups_per_page_on_directory' );
 
 		// Resume layout section add on edit resume template and save the value in the usermeta
-		$this->loader->add_action( 'bprm_after_upload_resume_image_section', $plugin_public, 'wbcom_add_resume_layout_setting_on_edit_resume');
-		$this->loader->add_action( 'wp_head', $plugin_public, 'wbcom_save_resume_layout_on_edit_resume' );
+		$this->loader->add_action( 'bprm_after_upload_resume_image_section', $plugin_public, 'sayansi_add_resume_layout_setting_on_edit_resume');
+		$this->loader->add_action( 'wp_head', $plugin_public, 'sayansi_save_resume_layout_on_edit_resume' );
 
-		//Add current user id class in the body tag 
-		$this->loader->add_filter( 'body_class', $plugin_public, 'wbcom_add_body_classes' );
+
+		$this->loader->add_filter( 'body_class', $plugin_public, 'sayansi_custom_body_classes' );
+
+		$this->loader->add_filter( 'bprm_override_resume_link_admin_menu', $plugin_public, 'sayansi_update_resume_admin_menu_link', 10, 3 );
 
 					
 	}

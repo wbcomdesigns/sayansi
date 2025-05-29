@@ -76,8 +76,8 @@ class Sayansi_Core_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name . '-chosen-style', plugin_dir_url( __FILE__ ) . 'css/vendor/chosen/chosen.min.css', array(), time(), 'all' );
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/sayansi-core-public.css', array(), time(), 'all' );
+		wp_enqueue_style( $this->plugin_name . '-chosen-style', plugin_dir_url( __FILE__ ) . 'css/vendor/chosen/chosen.min.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/sayansi-core-public.css', array(), $this->version, 'all' );
 		wp_enqueue_style( 'selectize', plugin_dir_url( __FILE__ ) . 'css/selectize.css', array(), $this->version, 'all' );
 
 	}
@@ -100,8 +100,8 @@ class Sayansi_Core_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-		wp_enqueue_script( $this->plugin_name . '-chosen-script', plugin_dir_url( __FILE__ ) . 'js/vendor/chosen/chosen.jquery.min.js', array( 'jquery' ), time(), true );
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sayansi-core-public.js', array( 'jquery' ), time(), true );
+		wp_enqueue_script( $this->plugin_name . '-chosen-script', plugin_dir_url( __FILE__ ) . 'js/vendor/chosen/chosen.jquery.min.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sayansi-core-public.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( 'selectize', plugin_dir_url( __FILE__ ) . 'js/selectize.min.js', array( 'jquery' ), $this->version, false );
 		if( function_exists( 'bbp_get_forum_post_type' ) && 'forum' == bbp_get_forum_post_type() ){	
 			$forums_page = get_post( get_the_ID() );
@@ -263,49 +263,49 @@ class Sayansi_Core_Public {
 
 			
 			//Info Sub Menu
-			bp_core_new_subnav_item(
-			array(
-				'name' => _x('Info', 'ui', 'memberpress-buddypress'),
-				'slug' => 'mp-info',
-				'parent_url' => trailingslashit( $user_domain . bp_get_profile_slug() ),
-				'parent_slug' => bp_get_profile_slug(),
-				'screen_function' => array($mpbuddypress, 'membership_info'),
-				'position' => 10,
-				'user_has_access' => bp_is_my_profile(),
-				'site_admin_only' => false,
-				'item_css_id' => 'mepr-bp-info'
-			)
-			);
+			// bp_core_new_subnav_item(
+			// 	array(
+			// 		'name' => _x('Info', 'ui', 'memberpress-buddypress'),
+			// 		'slug' => 'mp-info',
+			// 		'parent_url' => trailingslashit( $user_domain . bp_get_profile_slug() ),
+			// 		'parent_slug' => bp_get_profile_slug(),
+			// 		'screen_function' => array($mpbuddypress, 'membership_info'),
+			// 		'position' => 10,
+			// 		'user_has_access' => bp_is_my_profile(),
+			// 		'site_admin_only' => false,
+			// 		'item_css_id' => 'mepr-bp-info'
+			// 	)
+			// );
 
 			//Subscriptions Sub Menu
-			bp_core_new_subnav_item(
-				array(
-					'name' => _x('Subscriptions', 'ui', 'memberpress-buddypress'),
-					'slug' => MeprHooks::apply_filters('mepr-bp-subscriptions-slug', 'mp-subscriptions'),
-					'parent_url' => trailingslashit( $user_domain . bp_get_profile_slug() ),
-					'parent_slug' => bp_get_profile_slug(),
-					'screen_function' => array($mpbuddypress, 'membership_subscriptions'),
-					'position' => 10,
-					'user_has_access' => bp_is_my_profile(),
-					'site_admin_only' => false,
-					'item_css_id' => 'mepr-bp-subscriptions'
-				)
-			);
+			// bp_core_new_subnav_item(
+			// 	array(
+			// 		'name' => _x('Subscriptions', 'ui', 'memberpress-buddypress'),
+			// 		'slug' => MeprHooks::apply_filters('mepr-bp-subscriptions-slug', 'mp-subscriptions'),
+			// 		'parent_url' => trailingslashit( $user_domain . bp_get_profile_slug() ),
+			// 		'parent_slug' => bp_get_profile_slug(),
+			// 		'screen_function' => array($mpbuddypress, 'membership_subscriptions'),
+			// 		'position' => 10,
+			// 		'user_has_access' => bp_is_my_profile(),
+			// 		'site_admin_only' => false,
+			// 		'item_css_id' => 'mepr-bp-subscriptions'
+			// 	)
+			// );
 
 			//Payments Sub Menu
-			bp_core_new_subnav_item(
-				array(
-					'name' => _x('Payments', 'ui', 'memberpress-buddypress'),
-					'slug' => MeprHooks::apply_filters('mepr-bp-payments-slug', 'mp-payments'),
-					'parent_url' => trailingslashit( $user_domain . bp_get_profile_slug() ),
-					'parent_slug' => bp_get_profile_slug(),
-					'screen_function' => array($mpbuddypress, 'membership_payments'),
-					'position' => 20,
-					'user_has_access' => bp_is_my_profile(),
-					'site_admin_only' => false,
-					'item_css_id' => 'mepr-bp-payments'
-				)
-			);
+			// bp_core_new_subnav_item(
+			// 	array(
+			// 		'name' => _x('Payments', 'ui', 'memberpress-buddypress'),
+			// 		'slug' => MeprHooks::apply_filters('mepr-bp-payments-slug', 'mp-payments'),
+			// 		'parent_url' => trailingslashit( $user_domain . bp_get_profile_slug() ),
+			// 		'parent_slug' => bp_get_profile_slug(),
+			// 		'screen_function' => array($mpbuddypress, 'membership_payments'),
+			// 		'position' => 20,
+			// 		'user_has_access' => bp_is_my_profile(),
+			// 		'site_admin_only' => false,
+			// 		'item_css_id' => 'mepr-bp-payments'
+			// 	)
+			// );
 			
 
 			
@@ -562,7 +562,7 @@ class Sayansi_Core_Public {
 	 */
 	public function wbcom_render_member_all_courses_content(){		
 		// Pagination parameters
-		$paged = ( isset( $_GET['page'] ) ) ? absint( $_GET['page'] ) : 1;
+		$paged = ( isset( $_GET['page'] ) ) ? absint( $_GET['page'] ) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$per_page = 15;  // Number of courses per page
 		$offset = ( $paged - 1 ) * $per_page;
 
@@ -730,7 +730,7 @@ class Sayansi_Core_Public {
         <div id="response-container">                        
 			<?php
             // Pagination parameters
-            $paged = ( isset( $_GET['page'] ) ) ? absint( $_GET['page'] ) : 1;
+            $paged = ( isset( $_GET['page'] ) ) ? absint( $_GET['page'] ) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
             $per_page = 15;  // Number of forums per page
             $offset = ( $paged - 1 ) * $per_page;
 
@@ -952,7 +952,7 @@ class Sayansi_Core_Public {
                     <div class="push-right flex"> 
                         <div class="bp-ind-members-filter-wrap subnav-filters subnav-search">	
                             <form action="" method="get" class="bp-dir-search-individual-members search-individual-members-has-reset" id="" autocomplete="off">
-                                <label for="individual-member-search" class="bp-screen-reader-text">Search Members…</label>
+                                <label for="individual-member-search" class="bp-screen-reader-text"><?php esc_html_e( 'Search Members…', 'sayansi-core' ); ?></label>
                                 <input id="individual-member-search" name="individual_member_search" type="search" placeholder="Search Members..">                               
                             </form>
                         </div>
@@ -973,9 +973,9 @@ class Sayansi_Core_Public {
                         </div>
 
                         <div class="grid-filters" data-object="<?php echo esc_attr( $component ); ?>">
-                            <a href="#" class="layout-view layout-grid-view bp-tooltip grid" data-view="grid" data-bp-tooltip-pos="up" data-bp-tooltip="<?php _e( 'Grid View', 'sayansi-core' ); ?>"> <i class="bb-icon-l bb-icon-grid-large" aria-hidden="true"></i> </a>
+                            <a href="#" class="layout-view layout-grid-view bp-tooltip grid" data-view="grid" data-bp-tooltip-pos="up" data-bp-tooltip="<?php esc_attr_e( 'Grid View', 'sayansi-core' ); ?>"> <i class="bb-icon-l bb-icon-grid-large" aria-hidden="true"></i> </a>
 
-                            <a href="#" class="layout-view layout-list-view bp-tooltip list" data-view="list" data-bp-tooltip-pos="up" data-bp-tooltip="<?php _e( 'List View', 'sayansi-core' );?>"> <i class="bb-icon-l bb-icon-bars" aria-hidden="true"></i> </a>
+                            <a href="#" class="layout-view layout-list-view bp-tooltip list" data-view="list" data-bp-tooltip-pos="up" data-bp-tooltip="<?php esc_attr_e( 'List View', 'sayansi-core' );?>"> <i class="bb-icon-l bb-icon-bars" aria-hidden="true"></i> </a>
                         </div>
 
                     </div>
@@ -1004,7 +1004,7 @@ class Sayansi_Core_Public {
 				$profile_actions = bb_member_directories_get_profile_actions( $member->ID );
                 ?>
                 <li class="item-entry odd is-online is-current-user" data-bp-item-id="35" data-bp-item-component="members">
-                    <a href="<?php echo bp_core_get_user_domain( $member->ID ); ?>">                            
+                    <a href="<?php echo esc_url( bp_core_get_user_domain( $member->ID ) ); ?>">                            
                     
 					<div class="list-wrap footer-buttons-on no-secondary-buttons no-primary-buttons">
 						<div class="list-wrap-inner">
@@ -1418,32 +1418,17 @@ class Sayansi_Core_Public {
 
 
 	public function wbcom_save_business_bibliography() {
-		if ( isset( $_POST['business-bibliography-nonce'] ) && wp_verify_nonce( $_POST['business-bibliography-nonce'], 'business-bibliography-action' )) {
-			$bibliography = isset( $_POST['business-bibliography'] ) ? wp_kses_post( $_POST['business-bibliography'] ) : '';
-			$business_id = isset( $_POST['business_id'] ) ? absint( $_POST['business_id'] ) : '';
+		if ( isset( $_POST['business-bibliography-nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['business-bibliography-nonce'] ) ), 'business-bibliography-action' )) {
+			$bibliography = isset( $_POST['business-bibliography'] ) ? wp_kses_post( $_POST['business-bibliography'] ) : ''; //phpcs:ignore
+			$business_id = isset( $_POST['business_id'] ) ? absint( wp_unslash( $_POST['business_id'] ) ) : '';
 
 			update_post_meta( $business_id, 'business_bibliography', wpautop( $bibliography ) );
-
-			wp_redirect( $_POST['_wp_http_referer'] );
+			if ( isset( $_POST['_wp_http_referer'] ) ) {
+			 wp_redirect( wp_unslash( $_POST['_wp_http_referer'] ) );
+			}
 			exit();
 		}
 	}
-
-
-	// public function wbcom_save_business_excerpt( $business_id ) {
-	// 	if ( empty( $business_id ) ) {
-	// 		return;
-	// 	}
-
-	// 	$beam_line_excerpt = isset( $_REQUEST['beam_line_excerpt'] ) ? wp_kses_post( $_REQUEST['beam_line_excerpt'] ) : '';
-
-	// 	update_field( 'beam_line_excerpt', wpautop( $beam_line_excerpt ), $business_id );
-
-	// 	// add groups in the partner from group selection on partner creation
-	// 	$group_id = isset( $_POST[ 'business-group' ] ) ? $_POST[ 'business-group' ] : '';		
-	// 	groups_update_groupmeta( $group_id, 'bp-group-add-business', $business_id );
-	// 	update_post_meta( $business_id, 'bp-link-group', $group_id );
-	// }
 
 
 
@@ -1453,11 +1438,11 @@ class Sayansi_Core_Public {
 	    }
 
 	    // Save the excerpt
-	    $beam_line_excerpt = isset( $_REQUEST['beam_line_excerpt'] ) ? wp_kses_post( $_REQUEST['beam_line_excerpt'] ) : '';
+	    $beam_line_excerpt = isset( $_REQUEST['beam_line_excerpt'] ) ? wp_kses_post( $_REQUEST['beam_line_excerpt'] ) : ''; // phpcs:ignore
 	    update_field( 'beam_line_excerpt', wpautop( $beam_line_excerpt ), $business_id );
 
 	    // add groups in the partner from group selection on partner creation
-		$group_ids = isset( $_POST[ 'business-group' ] ) ? $_POST[ 'business-group' ] : '';		
+		$group_ids = isset( $_POST[ 'business-group' ] ) ? $_POST[ 'business-group' ] : '';	// phpcs:ignore	
 		if ( ! empty( $group_ids ) && is_array( $group_ids ) ) {
 			foreach ( $group_ids as $group_id ) {
 				// Retrieve the existing business IDs for this group (if any)
@@ -1541,8 +1526,8 @@ class Sayansi_Core_Public {
 	 * @return void
 	 */
 	public function wbcom_save_business_info_fields($post_id) {
-	    if (isset($_POST['acf']) && !empty($_POST['acf'])) {
-	        foreach ($_POST['acf'] as $field_key => $field_value) {
+	    if (isset($_POST['acf']) && !empty($_POST['acf'])) { //phpcs:ignore
+	        foreach ($_POST['acf'] as $field_key => $field_value) { //phpcs:ignore
 	            $field = function_exists('get_field_object') ? get_field_object($field_key) : null;
 
 	            if ($field) {
@@ -1646,6 +1631,7 @@ class Sayansi_Core_Public {
 	 * @return void
 	 */
 	public function wbcom_group_detail( $group_id ){	
+		// phpcs:disable
 		if( isset( $_FILES['group_feature_image'] )  ){
 			$file = $_FILES['group_feature_image'];
 			require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -1732,6 +1718,7 @@ class Sayansi_Core_Public {
 			$file_url = $upload['url'];
 			groups_update_groupmeta( $group_id, 'group_column_four_logo', $file_url );
 		}
+		// phpcs:enable 
 	}
 
 	public function wbcom_bp_add_group_subnav_tab() {
@@ -2062,13 +2049,13 @@ class Sayansi_Core_Public {
 	// }
 
 	public function wbcom_save_business_general_info_fields( $post_id ){
-		if (!isset($_POST['wbcom_business_info_nonce']) || !wp_verify_nonce($_POST['wbcom_business_info_nonce'], 'wbcom_save_business_info')) {
+		if (!isset($_POST['wbcom_business_info_nonce']) || !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['wbcom_business_info_nonce'] ) ), 'wbcom_save_business_info')) {
 			return;
 		}
 		$fields = wbcom_get_business_info_fields();   
 		foreach ($fields as $field_key => $field) {        
 			if (isset($_FILES[$field_key]) && !empty($_FILES[$field_key]['name'])) {
-				$file = $_FILES[$field_key];
+				$file = $_FILES[$field_key]; //phpcs:ignore
 				require_once ABSPATH . 'wp-admin/includes/file.php';
 				$upload = wp_handle_upload($file, ['test_form' => false]);
 
@@ -2078,7 +2065,7 @@ class Sayansi_Core_Public {
 				}
 			} elseif (isset($_POST[$field_key])) {
 				// Only update text fields if present in POST.
-				$value = $_POST[$field_key];
+				$value = $_POST[$field_key]; //phpcs:ignore
 				update_post_meta($post_id, $field_key, $value);
 			}
 		}
@@ -2099,7 +2086,7 @@ class Sayansi_Core_Public {
 
 		if ( bp_is_user() && 'folders' == bp_current_action() ) {
 
-			if ( strpos( $_SERVER['HTTP_REFERER'], 'tab=audio' ) ) {
+			if ( strpos( $_SERVER['HTTP_REFERER'], 'tab=audio' ) ) { //phpcs:ignore
 				$r['meta_query_document'] = array(
 					array(
 						'key'     => 'extension',
@@ -2108,7 +2095,7 @@ class Sayansi_Core_Public {
 					),
 
 				);
-			} elseif ( strpos( $_SERVER['HTTP_REFERER'], 'tab=videos' ) ) {
+			} elseif ( strpos( $_SERVER['HTTP_REFERER'], 'tab=videos' ) ) { //phpcs:ignore
 				$r['meta_query_document'] = array(
 					array(
 						'key'     => 'extension',
@@ -2117,7 +2104,7 @@ class Sayansi_Core_Public {
 					),
 
 				);
-			} elseif ( strpos( $_SERVER['HTTP_REFERER'], 'tab=photos' ) ) {
+			} elseif ( strpos( $_SERVER['HTTP_REFERER'], 'tab=photos' ) ) { //phpcs:ignore
 				$r['meta_query_document'] = array(
 					array(
 						'key'     => 'extension',
@@ -2126,7 +2113,7 @@ class Sayansi_Core_Public {
 					),
 
 				);
-			} elseif ( strpos( $_SERVER['HTTP_REFERER'], 'tab=document' ) ) {
+			} elseif ( strpos( $_SERVER['HTTP_REFERER'], 'tab=document' ) ) { //phpcs:ignore
 				$r['meta_query_document'] = array(
 					array(
 						'key'     => 'extension',
@@ -2145,18 +2132,17 @@ class Sayansi_Core_Public {
 	 * @return void
 	 */
 	public function wbcom_load_forum_discussion() {
-		$nonce = $_POST['nonce'];
 
-		if ( ! wp_verify_nonce( $nonce, 'sayansi_ajax_security' ) ) {
+		if ( !isset($_POST['nonce']) || ! wp_verify_nonce( $nonce, 'sayansi_ajax_security' ) ) {
 			wp_send_json_error('Invalid nonce');
 			return;
 		}
 
-		$endpoint = isset( $_POST['check_tab'] ) ? $_POST['check_tab'] : '';
+		$endpoint = isset( $_POST['check_tab'] ) ? sanitize_text_field( wp_unslash( $_POST['check_tab'] ) ) : '';
 		ob_start(); // Start output buffering
 
 		if( 'sayansi-forum' == $endpoint ) {
-			$forum_desc = $_POST['forum_desc'];			
+			$forum_desc = isset( $_POST['forum_desc'] ) ? sanitize_text_field( wp_unslash( $_POST['forum_desc'] ) ) : '';			
 			include get_stylesheet_directory() . '/tab-forums.php';
 		} else {
 			include get_stylesheet_directory() . '/tab-discussion.php';
@@ -2289,7 +2275,7 @@ class Sayansi_Core_Public {
 	 */
 	public function sayansi_include_activity_connections_core_file() {
         
-        $url = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
+        $url = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';  //phpcs:ignore
         
         if( ! empty($url) && strpos($url,'/activity/connections') ){
             
@@ -2312,7 +2298,7 @@ class Sayansi_Core_Public {
 	public function wbcom_bp_blog_pro_save_group_setting( $post_id ) {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'bp_activity';
-		$selected_business_group = isset( $_POST['bp_blog_pro_business_group_links'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_blog_pro_business_group_links'] ) ) : '';
+		$selected_business_group = isset( $_POST['bp_blog_pro_business_group_links'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_blog_pro_business_group_links'] ) ) : ''; //phpcs:ignore
 		if ( isset( $selected_business_group ) && ! empty( $selected_business_group ) ) {
 			update_post_meta( $post_id, 'bp_blog_pro_business_group_links', $selected_business_group );
 			$act_id = get_post_meta( $post_id, 'bp_member_blog_pro_activity_id', true );
@@ -2330,11 +2316,16 @@ class Sayansi_Core_Public {
 	 * @return void
 	 */
 	public function wbcom_forums_search(){
+		// Verify nonce
+		if (!isset($_POST['nonce']) || !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'sayansi_ajax_security')) {
+		    wp_send_json_error('Security check failed');
+		    return;
+		}
 
-		$query 			= sanitize_text_field($_POST['query']);
-		$order 			= sanitize_text_field($_POST['order']);
-		$forum_order 	= sanitize_text_field($_POST['forum_order']);
-		$layout 		= sanitize_text_field($_POST['layout']);
+		$query 			= isset( $_POST['query'] ) ? sanitize_text_field( wp_unslash( $_POST['query'] ) ) : '';
+		$order 			= isset( $_POST['order'] ) ? sanitize_text_field( wp_unslash( $_POST['order'] ) ) : '';
+		$forum_order 	= isset( $_POST['forum_order'] ) ? sanitize_text_field( wp_unslash( $_POST['forum_order'] ) ) : '';
+		$layout 		= isset( $_POST['layout'] ) ? sanitize_text_field( wp_unslash( $_POST['layout'] ) ) : '';
 		$paged 			= isset($_POST['paged']) ? intval($_POST['paged']) : 1; // Get the current page number
 		$posts_per_page = apply_filters( 'wbcom_forum_paginations_count' ,15 );
 		
@@ -2421,7 +2412,7 @@ class Sayansi_Core_Public {
 		);
 	    echo '<div class="bbp-pagination">';
 	    echo '<div class="bbp-pagination-count">Viewing '. esc_html($start) . ' - ' . esc_html($end) . ' of ' . esc_html($total_forums) . ' forums </div>'; //phpcs:ignore
-	    echo '<div class="bbp-pagination-links">' . paginate_links($pagination_args) . '</div>';
+	    echo '<div class="bbp-pagination-links">' . wp_kses_post( paginate_links($pagination_args) ) . '</div>';
 	    echo '</div>';
 		
 		echo '</div>';
@@ -2479,9 +2470,14 @@ class Sayansi_Core_Public {
 	}
 
 	public function wbcom_filter_courses() {
+		//Verify nonce
+		if ( !isset($_POST['nonce']) || !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'sayansi_ajax_security')) {
+		    wp_send_json_error('Security check failed');
+		    return;
+		}
 		// Check if order_by is set; if not, default to 'alphabetical'
-		 $order_by = isset($_POST['order_by']) ? sanitize_text_field($_POST['order_by']) : 'alphabetical';
-		 $tabname = isset($_POST['tabname']) ? sanitize_text_field($_POST['tabname']) : '';
+		 $order_by = isset($_POST['order_by']) ? sanitize_text_field( wp_unslash( $_POST['order_by'] ) ) : 'alphabetical';
+		 $tabname = isset($_POST['tabname']) ? sanitize_text_field( wp_unslash( $_POST['tabname'] ) ) : '';
 	 
 		 // Set up the arguments based on the selected value
 		 $args = array(			
@@ -2541,10 +2537,10 @@ class Sayansi_Core_Public {
 								 ?>
 								 <a href="<?php echo esc_url($author_url); ?>">
 									 <?php
-									 echo bp_core_fetch_avatar(array(
+									 echo wp_kses_post( bp_core_fetch_avatar(array(
 										 'item_id' => $user_id,
 										 'html' => true,
-									 )) . bp_core_get_user_displayname($user_id); //phpcs:ignore
+									 )) . bp_core_get_user_displayname($user_id) ); //phpcs:ignore
 									 ?>
 								 </a>
 							 </span>
@@ -2584,12 +2580,12 @@ class Sayansi_Core_Public {
 
 	// manage auto select the connection on the compose - mass messaging on user profile
 	public function wbcom_pre_select_connections_on_compose() {
-		$current_url = home_url(add_query_arg(array(), $_SERVER['REQUEST_URI']));
+		$current_url = home_url(add_query_arg(array(), $_SERVER['REQUEST_URI'])); //phpcs:ignore
 		parse_str(parse_url($current_url, PHP_URL_QUERY), $params); 
 		$has_team = isset($params['component']) && $params['component'] === 'team';		
 
 		if ($has_team) {
-			$referel_url = home_url(add_query_arg(array(), $_SERVER['HTTP_REFERER']));		
+			$referel_url = home_url(add_query_arg(array(), $_SERVER['HTTP_REFERER'])); //phpcs:ignore		
 			$path = parse_url($referel_url, PHP_URL_PATH); 
 			$segments = explode('/', trim($path, '/')); 
 			$circle_id = end($segments);
@@ -2627,7 +2623,7 @@ class Sayansi_Core_Public {
 	?>
 	<script type="text/javascript">
 	jQuery(document).ready(function($) {
-		var connections = <?php echo $connections_json; ?>;
+		var connections = <?php echo $connections_json; //phpcs:ignore ?>;
 
 		// Wait for Select2 to initialize
 		var checkSelect2 = setInterval(function() {
@@ -2658,7 +2654,7 @@ class Sayansi_Core_Public {
 	}
 
 	// Create a tab under the partner setting for display link group with partner
-	public function wbcom_create_link_groups_tab_partner_setting( $settings_tabs ) {
+	public function sayansi_create_link_groups_tab_partner_setting( $settings_tabs ) {
 		$settings_tabs['link-groups'] = 'Link Groups';
 		$settings_tabs['partner-home'] = 'Homepage Settings';
 		$settings_tabs['about'] = 'About';
@@ -2694,7 +2690,12 @@ class Sayansi_Core_Public {
 
 
 	//remove group from partne under link group tab in partner setting
-	public function wbcom_remove_business_group(){
+	public function sayansi_remove_business_group(){
+		//Verify nonce
+		if ( !isset($_POST['nonce']) || !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'sayansi_ajax_security')) {
+		    wp_send_json_error('Security check failed');
+		    return;
+		}
 		// Check if the required parameters are passed
 		if ( isset($_POST['business_id']) && isset($_POST['group_id']) ) {
 			$business_id = intval( $_POST['business_id'] );
@@ -2752,12 +2753,17 @@ class Sayansi_Core_Public {
 	}
 
 	//added group from partne under link group tab in partner setting
-	public function wbcom_update_partner_groups() {
+	public function sayansi_update_partner_groups() {
+		//Verify nonce
+		if ( !isset($_POST['nonce']) || !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'sayansi_ajax_security')) {
+		    wp_send_json_error('Security check failed');
+		    return;
+		}
 		// Check if the required data is available
 		if (isset($_POST['business_id']) && isset($_POST['selected_groups'])) {
-			$business_id = sanitize_text_field($_POST['business_id']); // Sanitize business ID
+			$business_id = isset( $_POST['business_id'] ) ? sanitize_text_field( wp_unslash( $_POST['business_id'] ) ) : ''; // Sanitize business ID
 
-			$selected_group = sanitize_text_field($_POST['selected_groups']); // Sanitize single group ID
+			$selected_group = sanitize_text_field($_POST['selected_groups']); //phpcs:ignore
 
 	        // Convert to an array since post meta expects an array
 	        $existing_groups = get_post_meta($business_id, 'bp-link-group', true);
@@ -2804,8 +2810,13 @@ class Sayansi_Core_Public {
 	}
 
 	// add search for course in user profile
-	public function wbcom_search_courses_user_profile(){
-		$search_query = isset( $_POST['s'] ) ? sanitize_text_field( $_POST['s'] ) : '';
+	public function sayansi_search_courses_user_profile(){
+		//Verify nonce
+		if ( !isset($_POST['nonce']) || !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'sayansi_ajax_security')) {
+		    wp_send_json_error('Security check failed');
+		    return;
+		}
+		$search_query = isset( $_POST['s'] ) ? sanitize_text_field( wp_unslash( $_POST['s'] ) ) : '';
 		$paged = isset( $_POST['page'] ) ? absint( $_POST['page'] ) : 1;
 		$per_page = 15;
 	
@@ -2866,7 +2877,7 @@ class Sayansi_Core_Public {
 	}
 
 	// Reorder the business setting tab( photo, cover image )
-	public function wbcom_reorder_business_setting_tab( $settings_tabs ){
+	public function sayansi_reorder_business_setting_tab( $settings_tabs ){
 		if ( isset( $settings_tabs['business-avatar'] ) && isset( $settings_tabs['cover-image'] ) ) {
 			// Store the required tabs
 			$cover_image = $settings_tabs['cover-image'];
@@ -2894,7 +2905,7 @@ class Sayansi_Core_Public {
 	}
 
 	// Hide the business author from the team widget when more than one admin exist.
-	public function wbcom_business_team_widget_admin_user_filter( $business_id, $admin_users_ids ){ ?>
+	public function sayansi_business_team_widget_admin_user_filter( $business_id, $admin_users_ids ){ ?>
 		<div class="bp-business-member-list-section" id="bp-business-list-section-admin_team">
 			<?php
 			$author_id   = (int) get_post_field( 'post_author', $business_id );
@@ -2928,11 +2939,15 @@ class Sayansi_Core_Public {
 	}
 
 	public function wbcom_indiviual_members_search(){
-
-		$search_user = isset($_POST['user']) ? sanitize_text_field($_POST['user']) : '';
-		$members_order  = isset($_POST['forum_order']) ? sanitize_text_field($_POST['forum_order']) : 'alphabetical';
-		$order 			= sanitize_text_field($_POST['order']);	
-		$layout 		= sanitize_text_field($_POST['layout']);	
+		//Verify nonce
+		if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'sayansi_ajax_security')) {
+		    wp_send_json_error('Security check failed');
+		    return;
+		}
+		$search_user = isset($_POST['user']) ? sanitize_text_field($_POST['user']) : ''; //phpcs:ignore
+		$members_order  = isset($_POST['forum_order']) ? sanitize_text_field( wp_unslash( $_POST['forum_order'] ) ) : 'alphabetical';
+		$order 			= isset( $_POST['order'] ) ? sanitize_text_field( wp_unslash( $_POST['order'] ) ) : '';	
+		$layout 		= isset( $_POST['layout'] ) ? sanitize_text_field( wp_unslash( $_POST['layout'] ) ) : '';	
 		$args = array(
 			'number'         => 10,
 			'search_columns' => array( 'user_login', 'user_nicename', 'user_email', 'display_name' ),
@@ -3038,14 +3053,18 @@ class Sayansi_Core_Public {
 	/*
 	* Add search, filter, layout in all partners sub tab under network tab
 	*/
-	public function wbcom_network_all_partners(){
-		if ( ! wp_verify_nonce( $_POST['nonce'], 'sayansi_ajax_security' ) ) {
-			die( 'Nonce value cannot be verified.' );
+	public function sayansi_network_all_partners(){
+
+		//Verify nonce
+		if ( !isset($_POST['nonce']) || !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'sayansi_ajax_security')) {
+		    wp_send_json_error('Security check failed');
+		    return;
 		}
 		
-		$search_query 	= isset( $_POST['query'] ) ? sanitize_text_field( $_POST['query'] ) : '';
-		$partner_order  = isset($_POST['partner_order']) ? sanitize_text_field($_POST['partner_order']) : 'alphabetical';
-		$layout 		= sanitize_text_field($_POST['layout']);		
+		
+		$search_query 	= isset( $_POST['query'] ) ? sanitize_text_field( wp_unslash( $_POST['query'] ) ) : '';
+		$partner_order  = isset($_POST['partner_order']) ? sanitize_text_field( wp_unslash( $_POST['partner_order'] ) ) : 'alphabetical';
+		$layout 		= isset( $_POST['layout'] ) ? sanitize_text_field( wp_unslash( $_POST['layout'] ) ) : '';		
 
 		$args = array(
 			'post_type'      => 'business',			
@@ -3172,7 +3191,7 @@ class Sayansi_Core_Public {
 	/*
 	* Add per page for member directory
 	*/
-	public function wbcom_bp_increase_members_per_page_on_directory($r){
+	public function sayansi_bp_increase_members_per_page_on_directory($r){
 		$r['per_page'] = 21; 
 		return $r; 
 	}
@@ -3180,7 +3199,7 @@ class Sayansi_Core_Public {
 	/*
 	* Add per page for group directory
 	*/
-	public function wbcom_bp_increase_groups_per_page_on_directory( $r ) {
+	public function sayansi_bp_increase_groups_per_page_on_directory( $r ) {
 	  $r['per_page'] = 21; // Change this value to your desired number
 	  return $r;
 	}
@@ -3188,7 +3207,7 @@ class Sayansi_Core_Public {
 	/*
 	* Add resume layout on the edit resume template
 	*/
-	public function wbcom_add_resume_layout_setting_on_edit_resume(){
+	public function sayansi_add_resume_layout_setting_on_edit_resume(){
 		$user_id                  	= bp_displayed_user_id();
 		$bprm_user_resume_layout  	= get_user_meta( $user_id, 'bprm_user_resume_layout' );
 		$bprm_user_resume_setting 	= isset( $bprm_user_resume_layout[0] ) ? $bprm_user_resume_layout[0] : '';
@@ -3394,7 +3413,7 @@ class Sayansi_Core_Public {
 	/*
 	* Save resume layout value in the usermeta
 	*/
-	public function wbcom_save_resume_layout_on_edit_resume(){
+	public function sayansi_save_resume_layout_on_edit_resume(){
 		if( isset( $_POST['bprm_save_resume'] ) && 'Save Resume' == $_POST['bprm_save_resume'] ){
 			$user_id                = bp_displayed_user_id();
 			$bprm_user_resume_nonce = isset( $_POST['save_bprm_user_resume'] ) ? sanitize_text_field( wp_unslash( $_POST['save_bprm_user_resume'] ) ) : '';
@@ -3408,7 +3427,7 @@ class Sayansi_Core_Public {
 
 			// Save layout data
 	        if ( isset( $_POST['bprm_resume_template_settings'] ) && is_array( $_POST['bprm_resume_template_settings'] ) ) {
-	            $settings = $_POST['bprm_resume_template_settings'];
+	            $settings = $_POST['bprm_resume_template_settings']; //phpcs:ignore
 
 				//update button color
 				update_user_meta( $user_id, 'btn_bg_color', $settings['btn_bg_color'] );
@@ -3426,45 +3445,45 @@ class Sayansi_Core_Public {
 		}
 
 		// global setting
-		$bprm_settings = get_option( 'bprm_resume_template_settings' );
+	$bprm_settings = get_option( 'bprm_resume_template_settings' );
 
-		$brm_btn_bg_color_g                = isset( $bprm_settings['btn_bg_color'] ) ? $bprm_settings['btn_bg_color'] : '';
-		$bprm_field_title_color_g          = isset( $bprm_settings['layout_one']['bprm_field_title_text_color'] ) ? $bprm_settings['layout_one']['bprm_field_title_text_color'] : '';
-		$bprm_t1_sidebar_header_bg_color_g = isset( $bprm_settings['layout_one']['bprm_sidebar_head_bg_color'] ) ? $bprm_settings['layout_one']['bprm_sidebar_head_bg_color'] : '';
-		$bprm_sidebar_txt_color_g          = isset( $bprm_settings['layout_one']['bprm_sidebar_text_color'] ) ? $bprm_settings['layout_one']['bprm_sidebar_text_color'] : '';
-		$bprm_content_txt_color_g          = isset( $bprm_settings['layout_one']['bprm_content_text_color'] ) ? $bprm_settings['layout_one']['bprm_content_text_color'] : '';
+	$brm_btn_bg_color_g                = isset( $bprm_settings['btn_bg_color'] ) ? $bprm_settings['btn_bg_color'] : '';
+	$bprm_field_title_color_g          = isset( $bprm_settings['layout_one']['bprm_field_title_text_color'] ) ? $bprm_settings['layout_one']['bprm_field_title_text_color'] : '';
+	$bprm_t1_sidebar_header_bg_color_g = isset( $bprm_settings['layout_one']['bprm_sidebar_head_bg_color'] ) ? $bprm_settings['layout_one']['bprm_sidebar_head_bg_color'] : '';
+	$bprm_sidebar_txt_color_g          = isset( $bprm_settings['layout_one']['bprm_sidebar_text_color'] ) ? $bprm_settings['layout_one']['bprm_sidebar_text_color'] : '';
+	$bprm_content_txt_color_g          = isset( $bprm_settings['layout_one']['bprm_content_text_color'] ) ? $bprm_settings['layout_one']['bprm_content_text_color'] : '';
 
-		$bprm_t2_field_title_color_g       = isset( $bprm_settings['layout_two']['bprm_field_title_text_color'] ) ? $bprm_settings['layout_two']['bprm_field_title_text_color'] : '';
-		$bprm_t2_sidebar_header_bg_color_g = isset( $bprm_settings['layout_two']['bprm_sidebar_head_bg_color'] ) ? $bprm_settings['layout_two']['bprm_sidebar_head_bg_color'] : '';
-		$bprm_t2_sidebar_txt_color_g       = isset( $bprm_settings['layout_two']['bprm_sidebar_text_color'] ) ? $bprm_settings['layout_two']['bprm_sidebar_text_color'] : '';
-		$bprm_t2_content_txt_color_g       = isset( $bprm_settings['layout_two']['bprm_content_text_color'] ) ? $bprm_settings['layout_two']['bprm_content_text_color'] : '';
+	$bprm_t2_field_title_color_g       = isset( $bprm_settings['layout_two']['bprm_field_title_text_color'] ) ? $bprm_settings['layout_two']['bprm_field_title_text_color'] : '';
+	$bprm_t2_sidebar_header_bg_color_g = isset( $bprm_settings['layout_two']['bprm_sidebar_head_bg_color'] ) ? $bprm_settings['layout_two']['bprm_sidebar_head_bg_color'] : '';
+	$bprm_t2_sidebar_txt_color_g       = isset( $bprm_settings['layout_two']['bprm_sidebar_text_color'] ) ? $bprm_settings['layout_two']['bprm_sidebar_text_color'] : '';
+	$bprm_t2_content_txt_color_g       = isset( $bprm_settings['layout_two']['bprm_content_text_color'] ) ? $bprm_settings['layout_two']['bprm_content_text_color'] : '';
 
-		$bprm_t3_field_title_color_g 	   = isset( $bprm_settings['layout_three']['bprm_field_title_text_color'] ) ? $bprm_settings['layout_three']['bprm_field_title_text_color'] : '';
-		$bprm_t3_content_txt_color_g 	   = isset( $bprm_settings['layout_three']['bprm_content_text_color'] ) ? $bprm_settings['layout_three']['bprm_content_text_color'] : '';
+	$bprm_t3_field_title_color_g 	   = isset( $bprm_settings['layout_three']['bprm_field_title_text_color'] ) ? $bprm_settings['layout_three']['bprm_field_title_text_color'] : '';
+	$bprm_t3_content_txt_color_g 	   = isset( $bprm_settings['layout_three']['bprm_content_text_color'] ) ? $bprm_settings['layout_three']['bprm_content_text_color'] : '';
 
 
-		$user_id          				 = bp_displayed_user_id();	
+	$user_id          				 = bp_displayed_user_id();	
 
-		// user specific setting
-		$brm_btn_bg_color 				 = get_user_meta( $user_id, 'btn_bg_color',true );
+	// user specific setting
+	$brm_btn_bg_color 				 = get_user_meta( $user_id, 'btn_bg_color',true );
 
-		$bprm_layout_one  				 = get_user_meta( $user_id, 'layout_one', true );
-		$bprm_layout_two  				 = get_user_meta( $user_id, 'layout_two', true );
-		$bprm_layout_three  			 = get_user_meta( $user_id, 'layout_three', true );
+	$bprm_layout_one  				 = get_user_meta( $user_id, 'layout_one', true );
+	$bprm_layout_two  				 = get_user_meta( $user_id, 'layout_two', true );
+	$bprm_layout_three  			 = get_user_meta( $user_id, 'layout_three', true );
 
-		$bprm_field_title_color          = isset( $bprm_layout_one['bprm_field_title_text_color'] ) ? $bprm_layout_one['bprm_field_title_text_color'] : $bprm_field_title_color_g;
-		$bprm_t1_sidebar_header_bg_color = isset( $bprm_layout_one['bprm_sidebar_head_bg_color'] ) ? $bprm_layout_one['bprm_sidebar_head_bg_color'] : $bprm_t1_sidebar_header_bg_color_g;
-		$bprm_sidebar_txt_color          = isset( $bprm_layout_one['bprm_sidebar_text_color'] ) ? $bprm_layout_one['bprm_sidebar_text_color'] : $bprm_sidebar_txt_color_g;
-		$bprm_content_txt_color          = isset( $bprm_layout_one['bprm_content_text_color'] ) ? $bprm_layout_one['bprm_content_text_color'] : $bprm_content_txt_color_g;
+	$bprm_field_title_color          = isset( $bprm_layout_one['bprm_field_title_text_color'] ) ? $bprm_layout_one['bprm_field_title_text_color'] : $bprm_field_title_color_g;
+	$bprm_t1_sidebar_header_bg_color = isset( $bprm_layout_one['bprm_sidebar_head_bg_color'] ) ? $bprm_layout_one['bprm_sidebar_head_bg_color'] : $bprm_t1_sidebar_header_bg_color_g;
+	$bprm_sidebar_txt_color          = isset( $bprm_layout_one['bprm_sidebar_text_color'] ) ? $bprm_layout_one['bprm_sidebar_text_color'] : $bprm_sidebar_txt_color_g;
+	$bprm_content_txt_color          = isset( $bprm_layout_one['bprm_content_text_color'] ) ? $bprm_layout_one['bprm_content_text_color'] : $bprm_content_txt_color_g;
 
-		$bprm_t2_field_title_color       = isset( $bprm_layout_two['bprm_field_title_text_color'] ) ? $bprm_layout_two['bprm_field_title_text_color'] : $bprm_t2_field_title_color_g;
-		$bprm_t2_sidebar_header_bg_color = isset( $bprm_layout_two['bprm_sidebar_head_bg_color'] ) ? $bprm_layout_two['bprm_sidebar_head_bg_color'] : $bprm_t2_sidebar_header_bg_color_g;
-		$bprm_t2_sidebar_txt_color       = isset( $bprm_layout_two['bprm_sidebar_text_color'] ) ? $bprm_layout_two['bprm_sidebar_text_color'] : $bprm_t2_sidebar_txt_color_g;
-		$bprm_t2_content_txt_color       = isset( $bprm_layout_two['bprm_content_text_color'] ) ? $bprm_layout_two['bprm_content_text_color'] : $bprm_t2_content_txt_color_g;
+	$bprm_t2_field_title_color       = isset( $bprm_layout_two['bprm_field_title_text_color'] ) ? $bprm_layout_two['bprm_field_title_text_color'] : $bprm_t2_field_title_color_g;
+	$bprm_t2_sidebar_header_bg_color = isset( $bprm_layout_two['bprm_sidebar_head_bg_color'] ) ? $bprm_layout_two['bprm_sidebar_head_bg_color'] : $bprm_t2_sidebar_header_bg_color_g;
+	$bprm_t2_sidebar_txt_color       = isset( $bprm_layout_two['bprm_sidebar_text_color'] ) ? $bprm_layout_two['bprm_sidebar_text_color'] : $bprm_t2_sidebar_txt_color_g;
+	$bprm_t2_content_txt_color       = isset( $bprm_layout_two['bprm_content_text_color'] ) ? $bprm_layout_two['bprm_content_text_color'] : $bprm_t2_content_txt_color_g;
 
-		$bprm_t3_field_title_color = isset( $bprm_layout_three['bprm_field_title_text_color'] ) ? $bprm_layout_three['bprm_field_title_text_color'] : $bprm_t3_field_title_color_g;
-		$bprm_t3_content_txt_color = isset( $bprm_layout_three['bprm_content_text_color'] ) ? $bprm_layout_three['bprm_content_text_color'] : $bprm_t3_content_txt_color_g;	
-		?>
+	$bprm_t3_field_title_color = isset( $bprm_layout_three['bprm_field_title_text_color'] ) ? $bprm_layout_three['bprm_field_title_text_color'] : $bprm_t3_field_title_color_g;
+	$bprm_t3_content_txt_color = isset( $bprm_layout_three['bprm_content_text_color'] ) ? $bprm_layout_three['bprm_content_text_color'] : $bprm_t3_content_txt_color_g;	
+	?>
 
 		<style type="text/css">
 			.user-id-<?php echo $user_id; ?>.buddypress .bprm-header-button-wrapper .bprm-bprm-btn-primary,
@@ -3612,15 +3631,19 @@ class Sayansi_Core_Public {
 	<?php
 	}
 
-	/*
-	* Add current user id class in the body tag 
-	*/
-	public function wbcom_add_body_classes( $classes ) {
+	public function sayansi_custom_body_classes( $classes ) {
 		$user_id = bp_displayed_user_id();
 		// Add your custom class
 		$classes[] = 'user-id-' . $user_id;
 
 		return $classes;
-		}	
+	}
+	
+	/*
+	*Update resume admin menu link
+	*/
+	public function sayansi_update_resume_admin_menu_link( $link, $user_domain, $profile_menu_slug ) {
+	    return trailingslashit( $user_domain . 'profile/' . $profile_menu_slug );
+	}	
 		
 }

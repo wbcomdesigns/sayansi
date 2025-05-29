@@ -845,6 +845,7 @@ body #buddypress .bp-list.message-center-list .action.message-center-meta .gener
     margin: 0;
 }
 
+
 /*change the resume header color on the member directory*/
 .bprm-profile-search-toggle-wrap{
     background: #000951!important;
@@ -880,5 +881,32 @@ ul.bprm-resume-template-setting-list li{
 	border-radius:10px;
 }
 
+#wp-admin-bar-mp-membership{
+    display: none;
+}
+
+.my-account.profile.cv #buddypress .bb-profile-grid #secondary{
+	display:none !important;
+}
+
+.bp-profile-content .profile:not(.public){
+	padding:50px 0 !important;
+}
+
+.buddyboss-theme .bprm-resume-layout-wrapper{
+	padding-right:0px !important;
+}
+
+.buddyboss-theme .bprm-resume-layout-three{
+	max-width:100%;
+}
+
+body.buddypress .bprm-resume-layout-three .bprm-profile-main h4.bprm-user-name{
+	color:#FFF !important;
+}
+
+.bprm-resume-layout-three .bprm-personal-details-info{
+	margin-bottom: 15px;
+}
 
 

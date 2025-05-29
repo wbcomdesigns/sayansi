@@ -192,6 +192,7 @@
 						order: order,
 						forum_order: forum_order,
 						layout: selectedLayout,
+						nonce: sayansi_ajax_object.ajax_nonce,
 						paged: paged
 					},
 					success: function(response) {
@@ -291,6 +292,7 @@
 					data: {
 						action: 'filter_courses',
 						order_by: selectedValue,
+						nonce: sayansi_ajax_object.ajax_nonce,
 						tabname: tabname
 					},
 					success: function(response) {
@@ -335,6 +337,7 @@
 						data: {
 							action: 'update_partner_groups',
 							business_id: business_id,
+							nonce: sayansi_ajax_object.ajax_nonce,
 							selected_groups: values
 						},
 						success: function(response) {							
@@ -352,6 +355,7 @@
 						data: { 
 							action: "remove_business_group", 
 							business_id: business_id,
+							nonce: sayansi_ajax_object.ajax_nonce,
 							group_id: value // Send removed group ID
 						},
 						success: function (response) {
@@ -371,6 +375,7 @@
 					type: 'POST',
 					data: {
 						action: 'search_courses_user_profile',
+						nonce: sayansi_ajax_object.ajax_nonce,
 						s: searchQuery
 					},
 					success: function(response) {						
@@ -398,6 +403,7 @@
 						order: order,
 						forum_order: forum_order,
 						layout: selectedLayout,
+						nonce: sayansi_ajax_object.ajax_nonce,
 						paged: paged
 					},
 					success: function(response) {

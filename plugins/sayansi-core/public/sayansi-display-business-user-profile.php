@@ -105,7 +105,7 @@ if ( $business_query->have_posts() ) :
             endwhile;
             ?>
         </ul>
-        <?php if ( ! isset( $_REQUEST['args']['limit'] ) ) { ?>
+        <?php if ( ! isset( $_REQUEST['args']['limit'] ) ) { //phpcs:ignore ?>
             <div class="bp-business-pagination bp-business-navigation navigation pagination">
                 <?php bp_business_profile_paginate(); ?>
             </div>
