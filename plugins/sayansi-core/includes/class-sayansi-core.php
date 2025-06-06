@@ -251,14 +251,34 @@ class Sayansi_Core {
 
 		// Resume layout section add on edit resume template and save the value in the usermeta
 		$this->loader->add_action( 'bprm_after_upload_resume_image_section', $plugin_public, 'sayansi_add_resume_layout_setting_on_edit_resume');
+
+		// Save resume layout value in the usermeta
 		$this->loader->add_action( 'wp_head', $plugin_public, 'sayansi_save_resume_layout_on_edit_resume' );
 
-
+		// Add user_id class in body tag
 		$this->loader->add_filter( 'body_class', $plugin_public, 'sayansi_custom_body_classes' );
 
+		//Update resume admin menu link
 		$this->loader->add_filter( 'bprm_override_resume_link_admin_menu', $plugin_public, 'sayansi_update_resume_admin_menu_link', 10, 3 );
 
-					
+		//Add reset resume button on edit resume template
+		$this->loader->add_action( 'bprm_add_content_after_edit_form', $plugin_public, 'sayansi_add_reset_resume_button',10, 1 );
+
+		//Allow business style on user
+		$this->loader->add_filter( 'bp_business_add_condition_enq_style', $plugin_public, 'sayansi_allow_business_style_on_user' );
+
+		$this->loader->add_filter( 'bprm_show_resume_layout_tab_on_account_setting', $plugin_public, 'sayansi_hide_resume_layout_tab_profile_setting' );
+
+		$this->loader->add_action( 'wp_ajax_reset_resume', $plugin_public, 'bprm_reset_resume' );
+		$this->loader->add_filter( 'bprm_override_share_resume_link', $plugin_public, 'sayansi_share_resume_link_override',10, 3 );
+		$this->loader->add_filter( 'bp_blog_pro_remove_specific_group_id', $plugin_public, 'sayansi_remove_business_group_id', 10, 2 );
+
+		$this->loader->add_action( 'bp_post_before_featured_image', $plugin_public, 'sayansi_add_partner_dropdown_on_blog');
+
+		/*
+		* Redirect Manage tab of partners on the partner setting
+		*/
+		$this->loader->add_action( 'wp_ajax_get_business_manage_url', $plugin_public, 'sayansi_get_business_manage_url');
 	}
 
 	/**

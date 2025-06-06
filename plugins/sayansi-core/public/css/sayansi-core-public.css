@@ -734,6 +734,23 @@ form.bp-dir-search-individual-members.search-individual-members-has-reset {
     margin: 0;
 }
 
+.partners.buddypress .bb-profile-grid .network-all-partners-wrap .bp-secondary-header{
+	    margin-top: -50px;
+}
+
+.my-account.partners.buddypress .bb-profile-grid .network-all-partners-wrap .bp-secondary-header{
+	    margin-top: 0;
+}
+
+@media screen and (max-width: 768px) {
+	
+	.partners.buddypress .bb-profile-grid .network-all-partners-wrap .bp-secondary-header{
+	    margin-top: 0px;
+	}
+	
+}
+
+
 @media screen and (max-width: 511px) {
     .buddypress-wrap.network-all-partners-wrap .subnav-filters div {
         margin: 0;
@@ -885,7 +902,8 @@ ul.bprm-resume-template-setting-list li{
     display: none;
 }
 
-.my-account.profile.cv #buddypress .bb-profile-grid #secondary{
+.my-account.profile.cv #buddypress .bb-profile-grid #secondary,
+.single.partners #buddypress.buddypress-wrap .bb-profile-grid #secondary{
 	display:none !important;
 }
 
@@ -907,6 +925,49 @@ body.buddypress .bprm-resume-layout-three .bprm-profile-main h4.bprm-user-name{
 
 .bprm-resume-layout-three .bprm-personal-details-info{
 	margin-bottom: 15px;
+}
+
+
+.profile.cv .bp_resume_reset_layout {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.profile.add  .bprm_resume_form .bp_resume_reset_layout{
+	margin-top: 40px;
+    float: left;
+    margin-right: 10px;
+}
+
+.profile.add  .bprm_resume_form .bp_resume_reset_layout a{
+	border-color: #cb0404 !important;
+    border-radius: 100px !important;
+    background: #cb0404 !important;
+}
+
+.profile.add  .bprm_resume_form input#bprm_save{
+	float: left !important;
+    margin-top: 40px;
+}
+
+.bp-member-blog-post-form .bp-member-blog-field-container .select2-container{
+	width:100% !important;
+}
+
+#friend-list.grid, 
+#groups-list.grid, 
+#members-list.grid{
+	max-width:100%;
+}
+
+.buddyboss-theme .bp-member-blog-field-container .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    position: static!important;
+    border-radius: 0!important;
+    vertical-align: initial!important;
+}
+
+.grid{
+	max-width:100%;
 }
 
 

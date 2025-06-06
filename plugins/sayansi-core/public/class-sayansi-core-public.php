@@ -112,6 +112,9 @@ class Sayansi_Core_Public {
         wp_enqueue_style('wp-jquery-ui-dialog');
         wp_enqueue_script('jquery');
 
+        $bprm_settings = get_option( 'bprm_settings' );
+		$profile_menu_slug = isset( $bprm_settings['tab_url'] ) && ! empty( $bprm_settings['tab_url'] ) ? $bprm_settings['tab_url'] : 'resume';
+		$redirect_url = apply_filters( 'bprm_save_resume_resdirect_url', trailingslashit( bp_displayed_user_domain() . $profile_menu_slug ) );
 		wp_localize_script(
 			$this->plugin_name,
 			'sayansi_ajax_object',
@@ -120,7 +123,8 @@ class Sayansi_Core_Public {
 				'ajax_nonce' => wp_create_nonce( 'sayansi_ajax_security' ),
 				'forum_desc' => $forum_desc,
 				'check_group_component' => bp_is_groups_component(),
-				'business_id' => get_the_ID(),					
+				'business_id' => get_the_ID(),	
+				'redirect_url' => $redirect_url,				
 			)
 		);
 	}
@@ -248,17 +252,6 @@ class Sayansi_Core_Public {
 				)
 			);
 		
-		bp_core_new_subnav_item(
-			array(
-				'name'            => _x( 'Settings', 'Member Profile Settings page', 'sayansi-core' ),
-				'slug'            => 'public',
-				'parent_url'      => trailingslashit( $user_domain . bp_get_profile_slug() ),
-				'parent_slug'     => bp_get_profile_slug(),
-				'screen_function' => 'bp_members_screen_display_profile',
-				'position'        => 10,
-			)
-		);		
-
 		if ( bp_is_my_profile() || current_user_can( 'administrator' ) ) {
 
 			
@@ -323,11 +316,22 @@ class Sayansi_Core_Public {
 						'parent_url'      => trailingslashit( $user_domain . bp_get_profile_slug() ),
 						'parent_slug'     => bp_get_profile_slug(),
 						'screen_function' => array( $resume_manager, 'bprm_show_add_resume_screen' ),
-						'position'        => 200,
+						'position'        => 10,
 						// 'link'            => site_url() . "/$member_slug/$name/$parent_slug/add/",
 					)
 				);
 		}
+		bp_core_new_subnav_item(
+			array(
+				'name'            => _x( 'Settings', 'Member Profile Settings page', 'sayansi-core' ),
+				'slug'            => 'public',
+				'parent_url'      => trailingslashit( $user_domain . bp_get_profile_slug() ),
+				'parent_slug'     => bp_get_profile_slug(),
+				'screen_function' => 'bp_members_screen_display_profile',
+				'position'        => 20,
+			)
+		);		
+
 
 		// Add custom subtab 'my-partner' under the connection tab in user profile
 		bp_core_new_subnav_item(
@@ -341,6 +345,8 @@ class Sayansi_Core_Public {
 				'position'        => 10,                        
 			)
 		);
+
+
 
 		//Add custom subtab 'my-partner' under the connection tab in user profile
 		bp_core_new_subnav_item(
@@ -2298,8 +2304,8 @@ class Sayansi_Core_Public {
 	public function wbcom_bp_blog_pro_save_group_setting( $post_id ) {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'bp_activity';
-		$selected_business_group = isset( $_POST['bp_blog_pro_business_group_links'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_blog_pro_business_group_links'] ) ) : ''; //phpcs:ignore
-		if ( isset( $selected_business_group ) && ! empty( $selected_business_group ) ) {
+		$selected_business_group = isset( $_POST['bp_blog_pro_business_group_links'] ) ? $_POST['bp_blog_pro_business_group_links'] : array(); //phpcs:ignore	
+		if ( ! empty( $selected_business_group ) ) {
 			update_post_meta( $post_id, 'bp_blog_pro_business_group_links', $selected_business_group );
 			$act_id = get_post_meta( $post_id, 'bp_member_blog_pro_activity_id', true );
 			$wpdb->query( $wpdb->prepare( "UPDATE ".$wpdb->prefix . "bp_activity' SET item_id='%d' WHERE id=%d", $selected_business_group, $act_id ) );
@@ -3631,19 +3637,252 @@ class Sayansi_Core_Public {
 	<?php
 	}
 
+	/*
+	* Add user_id class in body tag
+	*/
 	public function sayansi_custom_body_classes( $classes ) {
 		$user_id = bp_displayed_user_id();
-		// Add your custom class
-		$classes[] = 'user-id-' . $user_id;
+		    // Add your custom class
+		    $classes[] = 'user-id-' . $user_id;
 
-		return $classes;
-	}
-	
+		    return $classes;
+		}
+
 	/*
-	*Update resume admin menu link
+	* Update resume admin menu link
 	*/
 	public function sayansi_update_resume_admin_menu_link( $link, $user_domain, $profile_menu_slug ) {
 	    return trailingslashit( $user_domain . 'profile/' . $profile_menu_slug );
+	}
+
+	/*
+	* Add reset resume button on edit resume template
+	*/
+	public function sayansi_add_reset_resume_button( $bprm_resume_settings ){
+		$user_id                  = bp_displayed_user_id();		
+		if( is_user_logged_in() && get_current_user_id() === bp_displayed_user_id() && bprm_check_user_resume_data( $user_id, 'bprm_resume_' ) ){
+		?>
+		<div class="bp_resume_reset_layout">
+			<a href="#" id="bp_resume_reset" class="btn button bprm_reset_resume" data-user_id="<?php echo esc_attr( bp_displayed_user_id() ); ?>">
+				<?php esc_html_e( 'Reset Resume','sayansi-core' ); ?>
+			</a>
+		</div>
+		<?php
+		}
+	}
+	
+
+	/*
+	* Allow business style on user
+	*/
+	public function sayansi_allow_business_style_on_user( $show ){
+		if ( bp_is_user() || bp_is_group() ) {
+	        return true;
+	    }
+	    return $show;
+	}
+
+	public function sayansi_hide_resume_layout_tab_profile_setting( $show ){
+		$show = false;
+		return $show;
 	}	
+
+
+	/**
+	 * Resume Reset
+	 *
+	 */
+	public function bprm_reset_resume(){        
+        
+		$user_id = intval( $_POST['user_id'] );
+		if ( !$user_id ) {
+			wp_send_json_error( 'Invalid user ID' );
+		}		
+
+		$visibility_array = array(
+			'bprms_name'        => 'public',
+			'bprms_dob'         => 'public',
+			'bprms_ntn'         => 'public',
+			'bprms_sts'         => 'public',
+			'bprms_rsds'        => 'public',
+			'bprms_ocp'         => 'public',
+			'bprms_email'       => 'public',
+			'bprms_cono'        => 'public',
+			'bprms_twit'        => 'public',
+			'bprms_abtm'        => 'public',
+			'bprms_video'       => 'public',
+			'bprms_inst'        => 'public',
+			'bprms_inst_place'  => 'public',
+			'bprms_degree'      => 'public',
+			'bprms_start'       => 'public',
+			'bprms_yoc'         => 'public',
+			'bprms_curschol'    => 'public',
+			'bprms_empoy'       => 'public',
+			'bprms_work_place'  => 'public',
+			'bprms_poswork'     => 'public',
+			'bprms_pos'         => 'public',
+			'bprms_posfrom'     => 'public',
+			'bprms_posto'       => 'public',
+			'bprm_curcomp'      => 'public',
+			'bprms_skills'      => 'public',
+			'bprms_langs'       => 'public',
+			'bprms_intrst'      => 'public',
+			'show_resume_tab'   => 'friends',
+		);		
+
+		// Set default values
+		$default_resume_data = [
+			'bprm_visibility' => json_encode( $visibility_array ),
+			'bprm_resume_resume_profile_image' => '2072',
+			'bprm_resume_bprms_name_count' => '1',
+			'bprm_resume_bprm_grp_persnl_info_bprms_name' => 'Light Source User',
+			'bprm_resume_bprms_abtm_count' => '1',
+			'bprm_resume_bprm_grp_persnl_info_bprms_abtm' => 'I am interested in the design, operation, and use of synchrotron light sources',
+			'bprm_resume_bprms_dob_count' => '1',			
+			'bprm_resume_bprm_grp_persnl_info_bprms_dob' => '1990-01-01',
+			'bprm_resume_bprms_ntn_count' => '1',
+			'bprm_resume_bprm_grp_persnl_info_bprms_ntn' => 'My Country',
+			'bprm_resume_bprms_sts_count' => '1',
+			'bprm_resume_bprm_grp_persnl_info_bprms_sts' => 'Single',
+			'bprm_resume_bprms_rsds_count' => '1',
+			'bprm_resume_bprm_grp_persnl_info_bprms_rsds' => 'My Current Home',
+			'bprm_resume_bprms_ocp_count' => '1',
+			'bprm_resume_bprm_grp_persnl_info_bprms_ocp' => 'Light Source Designer, Operator, or User',
+			'bprm_resume_bprms_email_count' => '1',
+			'bprm_resume_bprm_grp_persnl_info_bprms_email' => 'me@myemaildomain.email',
+			'bprm_resume_bprms_cono_count' => '1',
+			'bprm_resume_bprm_grp_persnl_info_bprms_cono' => '9966996699',			
+			'bprm_resume_bprms_inst_count' => '1',
+			'bprm_resume_bprm_grp_edu_bprms_inst' => 'My University',
+			'bprm_resume_bprms_inst_place_count' => '1',
+			'bprm_resume_bprm_grp_edu_bprms_inst_place' => 'University Location',
+			'bprm_resume_bprms_degree_count' => '1',
+			'bprm_resume_bprm_grp_edu_bprms_degree' => 'Degree Level/Major',
+			'bprm_resume_bprms_degree_count' =>'1',
+			'bprm_resume_bprm_grp_edu_bprms_start' => '1900',
+			'bprm_resume_bprms_yoc_count' => '1',
+			'bprm_resume_bprm_grp_edu_bprms_yoc' => '2025',
+			'bprm_resume_bprms_empoy_count' => '1',
+			'bprm_resume_bprm_grp_prof_exprnc_bprms_empoy' => 'My Employer',
+			'bprm_resume_bprms_work_place_count' => '1',
+			'bprm_resume_bprm_grp_prof_exprnc_bprms_work_place' => 'Employer Location',
+			'bprm_resume_bprms_poswork_count' => '1',
+			'bprm_resume_bprm_grp_prof_exprnc_bprms_poswork' => 'This is what I do.',
+			'bprm_resume_bprms_pos_count' => '1',
+			'bprm_resume_bprm_grp_prof_exprnc_bprms_pos' => 'My Job Title',
+			'bprm_resume_bprms_posfrom_count' => '1',
+			'bprm_resume_bprm_grp_prof_exprnc_bprms_posfrom' => '1900',
+			'bprm_resume_bprms_posto_count' => '1',
+			'bprm_resume_bprm_grp_prof_exprnc_bprms_posto' => '2025',
+			'bprm_resume_1744582263_count' => '1',
+			'bprm_resume_1744582342_count' => '1',
+			'bprm_resume_1744582263_1744582342' => 'These are my publications',
+			'bprm_resume_bprms_skills_count' => '1',
+			'bprm_resume_bprm_grp_others_bprms_skills' => json_encode([
+				'text' => 'Communication',
+				'dropdown_val' => '3',
+			]),
+		];
+
+		// update resume default values
+		foreach ( $default_resume_data as $key => $value ) {
+			update_user_meta( $user_id, $key, $value );
+		}
+
+		$allowed_keys = array_keys( $default_resume_data );
+
+		// Get all user meta
+		$all_meta = get_user_meta( $user_id );
+		$bprm_resume_meta = [];	
 		
+		//get only resume meta keys
+		foreach ( $all_meta as $meta_key => $value ) {
+			if ( strpos( $meta_key, 'bprm_resume_' ) === 0 ) {
+				$bprm_resume_meta[ $meta_key ] = $value;
+			}
+		}
+
+		// Loop through and delete meta keys not in the allowed list
+		foreach ( $bprm_resume_meta as $meta_key => $value ) {
+			if ( ! in_array( $meta_key, $allowed_keys ) ) {
+				delete_user_meta( $user_id, $meta_key );
+			}
+		}	
+
+		$message = sanitize_text_field( __( 'The resume has been successfully reset to the default values.', 'bp-resume-manager' ) );
+		
+		wp_send_json_success([
+			'message' => $message,
+			'type'    => 'success',
+		]);
+	}
+
+	public function sayansi_share_resume_link_override( $link, $user_domain, $profile_menu_slug ){
+		return trailingslashit( $user_domain . 'profile/' . $profile_menu_slug );
+	}
+
+	public function sayansi_remove_business_group_id( $skip, $group_id ){
+		$business_group = groups_get_groupmeta( $group_id, 'bp-group-business', true );
+		if ( $business_group ) {
+			return true; // Tell the loop to skip this group
+		}
+		return $skip;
+	}	
+
+	public function sayansi_add_partner_dropdown_on_blog(){
+		$post_id = isset( $_GET['post_id'] ) ? sanitize_text_field( wp_unslash( $_GET['post_id'] ) ) : '';
+		$bp_blog_pro_business_group_links = get_post_meta( $post_id, 'bp_blog_pro_business_group_links', true );		
+		$args = array(
+			'post_type' => 'business', // Replace 'product' with your desired post type
+			'numberposts' => -1, // or 'posts_per_page' => -1 for WP_Query
+		);
+		$dropdown_partners = get_posts( $args );	
+		
+		if ( ! empty( $dropdown_partners ) ) {		
+			?>
+			<div class="bp-member-blog-field-container">
+				<label for="bp_member_blog_pro_post_group">
+					<span><?php esc_html_e( 'Select Partners:', 'sayansi-core' ); ?></span>
+					<div class="bp-member-blog-business-wrapper">						
+						<select id="bp-blog-pro-business-select" name="bp_blog_pro_business_group_links[]" data-placeholder="<?php esc_html_e( '--Select Partners--', 'sayansi-core' ); ?>" multiple>
+							<!-- <option value="0"><?php esc_html_e( '--Select Partners--', 'sayansi-core' ); ?></option> -->
+							<?php
+													
+							$selected_groups = isset( $bp_blog_pro_business_group_links ) ? $bp_blog_pro_business_group_links : array();
+							
+							foreach ( $dropdown_partners as $dropdown_partner ) {											
+								$selected = '';								
+								if ( !empty ( $selected_groups ) && in_array( $dropdown_partner->ID, $selected_groups ) && isset( $_GET['action'] ) && 'edit' ===  $_GET['action'] ) {	// phpcs:ignore.
+									$selected = 'selected';
+								}
+								?>
+							<option value="<?php echo esc_attr( $dropdown_partner->ID ); ?>" <?php echo esc_attr( $selected ); ?>><?php echo esc_html($dropdown_partner->post_title); ?></option>
+							<?php } ?>
+						</select>
+					</div>
+				</label>
+			</div>
+			<?php
+			wp_nonce_field( 'bp_blog_pro_grouplink_nonce_action', 'bp_blog_pro_grouplink_nonce' );
+		}
+	}
+
+
+	/*
+	* Redirect Manage tab of partners on the partner setting
+	*/
+	public function sayansi_get_business_manage_url(){
+		if ( ! isset( $_POST['business_id'] ) ) {
+			wp_send_json_error( array( 'message' => 'Missing business ID' ) );
+		}
+		
+
+		$business_id = intval( $_POST['business_id'] );
+		$settings_slug = bp_business_profile_get_business_slug() . '-settings';
+
+		$button_url    = get_permalink( $business_id ) . '/'. $settings_slug . '/';
+		
+		wp_send_json_success( array( 'url' => $button_url ) );
+	}
+
 }

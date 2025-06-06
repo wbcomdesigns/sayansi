@@ -529,6 +529,69 @@
 			});
 			
 		});
-		
+
+
+		// Reset Resume
+	    $(document).on('click', '#bp_resume_reset', function(e){
+	        e.preventDefault(); 
+	        var user_id = $(this).data('user_id');   
+	        // Confirmation message
+	        if (!confirm('Are you sure you want to reset the resume to default?')) {
+	            return; // Exit if user cancels
+	        }  
+
+	         // This does the ajax request
+	        $.ajax({
+	            url: sayansi_ajax_object.ajax_url,
+	            type: "POST",
+	            data: {
+	                'action': 'reset_resume',
+	                'user_id' : user_id,	                
+	                'nonce' : sayansi_ajax_object.ajax_nonce
+	            },
+	            success:function(response) {
+	                // This outputs the result of the ajax request
+	                if (response.success) {
+	                    alert(response.data.message); // "Resume reset to default."
+	                    // location.reload(); // Optional: reload to show updated data
+	                    window.location.href = sayansi_ajax_object.redirect_url;
+	                } else {
+	                    alert(response.data || "Reset failed.");
+	                }
+	            },
+	            error: function() {
+	                alert('AJAX request failed.');
+	            }            
+	        });
+	    });
+	    
+		$("#bp-blog-pro-business-select").select2({
+            placeholder: $("#bp-blog-pro-business-select").data("placeholder"),
+            plugins: ["remove_button"],
+        });
+
+
+		// Redirect Manage tab of partners on the partner setting
+        $(document).on('click', '.bp-business-manage-button', function(e) {
+			e.preventDefault();
+			var businessId = $(this).data('id');
+			$.ajax({
+				url: sayansi_ajax_object.ajax_url, // WordPress provides this global variable in admin; for front-end, localize it (see below)
+				type: 'POST',
+				data: {
+					action: 'get_business_manage_url',
+					business_id: businessId
+				},
+				success: function(response) {
+					if (response.success) {
+						window.location.href = response.data.url;
+					} else {
+						alert('Something went wrong.');
+					}
+				}
+			});
+		});
+
+
 	});
 })( jQuery );
