@@ -9,7 +9,9 @@ $args = array(
     'include'  => $partner_groups,
 );
 
-$all_groups = groups_get_groups($args);
+if( !empty ( $args['include'] ) ){
+    $all_groups = groups_get_groups($args);
+}
 
 if (!empty($all_groups['groups'])) :
 ?>
@@ -89,5 +91,12 @@ if (!empty($all_groups['groups'])) :
         <?php endforeach; ?>
     </ul>
 <?php
+else:    
+    ?>
+    <aside class="bp-feedback bp-messages info">    
+    <span class="bp-icon" aria-hidden="true"></span>
+    <p><?php echo esc_html( 'No groups found.');?></p>    
+    </aside>
+    <?php
 endif;
 ?>

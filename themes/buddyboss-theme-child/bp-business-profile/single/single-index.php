@@ -49,7 +49,7 @@ if ( $tabs_items === '' ) {
 					if( $endpoint_class == $settings_slug) {
 						$endpoint_class = 'business-settings';
 					}
-
+					$endpoint = '/' . $endpoint;
 					?>
 					<li class="<?php echo esc_attr( bp_business_get_business_menu_item_classes( $endpoint, $endpoint_class ) ); ?>">
 						<a href="<?php echo esc_url( bp_business_single_endpoint_url( $endpoint ) ); ?>"><?php echo esc_html( $label ); ?></a>

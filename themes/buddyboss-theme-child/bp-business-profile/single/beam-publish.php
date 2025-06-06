@@ -3,9 +3,9 @@
 		while ( have_posts() ) :
 			the_post();
 			global $post;
-			$selected_group = get_post_meta( $post->ID, 'bp_blog_pro_group_links', true );
-			$selected_business_group = get_post_meta( $post->ID, 'bp_blog_pro_business_group_links', true );			
-			if ( $selected_group == $current_group_id || $selected_business_group == $current_group_id  ) {
+			// $selected_group = get_post_meta( $post->ID, 'bp_blog_pro_group_links', true );
+			// $selected_business_group = get_post_meta( $post->ID, 'bp_blog_pro_business_group_links', true );			
+			// if ( $selected_group == $current_group_id || $selected_business_group == $current_group_id  ) {
 				?>
 			<div id="post-<?php the_ID(); ?>" class="<?php echo esc_attr( 'bpmb-blog-post' ); ?>">				
 					<div class="post-featured-image">
@@ -53,7 +53,8 @@
 					?>
 				</div>
 			</div>
-		<?php } endwhile; ?>
+		<?php //} 
+		endwhile; ?>
 			<div class="navigation pagination">
 				<?php bp_member_blog_paginate(); ?>
 			</div>

@@ -1,23 +1,23 @@
 <?php
-global $bP_business_settings;
+global $bp_business_settings;
 
 $business_link = get_post_type_archive_link( 'business' );
 
-if ( isset( $bP_business_settings['general_settings']['business_page'] ) && $bP_business_settings['general_settings']['business_page'] != '' ) {
-	$business_link = get_permalink( $bP_business_settings['general_settings']['business_page'] ) . 'create-business-page/';
+if ( isset( $bp_business_settings['general_settings']['business_page'] ) && $bp_business_settings['general_settings']['business_page'] != '' ) {
+	$business_link = get_permalink( $bp_business_settings['general_settings']['business_page'] ) . 'create-business-page/';
 }
-if ( isset( $bP_business_settings['general_settings']['create_business_page'] ) && $bP_business_settings['general_settings']['create_business_page'] != '' ) {
-	$business_link = get_permalink( $bP_business_settings['general_settings']['create_business_page'] );
+if ( isset( $bp_business_settings['general_settings']['create_business_page'] ) && $bp_business_settings['general_settings']['create_business_page'] != '' ) {
+	$business_link = get_permalink( $bp_business_settings['general_settings']['create_business_page'] );
 }
-$orderby          = ( isset( $bP_business_settings['general_settings']['orderby'] ) ) ? $bP_business_settings['general_settings']['orderby'] : 'date';
+$orderby          = ( isset( $bp_business_settings['general_settings']['orderby'] ) ) ? $bp_business_settings['general_settings']['orderby'] : 'date';
 $order            = ( $orderby === 'title' ) ? 'ASC' : 'DESC';
-$general_settings = isset( $bP_business_settings['general_settings'] ) ? $bP_business_settings['general_settings'] : array();
+$general_settings = isset( $bp_business_settings['general_settings'] ) ? $bp_business_settings['general_settings'] : array();
 $singular_label   = ( isset( $general_settings['singular_label'] ) ) ? $general_settings['singular_label'] : 'Business';
 $plural_label     = ( isset( $general_settings['plural_label'] ) ) ? $general_settings['plural_label'] : 'Businesses';
 $dir_filter       = ( isset( $general_settings['dir_filter'] ) ) ? $general_settings['dir_filter'] : '';
 $filter           = ( isset( $general_settings['filter'] ) ) ? $general_settings['filter'] : '';
-$taxonomy_filter  = isset( $bP_business_settings['taxonomy_filter'] ) ? $bP_business_settings['taxonomy_filter'] : array();
-$is_map_api       = ! empty( $bP_business_settings['map_settings']['map_api_key'] ) ? true : false;
+$taxonomy_filter  = isset( $bp_business_settings['taxonomy_filter'] ) ? $bp_business_settings['taxonomy_filter'] : array();
+$is_map_api       = ! empty( $bp_business_settings['map_settings']['map_api_key'] ) ? true : false;
 
 ?>
 

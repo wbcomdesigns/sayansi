@@ -62,6 +62,7 @@ if ($business_query->have_posts()) :
   $active_view = isset( $_COOKIE['business_view'] ) && $_COOKIE['business_view'] === 'list' ? 'list' : 'grid';
   $view_class  = $active_view; // Use the same variable for view class.
   ?>
+	<?php echo '<h3>' . esc_html__( 'All Partners', 'sayansi-core' ) . '</h3>'; ?>
   <div class="bp-business-profile-header">
    <!--  <div class="bp-business-profile-list-grid-filter-wrapper">
       <div class="bp-business-profile-list-grid-filter">

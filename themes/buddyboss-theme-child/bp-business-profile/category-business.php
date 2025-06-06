@@ -1,8 +1,35 @@
 <?php
 get_header();
+global $bp_business_settings, $post;
+
+$general_settings = isset( $bp_business_settings['general_settings'] ) ? $bp_business_settings['general_settings'] : array();
+$plural_label     = ( isset( $general_settings['plural_label'] ) ) ? $general_settings['plural_label'] : 'Businesses';
+$business_slug     = ( isset( $general_settings['business_slug'] ) ) ? $general_settings['business_slug'] : 'business';
 ?>
 
 <div id="primary" class="content-area bb-grid-cell">
+	<?php	
+	// Get the current category object
+	$current_cat = get_queried_object();
+	if ( $current_cat && !is_wp_error($current_cat) ) {
+		$post_type = $post->post_type; // Change this to your actual post type if different
+		$post_type_obj = get_post_type_object($post_type);	
+		echo '<nav class="breadcrumb">';
+		if ( $post_type_obj ) {			
+			$post_type_link = site_url() . '/' . $business_slug;			
+			echo '<a href="' . esc_url($post_type_link) . '">' . esc_html($post_type_obj->labels->singular_name) . '</a> &raquo; ';
+		}
+		// Check for parent term
+		if ($current_cat->parent) {
+			$parent_cat = get_term($current_cat->parent, 'business-category');			
+			if ( !is_wp_error( $parent_cat ) ) {
+				echo '<a href="' . esc_url( get_term_link( $parent_cat ) ) . '">' . esc_html( $parent_cat->name ) . '</a> &raquo; ';
+			}
+		}		
+		echo '<strong>' . esc_html($current_cat->name) . '</strong>';
+		echo '</nav>';
+	}
+	?>
 	<main id="main" class="site-main">
 
 <div id="bp-businesses-content" class="entry-content bp-businesses-content">

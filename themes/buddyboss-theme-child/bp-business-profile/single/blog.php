@@ -94,61 +94,28 @@ foreach ( $group_users as $group_user ) {
 	$user_ids[] = $group_user->user_id;
 }
 $post_authors = implode( ',', $user_ids );
-if( isset( $_GET['tab'] ) && 'publish' == $_GET['tab'] ){
+// if( isset( $_GET['tab'] ) && 'publish' == $_GET['tab'] ){
 	$query_args = array(
 		'author'      => $post_authors,
 		'post_type'   => 'post',
 		'post_status' => $post_status,
 		'paged'       => intval( $pagination_page ),
+		'posts_per_page' => apply_filters( 'sayansi_partner_blog_display', 10 ),
 		'meta_query'  => array(
-			'relation' => 'OR',
-			array(
-				'key'     => 'bp_blog_pro_group_links',
-				'value'   => $current_group_id,
-				'compare' => '==',
-			),
+			// 'relation' => 'OR',
+			// array(
+			// 	'key'     => 'bp_blog_pro_group_links',
+			// 	'value'   => $current_group_id,
+			// 	'compare' => '==',
+			// ),
 			array(
 				'key'     => 'bp_blog_pro_business_group_links',
-				'value'   => $current_group_id, // Replace $some_value with the value you want to compare
-				'compare' => '==', // Change the comparison operator if needed
+				'value'   => '"' . get_the_ID() . '"', // Replace $some_value with the value you want to compare
+				'compare' => 'LIKE', // Change the comparison operator if needed
 			),
 		),
 	);
-} elseif( isset( $_GET['tab'] ) && 'pending' == $_GET['tab'] ){
-	$query_args = array(
-		'author'      => $user_id,
-		'post_type'   => 'post',
-		'post_status' => 'pending',
-		'paged'       => intval( $paged ),
-	);
-} elseif( isset( $_GET['tab'] ) && 'draft' == $_GET['tab'] ){
-	$query_args = array(
-		'author'      => $user_id,
-		'post_type'   => 'post',
-		'post_status' => 'draft',
-		'paged'       => intval( $paged ),
-	);
-} else {
-	$query_args = array(
-		'author'      => $post_authors,
-		'post_type'   => 'post',
-		'post_status' => $post_status,
-		'paged'       => intval( $pagination_page ),
-		'meta_query'  => array(
-			'relation' => 'OR',
-			array(
-				'key'     => 'bp_blog_pro_group_links',
-				'value'   => $current_group_id,
-				'compare' => '==',
-			),
-			array(
-				'key'     => 'bp_blog_pro_business_group_links',
-				'value'   => $current_group_id, // Replace $some_value with the value you want to compare
-				'compare' => '==', // Change the comparison operator if needed
-			),
-		),
-	);
-}
+// } 
 // do the query.
 // $post_loop = new WP_Query( $query_args );
 query_posts( $query_args );
@@ -164,7 +131,7 @@ if ( isset( $bp_member_blog_gen_stngs['bp_post_page'] ) && $bp_member_blog_gen_s
 	$link = get_permalink( $bp_member_blog_gen_stngs['bp_post_page'] );
 }
 ?>
-<nav class="bp-navs business-subnavs no-ajax business-subnav business-subnav-plain" id="subnav" role="navigation" aria-label="<?php esc_html_e( 'Business submenu', 'bp-business-profile' ); ?>">
+<!-- <nav class="bp-navs business-subnavs no-ajax business-subnav business-subnav-plain" id="subnav" role="navigation" aria-label="<?php esc_html_e( 'Business submenu', 'bp-business-profile' ); ?>">
 	<ul class="subnav">		
 			<li class="bp-business-tab bp-business-navigation-link bp-business-navigation-link--publish <?php echo 'publish' === $endpoint ? 'current selected' : ''; ?>">
 				<a href="<?php echo esc_url( $beam_link . '?tab=publish' ); ?>" id="beam-publish"><?php esc_html_e( 'Published', 'bp-business-profile' ); ?>
@@ -197,26 +164,26 @@ if ( isset( $bp_member_blog_gen_stngs['bp_post_page'] ) && $bp_member_blog_gen_s
 
 		<?php do_action( 'bp_business_profile_blog_subnav' ); ?>
 	</ul>
-</nav>
+</nav> -->
 	
 	<!-- End Add blog related tab in beam -->
 
 <div class="bp-member-blog-container bpmb-blog-posts">
 	<?php
-		switch ( $endpoint ) {
-			case 'publish':					
+		// switch ( $endpoint ) {
+		// 	case 'publish':					
 				include 'beam-publish.php';
-				break;
-			case 'pending':
-				include 'beam-pending.php';
-				break;
-			case 'draft':
-				include 'beam-draft.php';
-				break;
-			default:
-				include 'beam-publish.php';
-				break;
-		}
+		// 		break;
+		// 	case 'pending':
+		// 		include 'beam-pending.php';
+		// 		break;
+		// 	case 'draft':
+		// 		include 'beam-draft.php';
+		// 		break;
+		// 	default:
+		// 		include 'beam-publish.php';
+		// 		break;
+		// }
 	?>
 	<?php
 	wp_reset_postdata();

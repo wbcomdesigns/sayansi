@@ -111,6 +111,21 @@ function wbcom_display_blog_network_content_before_main( $content ) {
 }
 add_action( 'buddyboss_theme_begin_content', 'wbcom_display_blog_network_content_before_main' );
 
+
+function custom_redirect_profile_to_cv() {
+    // Only run for logged-in users and on the frontend
+    if ( is_user_logged_in() && !is_admin() ) {
+        $current_url = $_SERVER['REQUEST_URI'];
+
+        // Check if the URL ends with /profile or /profile/
+        if ( preg_match( '#^/members/[^/]+/profile/?$#', $current_url ) ) {
+            wp_redirect( $current_url . '/cv', 301 );
+            exit;
+        }
+    }
+}
+add_action( 'template_redirect', 'custom_redirect_profile_to_cv' );
+
 // Update connection tab slug on user profile
 define ( 'BP_FRIENDS_SLUG', 'connections' );
 
